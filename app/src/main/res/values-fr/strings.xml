@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Paramètres</string>
+    <string name="birth_range">Naissance prévue entre</string>
+    <string name="current_month">Mois actuel : &lt;b>%1$d&lt;/b></string>
+    <string name="current_week">Semaine aménorrhée actuelle : &lt;b>%1$d&lt;/b></string>
+    <string name="date_calculate">Calculer</string>
+    <string name="date_day">jour</string>
+    <string name="date_month">mois</string>
+    <string name="date_year">année</string>
+    <string name="date_amenorrhea">Aménorrhée</string>
+    <string name="date_conception">Conception</string>
+    <string name="months_today">aujourd\'hui</string>
+    <string name="month_month">mois %1$d</string>
+    <string name="birth_range_and">et</string>
+    <string name="quarter_1">1er Trimestre</string>
+    <string name="quarter_2">2d Trimestre</string>
+    <string name="quarter_3">3e Trimestre</string>
+    <string name="sonogram_1">Échographie 1</string>
+    <string name="sonogram_2">Échographie 2</string>
+    <string name="sonogram_3">Échographie 3</string>
+    <string name="trisomy_21">Trisomie 21</string>
+    <string name="week">fin SA %1$d :  %2$s</string>
+    <string name="tab_1">MOIS</string>
+    <string name="tab_2">RÉSUMÉ</string>
+    <string name="tab_3">SEMAINES</string>
+    <string name="date_error_day">Jour incorrecte</string>
+    <string name="date_error_month">Mois incorrecte</string>
+    <string name="date_error_year">Année incorrecte</string>
+</resources>

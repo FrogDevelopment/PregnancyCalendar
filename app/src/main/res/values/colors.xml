@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#d15f86</color>
+    <color name="colorPrimaryDark">#bf295c</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="transparent">#00761737</color>
+    <color name="quarter_1">#2b9ba7</color>
+    <color name="quarter_2">#2ba763</color>
+    <color name="quarter_3">#44a72b</color>
+    <color name="sonogram_1">#d1af1a</color>
+    <color name="sonogram_2">#de4a19</color>
+    <color name="sonogram_3">#ab0c2c</color>
+    <color name="trisomy_21">#d77b3489</color>
+</resources>
