@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
 //        return super.onOptionsItemSelected(item);
 //    }
 
-
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         SectionsPagerAdapter(FragmentManager fm) {
@@ -110,6 +109,9 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
 
         @Override
         public int getItemPosition(Object object) {
+            if (object instanceof SummaryFragment) {
+                return POSITION_UNCHANGED;
+            }
             return POSITION_NONE;
         }
     }

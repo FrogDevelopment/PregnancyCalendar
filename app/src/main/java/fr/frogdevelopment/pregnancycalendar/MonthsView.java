@@ -100,7 +100,7 @@ public class MonthsView extends View {
 
         drawPaint.setShader(null);
 
-        addDate(canvas, offsetX, offsetY, length, R.color.colorPrimary, getContext().getString(R.string.months_today), LocalDate.now());
+        addDate(canvas, offsetX, offsetY, length, getResources().getColor(R.color.colorPrimary), getContext().getString(R.string.months_today), LocalDate.now());
 
 //        addDate(canvas, offsetX, offsetY, length, Color.RED, "test", LocalDate.of(2016, 11, 5));
     }
