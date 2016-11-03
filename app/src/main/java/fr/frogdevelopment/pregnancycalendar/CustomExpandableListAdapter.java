@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -40,13 +41,31 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int listPosition, final int expandedListPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final Item childItem = (Item) getChild(listPosition, expandedListPosition);
-        if (convertView == null) {
+
+        if (childItem.type == 1) {
+            return getDateView(childItem, convertView, parent);
+        } else {
+            return getWeekView(childItem, convertView, parent);
+        }
+    }
+
+    private View getDateView(Item childItem, View convertView, ViewGroup parent) {
+        if (convertView == null || !(convertView instanceof TextView)) {
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            convertView = layoutInflater.inflate(R.layout.row_week_date, parent, false);
+        }
+
+        TextView textView = (TextView) convertView;
+        textView.setText(childItem.label);
+
+        return convertView;
+    }
+
+    private View getWeekView(Item childItem, View convertView, ViewGroup parent) {
+        if (convertView == null || !(convertView instanceof LinearLayout)) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             convertView = layoutInflater.inflate(R.layout.row_week_item, parent, false);
         }
-
-//        Item itemTitle = (Item) getGroup(listPosition);
-//        convertView.setBackgroundResource(itemTitle.subBackground);
 
         TextView textView = (TextView) convertView.findViewById(R.id.week_item);
         textView.setText(childItem.label);
@@ -96,7 +115,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         Item itemTitle = (Item) getGroup(listPosition);
         if (convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
-            convertView = layoutInflater.inflate(R.layout.row_week_title, parent, false);
+            convertView = layoutInflater.inflate(R.layout.row_quarter, parent, false);
         }
 
         TextView listTitleTextView = (TextView) convertView;

@@ -74,6 +74,17 @@ public class SummaryFragment extends Fragment {
         birthRangeStart = ButterKnife.findById(rootView, R.id.birth_range_start);
         birthRangeEnd = ButterKnife.findById(rootView, R.id.birth_range_end);
 
+        mNow = LocalDate.now();
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        mDay = sharedPref.getInt("day", mNow.getDayOfMonth());
+        mMonth = sharedPref.getInt("month", mNow.getMonthValue());
+        mYear = sharedPref.getInt("year", mNow.getYear());
+        mTypeDate = sharedPref.getInt("typeDate", PregnancyUtils.CONCEPTION);
+
+        dayTextView.setText(String.valueOf(mDay));
+        monthTextView.setText(String.valueOf(mMonth));
+        yearTextView.setText(String.valueOf(mYear));
         yearTextView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
                 refresh();
@@ -123,18 +134,6 @@ public class SummaryFragment extends Fragment {
 
         Button calculateButton = ButterKnife.findById(rootView, R.id.calculate);
         calculateButton.setOnClickListener(view -> refresh());
-
-        mNow = LocalDate.now();
-
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        mDay = sharedPref.getInt("day", mNow.getDayOfMonth());
-        mMonth = sharedPref.getInt("month", mNow.getMonthValue());
-        mYear = sharedPref.getInt("year", mNow.getYear());
-        mTypeDate = sharedPref.getInt("typeDate", PregnancyUtils.CONCEPTION);
-
-        dayTextView.setText(String.valueOf(mDay));
-        monthTextView.setText(String.valueOf(mMonth));
-        yearTextView.setText(String.valueOf(mYear));
 
         calculate();
 

@@ -32,7 +32,6 @@ public class WeeksFragment extends Fragment {
 
         List<Item> weeks = new ArrayList<>();
 
-        int currentColor;
         int currentSubColor;
         String subLabel;
 
@@ -41,11 +40,9 @@ public class WeeksFragment extends Fragment {
         int childPosition = 0;
 
         for (int week = 1; week <= 42; week++) {
-
             switch (week) {
                 case 1:
-                    currentColor = R.color.quarter_1;
-                    items.put(new Item(getResources().getString(R.string.quarter_1), currentColor), weeks);
+                    items.put(new Item(getResources().getString(R.string.quarter_1), 0), weeks);
 
                     subLabel = null;
                     currentSubColor = 0;
@@ -74,9 +71,8 @@ public class WeeksFragment extends Fragment {
                     subLabel = getResources().getString(R.string.trisomy_21);
                     currentSubColor = R.color.trisomy_21;
 
-                    currentColor = R.color.quarter_2;
                     weeks = new ArrayList<>();
-                    items.put(new Item(getResources().getString(R.string.quarter_2), currentColor), weeks);
+                    items.put(new Item(getResources().getString(R.string.quarter_2), 0), weeks);
 
                     if (child == -1) {
                         groupPosition = 1;
@@ -92,11 +88,10 @@ public class WeeksFragment extends Fragment {
                     break;
 
                 case 29:
-                    currentColor = R.color.quarter_3;
+                    currentSubColor = 0;
                     weeks = new ArrayList<>();
-                    items.put(new Item(getResources().getString(R.string.quarter_3), currentColor), weeks);
+                    items.put(new Item(getResources().getString(R.string.quarter_3), 0), weeks);
                     subLabel = null;
-                    currentSubColor = currentColor;
 
                     if (child == -1) {
                         groupPosition = 2;
@@ -120,7 +115,8 @@ public class WeeksFragment extends Fragment {
                 child = childPosition;
             }
 
-            weeks.add(new Item(getResources().getString(R.string.week, week, amenorrheaDate.plusWeeks(week).format(dateTimeFormatter)), subLabel, currentSubColor, currentWeek == week));
+            weeks.add(new Item(amenorrheaDate.plusWeeks(week).format(dateTimeFormatter)));
+            weeks.add(new Item(getResources().getString(R.string.week, week), subLabel, currentSubColor, currentWeek == week));
 
             childPosition++;
         }

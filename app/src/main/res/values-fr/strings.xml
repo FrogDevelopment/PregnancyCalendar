@@ -20,7 +20,7 @@
     <string name="sonogram_2">Échographie 2</string>
     <string name="sonogram_3">Échographie 3</string>
     <string name="trisomy_21">Trisomie 21</string>
-    <string name="week">fin SA %1$d :  %2$s</string>
+    <string name="week">Semaine %1$d</string>
     <string name="tab_1">MOIS</string>
     <string name="tab_2">RÉSUMÉ</string>
     <string name="tab_3">SEMAINES</string>

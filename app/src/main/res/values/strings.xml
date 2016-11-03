@@ -31,7 +31,7 @@
     <string name="quarter_1">1st Quarter</string>
     <string name="quarter_2">2th Quarter</string>
     <string name="quarter_3">3th Quarter</string>
-    <string name="week">end AW %1$d : %2$s</string>
+    <string name="week">Week %1$d</string>
     <string name="sonogram_1">Sonogram 1</string>
     <string name="sonogram_2">Sonogram 2</string>
     <string name="sonogram_3">Sonogram 3</string>
