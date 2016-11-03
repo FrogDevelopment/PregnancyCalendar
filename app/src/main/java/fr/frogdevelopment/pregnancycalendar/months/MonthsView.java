@@ -1,4 +1,4 @@
-package fr.frogdevelopment.pregnancycalendar;
+package fr.frogdevelopment.pregnancycalendar.months;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -13,6 +13,9 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
 import org.threeten.bp.temporal.ChronoUnit;
+
+import fr.frogdevelopment.pregnancycalendar.PregnancyUtils;
+import fr.frogdevelopment.pregnancycalendar.R;
 
 public class MonthsView extends View {
 
@@ -100,22 +103,21 @@ public class MonthsView extends View {
 
         drawPaint.setShader(null);
 
-        addDate(canvas, offsetX, offsetY, length, getResources().getColor(R.color.colorPrimary), getContext().getString(R.string.months_today), LocalDate.now());
+        addDate(canvas, offsetX, offsetY, length, getResources().getColor(R.color.colorPrimary), LocalDate.now());
 
 //        addDate(canvas, offsetX, offsetY, length, Color.RED, "test", LocalDate.of(2016, 11, 5));
     }
 
-    private void addDate(Canvas canvas, int offsetX, int offsetY, int length, int color, String text, LocalDate date) {
-//        long duration = ChronoUnit.DAYS.between(PregnancyUtils.conceptionDate, PregnancyUtils.getBirthRangeEnd(PregnancyUtils.amenorrheaDate));
+    private void addDate(Canvas canvas, int offsetX, int offsetY, int length, int color, LocalDate date) {
         long duration = PregnancyUtils.NB_DAYS_CONCEPTION_TO_BIRTH;
         long now = ChronoUnit.DAYS.between(PregnancyUtils.conceptionDate, date);
 
         int y = (int) (now * length / duration) + offsetY;
 
-        drawTriangle(canvas, offsetX, y, color, text);
+        drawTriangle(canvas, offsetX, y, color);
     }
 
-    private void drawTriangle(Canvas canvas, int x, int y, int color, String text) {
+    private void drawTriangle(Canvas canvas, int x, int y, int color) {
         Path path = new Path();
         path.moveTo(x, y);
         path.lineTo(x + 50, y - 25);
@@ -125,7 +127,5 @@ public class MonthsView extends View {
         drawPaint.setColor(color);
         drawPaint.setStyle(Paint.Style.FILL);
         canvas.drawPath(path, drawPaint);
-
-        canvas.drawText(text, x + 75, y + 15, drawPaint);
     }
 }

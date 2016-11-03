@@ -1,4 +1,4 @@
-package fr.frogdevelopment.pregnancycalendar;
+package fr.frogdevelopment.pregnancycalendar.months;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

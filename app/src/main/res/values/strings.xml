@@ -4,9 +4,9 @@
     <string name="action_settings">Settings</string>
 
     <!---->
-    <string name="tab_1">MONTHS</string>
+    <string name="tab_1">CALENDAR</string>
     <string name="tab_2">SUMMARY</string>
-    <string name="tab_3">WEEKS</string>
+    <string name="tab_3">RENDEZ-VOUS</string>
 
     <!---->
     <string name="date_day">day</string>
@@ -24,16 +24,12 @@
     <string name="birth_range_and">and</string>
     <string name="current_week">Current amenorrhea week : &lt;b>%1$d&lt;/b></string>
     <string name="current_month">Current month : &lt;b>%1$d&lt;/b></string>
-    <string name="months_today">today</string>
     <string name="month_month">month %1$d</string>
 
     <!---->
-    <string name="quarter_1">1st Quarter</string>
-    <string name="quarter_2">2th Quarter</string>
-    <string name="quarter_3">3th Quarter</string>
-    <string name="week">Week %1$d</string>
-    <string name="sonogram_1">Sonogram 1</string>
-    <string name="sonogram_2">Sonogram 2</string>
-    <string name="sonogram_3">Sonogram 3</string>
-    <string name="trisomy_21">Trisomy 21</string>
+    <string name="card_sonogram_1_text">1st Sonography</string>
+    <string name="card_sonogram_2_text">2th Sonography</string>
+    <string name="card_sonogram_3_text">3th Sonography</string>
+    <string name="card_trisomy_21_text">Trisomy 21 detection</string>
+
 </resources>

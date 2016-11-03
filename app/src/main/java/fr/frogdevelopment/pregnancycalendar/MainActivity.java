@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import butterknife.ButterKnife;
+import fr.frogdevelopment.pregnancycalendar.months.MonthsFragment;
+import fr.frogdevelopment.pregnancycalendar.todo.TodoFragment;
 
 public class MainActivity extends AppCompatActivity implements SummaryFragment.RefreshListener {
 
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
                     item = new SummaryFragment();
                     break;
                 case 2:
-                    item = new WeeksFragment();
+                    item = new TodoFragment();
                     break;
             }
 
