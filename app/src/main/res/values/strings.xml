@@ -29,9 +29,13 @@
     <string name="month_month">month %1$d</string>
 
     <!---->
-    <string name="card_sonogram_1_text">1st Sonography</string>
-    <string name="card_sonogram_2_text">2th Sonography</string>
-    <string name="card_sonogram_3_text">3th Sonography</string>
-    <string name="card_trisomy_21_text">Trisomy 21 detection</string>
+    <string name="card_sonogram_1_title">1st Sonography</string>
+    <string name="card_sonogram_1_description">todo</string>
+    <string name="card_sonogram_2_title">2th Sonography</string>
+    <string name="card_sonogram_2_description">todo</string>
+    <string name="card_sonogram_3_title">3th Sonography</string>
+    <string name="card_sonogram_3_description">todo</string>
+    <string name="card_trisomy_21_title">Trisomy 21 detection</string>
+    <string name="card_trisomy_21_description">todo</string>
 
 </resources>

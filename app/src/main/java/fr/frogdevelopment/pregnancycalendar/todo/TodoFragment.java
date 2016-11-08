@@ -51,25 +51,29 @@ public class TodoFragment extends Fragment {
         // sonogram 1 : week 11 -> 13
         Todo sonogram_1 = createTodo(11, 13);
         sonogram_1.resource = R.drawable.sonograph_1;
-        sonogram_1.title = R.string.card_sonogram_1_text;
+        sonogram_1.title = R.string.card_sonogram_1_title;
+        sonogram_1.description = R.string.card_sonogram_1_description;
         todos.add(sonogram_1);
 
         // trisomy 21  detection : week 14 -> 18
         Todo trisomy = createTodo(14, 18);
         trisomy.resource = R.drawable.trisomy;
-        trisomy.title = R.string.card_trisomy_21_text;
+        trisomy.title = R.string.card_trisomy_21_title;
+        trisomy.description = R.string.card_trisomy_21_description;
         todos.add(trisomy);
 
         // sonogram 2 : week 22 -> 24
         Todo sonogram_2 = createTodo(22, 24);
         sonogram_2.resource = R.drawable.sonograph_2;
-        sonogram_2.title = R.string.card_sonogram_2_text;
+        sonogram_2.title = R.string.card_sonogram_2_title;
+        sonogram_2.description = R.string.card_sonogram_2_description;
         todos.add(sonogram_2);
 
         // sonogram 3 : week 32 -> 34
         Todo sonogram_3 = createTodo(32, 34);
         sonogram_3.resource = R.drawable.sonograph_3;
-        sonogram_3.title = R.string.card_sonogram_3_text;
+        sonogram_3.title = R.string.card_sonogram_3_title;
+        sonogram_3.description = R.string.card_sonogram_3_description;
         todos.add(sonogram_3);
 
         return todos;

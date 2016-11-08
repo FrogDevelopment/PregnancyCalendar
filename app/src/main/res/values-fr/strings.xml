@@ -19,10 +19,16 @@
     <string name="date_error_month">Mois incorrecte</string>
     <string name="date_error_year">Année incorrecte</string>
 
-    <string name="card_sonogram_1_text">1ère Échographie</string>
-    <string name="card_sonogram_2_text">2ème Échographie</string>
-    <string name="card_sonogram_3_text">3ème Échographie</string>
-    <string name="card_trisomy_21_text">Détection Trisomie 21</string>
+    <!-- description : http://www.planet.vertbaudet.com/ma-grossesse/au-fil-des-mois/grossesse-mois-par-mois.htm -->
+
+    <string name="card_sonogram_1_title">1ère Échographie</string>
+    <string name="card_sonogram_1_description">"L'échographie du premier trimestre : cette première échographie, réalisée vers 2 mois et demi de grossesse, est très attendue. Normal : il s’agit de la première « rencontre » avec votre bébé, avant même de le sentir bouger ou de voir votre ventre s’arrondir. C’est aussi et surtout un examen clé dans le suivi de la grossesse."</string>
+    <string name="card_sonogram_2_title">2ème Échographie</string>
+    <string name="card_sonogram_2_description">"L’échographie du deuxième trimestre : à quoi sert-elle ? Réalisée au cours du cinquième mois de grossesse, la deuxième échographie, dite « morphologique », est un examen essentiel pour s’assurer que le bébé grandit bien. Mais surtout pour dépister certaines anomalies du fœtus et éventuellement décider d’une surveillance particulière."</string>
+    <string name="card_sonogram_3_title">3ème Échographie</string>
+    <string name="card_sonogram_3_description">"Si votre grossesse se déroule normalement, la troisième échographie se fait à environ 32 semaines d’aménorrhée. Pour la majorité d’entre vous, ce sera la dernière avant le jour « J », c’est dire si elle est importante."</string>
+    <string name="card_trisomy_21_title">Détection Trisomie 21</string>
+    <string name="card_trisomy_21_description">"Le 1er trimestre de votre grossesse est le moment de la première échographie. Lors de cet examen, le praticien de santé mesure la clarté nucale de bébé afin de dépister la trisomie 21, l’une des plus fréquentes anomalies chromosomiques."</string>
     <string name="another_date_0">Date dernière règles :</string>
     <string name="another_date_1">Date de conception :</string>
 </resources>

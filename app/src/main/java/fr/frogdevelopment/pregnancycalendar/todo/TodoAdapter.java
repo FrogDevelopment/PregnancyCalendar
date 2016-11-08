@@ -33,7 +33,7 @@ class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
         holder.mIconView.setImageResource(item.resource);
         holder.mTitleView.setText(item.title);
-        holder.mDescriptionView.setText("FIXME Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sem enim, placerat ut nibh et, maximus mollis sem. Nullam vestibulum ornare quam id eleifend. Maecenas scelerisque, turpis eget porttitor egestas, diam orci rutrum ex.");
+        holder.mDescriptionView.setText(item.description);
         holder.mDateView.setText(item.weekStartLabel + " - " + item.weekEndLabel); // fixme
     }
 

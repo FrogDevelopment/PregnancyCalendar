@@ -4,14 +4,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:cardview="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="wrap_content"
     cardview:cardCornerRadius="8dp"
     cardview:cardElevation="3dp"
     cardview:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground">
 
         <TextView
@@ -34,26 +34,26 @@
             android:src="@drawable/sonograph_1"/>
 
         <TextView
-            android:id="@+id/card_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:paddingEnd="5dp"
-            android:paddingStart="5dp"
-            android:text="du dd/mm/yyyy au dd/mm/yyyy"
-            android:textStyle="italic"/>
-
-        <TextView
             android:id="@+id/card_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@id/card_date"
             android:layout_below="@id/card_title"
             android:layout_toEndOf="@id/card_icon"
             android:padding="5dp"
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sem enim, placerat ut nibh et, maximus mollis sem. Nullam vestibulum ornare quam id eleifend."
             android:textAlignment="textStart"
             android:textColor="#979797"/>
+
+        <TextView
+            android:id="@+id/card_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            android:layout_below="@id/card_description"
+            android:text="du dd/mm/yyyy au dd/mm/yyyy"
+            android:textStyle="italic"/>
 
 
     </RelativeLayout>
