@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,13 @@ import org.threeten.bp.temporal.ChronoField;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.AMENORRHEA;
+import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.amenorrheaDate;
+import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.conceptionDate;
+import static fr.frogdevelopment.pregnancycalendar.R.id.day;
+import static fr.frogdevelopment.pregnancycalendar.R.id.month;
+import static fr.frogdevelopment.pregnancycalendar.R.id.year;
 
 public class SummaryFragment extends Fragment {
 
@@ -52,6 +58,8 @@ public class SummaryFragment extends Fragment {
     private TextInputEditText yearTextView;
     private TextView birthRangeStart;
     private TextView birthRangeEnd;
+    private TextView otherDateText;
+    private TextView otherDateValue;
     private TextView currentWeek;
     private TextView currentMonth;
 
@@ -64,13 +72,15 @@ public class SummaryFragment extends Fragment {
         unbinder = ButterKnife.bind(this, rootView);
 
         dayTextViewWrapper = ButterKnife.findById(rootView, R.id.dayWrapper);
-        dayTextView = ButterKnife.findById(rootView, R.id.day);
+        dayTextView = ButterKnife.findById(rootView, day);
         monthTextViewWrapper = ButterKnife.findById(rootView, R.id.monthWrapper);
-        monthTextView = ButterKnife.findById(rootView, R.id.month);
+        monthTextView = ButterKnife.findById(rootView, month);
         yearTextViewWrapper = ButterKnife.findById(rootView, R.id.yearWrapper);
-        yearTextView = ButterKnife.findById(rootView, R.id.year);
-        currentWeek = ButterKnife.findById(rootView, R.id.currentWeek);
-        currentMonth = ButterKnife.findById(rootView, R.id.currentMonth);
+        yearTextView = ButterKnife.findById(rootView, year);
+        otherDateText = ButterKnife.findById(rootView, R.id.other_date_text);
+        otherDateValue = ButterKnife.findById(rootView, R.id.other_date_value);
+        currentWeek = ButterKnife.findById(rootView, R.id.current_week_value);
+        currentMonth = ButterKnife.findById(rootView, R.id.current_month_value);
         birthRangeStart = ButterKnife.findById(rootView, R.id.birth_range_start);
         birthRangeEnd = ButterKnife.findById(rootView, R.id.birth_range_end);
 
@@ -96,7 +106,7 @@ public class SummaryFragment extends Fragment {
 
         RadioGroup toggle = ButterKnife.findById(rootView, R.id.toggle);
         switch (mTypeDate) {
-            case PregnancyUtils.AMENORRHEA:
+            case AMENORRHEA:
                 toggle.check(R.id.amenorrhea);
                 break;
             case PregnancyUtils.CONCEPTION:
@@ -106,7 +116,7 @@ public class SummaryFragment extends Fragment {
         toggle.setOnCheckedChangeListener((radioGroup, i) -> {
             switch (i) {
                 case R.id.amenorrhea:
-                    mTypeDate = PregnancyUtils.AMENORRHEA;
+                    mTypeDate = AMENORRHEA;
                     break;
                 case R.id.conception:
                     mTypeDate = PregnancyUtils.CONCEPTION;
@@ -212,12 +222,21 @@ public class SummaryFragment extends Fragment {
             return false; // fixme
         }
 
-        currentWeek.setText(Html.fromHtml(getString(R.string.current_week, PregnancyUtils.getCurrentWeek(PregnancyUtils.amenorrheaDate, mNow))));
-        currentMonth.setText(Html.fromHtml(getString(R.string.current_month, PregnancyUtils.getCurrentMonth(PregnancyUtils.conceptionDate, mNow))));
-
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
-        birthRangeStart.setText(PregnancyUtils.getBirthRangeStart(PregnancyUtils.amenorrheaDate).format(dateTimeFormatter));
-        birthRangeEnd.setText(PregnancyUtils.getBirthRangeEnd(PregnancyUtils.amenorrheaDate).format(dateTimeFormatter));
+
+        if (mTypeDate == AMENORRHEA) {
+            otherDateText.setText(getString(R.string.another_date_1));
+            otherDateValue.setText(conceptionDate.format(dateTimeFormatter));
+        } else {
+            otherDateText.setText(getString(R.string.another_date_0));
+            otherDateValue.setText(amenorrheaDate.format(dateTimeFormatter));
+        }
+
+        currentWeek.setText(String.valueOf(PregnancyUtils.getCurrentWeek(amenorrheaDate, mNow)));
+        currentMonth.setText(String.valueOf(PregnancyUtils.getCurrentMonth(conceptionDate, mNow)));
+
+        birthRangeStart.setText(PregnancyUtils.getBirthRangeStart(amenorrheaDate).format(dateTimeFormatter));
+        birthRangeEnd.setText(PregnancyUtils.getBirthRangeEnd(amenorrheaDate).format(dateTimeFormatter));
 
         return true;
     }

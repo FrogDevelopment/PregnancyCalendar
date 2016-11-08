@@ -2,8 +2,8 @@
 <resources>
     <string name="action_settings">Paramètres</string>
     <string name="birth_range">Naissance prévue entre</string>
-    <string name="current_month">Mois actuel : &lt;b>%1$d&lt;/b></string>
-    <string name="current_week">Semaine aménorrhée actuelle : &lt;b>%1$d&lt;/b></string>
+    <string name="current_month">Mois actuel :</string>
+    <string name="current_week">Semaine aménorrhée actuelle :</string>
     <string name="date_calculate">Calculer</string>
     <string name="date_day">jour</string>
     <string name="date_month">mois</string>
@@ -23,4 +23,6 @@
     <string name="card_sonogram_2_text">2ème Échographie</string>
     <string name="card_sonogram_3_text">3ème Échographie</string>
     <string name="card_trisomy_21_text">Détection Trisomie 21</string>
+    <string name="another_date_0">Date dernière règles :</string>
+    <string name="another_date_1">Date de conception :</string>
 </resources>

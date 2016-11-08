@@ -22,8 +22,10 @@
     <!---->
     <string name="birth_range">Birth expected between</string>
     <string name="birth_range_and">and</string>
-    <string name="current_week">Current amenorrhea week : &lt;b>%1$d&lt;/b></string>
-    <string name="current_month">Current month : &lt;b>%1$d&lt;/b></string>
+    <string name="another_date_0">Last menstruation date :</string>
+    <string name="another_date_1">Conception date :</string>
+    <string name="current_week">Current amenorrhea week :</string>
+    <string name="current_month">Current month :</string>
     <string name="month_month">month %1$d</string>
 
     <!---->
