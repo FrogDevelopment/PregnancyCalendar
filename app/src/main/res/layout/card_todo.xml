@@ -49,13 +49,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_below="@id/card_description"
+            android:gravity="center"
             android:paddingEnd="5dp"
             android:paddingStart="5dp"
-            android:layout_below="@id/card_description"
             android:text="du dd/mm/yyyy au dd/mm/yyyy"
             android:textStyle="italic"/>
-
-
     </RelativeLayout>
 </android.support.v7.widget.CardView>
 

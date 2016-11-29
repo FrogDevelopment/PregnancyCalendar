@@ -36,7 +36,7 @@ public class TodoFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
+        dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
 
         TodoAdapter mAdapter = new TodoAdapter(getTodos());
         mRecyclerView.setAdapter(mAdapter);
