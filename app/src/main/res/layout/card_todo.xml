@@ -30,8 +30,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/card_title"
             android:layout_centerVertical="true"
-            android:paddingEnd="5dp"
-            android:src="@drawable/sonograph_1"/>
+            android:padding="5dp"
+            android:src="@drawable/ic_sonograph"/>
 
         <TextView
             android:id="@+id/card_description"
