@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
@@ -95,13 +97,16 @@ public class SummaryFragment extends Fragment {
         dayTextView.setText(String.valueOf(mDay));
         monthTextView.setText(String.valueOf(mMonth));
         yearTextView.setText(String.valueOf(mYear));
-        yearTextView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-                refresh();
-                return true;
-            }
+        yearTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                    SummaryFragment.this.refresh();
+                    return true;
+                }
 
-            return false;
+                return false;
+            }
         });
 
         RadioGroup toggle = ButterKnife.findById(rootView, R.id.toggle);
@@ -113,37 +118,52 @@ public class SummaryFragment extends Fragment {
                 toggle.check(R.id.conception);
                 break;
         }
-        toggle.setOnCheckedChangeListener((radioGroup, i) -> {
-            switch (i) {
-                case R.id.amenorrhea:
-                    mTypeDate = AMENORRHEA;
-                    break;
-                case R.id.conception:
-                    mTypeDate = PregnancyUtils.CONCEPTION;
-                    break;
-            }
+        toggle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i) {
+                    case R.id.amenorrhea:
+                        mTypeDate = AMENORRHEA;
+                        break;
+                    case R.id.conception:
+                        mTypeDate = PregnancyUtils.CONCEPTION;
+                        break;
+                }
 
-            refresh();
+                SummaryFragment.this.refresh();
+            }
         });
 
         ImageButton imageButton = ButterKnife.findById(rootView, R.id.date_picker_button);
-        imageButton.setOnClickListener(view -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), (datePicker, year, month, dayOfMonth) -> {
-                dayTextView.setText(String.valueOf(dayOfMonth));
-                monthTextView.setText(String.valueOf(month + 1/*base 0*/));
-                yearTextView.setText(String.valueOf(year));
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(SummaryFragment.this.getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                        dayTextView.setText(String.valueOf(dayOfMonth));
+                        monthTextView.setText(String.valueOf(month + 1/*base 0*/));
+                        yearTextView.setText(String.valueOf(year));
 
-                refresh();
-            }, mYear, mMonth - 1/*base 0*/, mDay);
+                        SummaryFragment.this.refresh();
 
-            datePickerDialog.getDatePicker().setMinDate(mNow.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond());
-            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                    }
+                }, mYear, mMonth - 1/*base 0*/, mDay);
 
-            datePickerDialog.show();
+                datePickerDialog.getDatePicker().setMinDate(mNow.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond());
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+
+                datePickerDialog.show();
+            }
         });
 
         Button calculateButton = ButterKnife.findById(rootView, R.id.calculate);
-        calculateButton.setOnClickListener(view -> refresh());
+        calculateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SummaryFragment.this.refresh();
+            }
+        });
 
         calculate();
 
