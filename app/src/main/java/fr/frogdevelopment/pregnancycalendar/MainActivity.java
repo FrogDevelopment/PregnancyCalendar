@@ -1,23 +1,21 @@
 package fr.frogdevelopment.pregnancycalendar;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
-import butterknife.ButterKnife;
+import fr.frogdevelopment.pregnancycalendar.contraction.ContractionFragment;
 import fr.frogdevelopment.pregnancycalendar.months.MonthsFragment;
 import fr.frogdevelopment.pregnancycalendar.todo.TodoFragment;
 
 public class MainActivity extends AppCompatActivity implements SummaryFragment.RefreshListener {
 
-    FragmentPagerAdapter mSectionsPagerAdapter;
+    SectionsPagerAdapter mSectionsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,18 +23,11 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
         setContentView(R.layout.activity_main);
 
         AndroidThreeTen.init(this);
-        ButterKnife.bind(this);
 
-        Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
-        setSupportActionBar(toolbar);
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
-        ViewPager mViewPager = ButterKnife.findById(this, R.id.container);
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        TabLayout tabLayout = ButterKnife.findById(this, R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-        tabLayout.getTabAt(1).select();
     }
 
     @Override
@@ -77,14 +68,17 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
             Fragment item = null;
             switch (position) {
                 case 0:
-                    item = new MonthsFragment();
+                    item = new SummaryFragment();
                     break;
                 case 1:
-                    item = new SummaryFragment();
+                    item = new MonthsFragment();
                     break;
                 case 2:
                     item = new TodoFragment();
                     break;
+
+                case 3:
+                    item = new ContractionFragment();
             }
 
             return item;
@@ -92,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -105,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
                     return getResources().getString(R.string.tab_2);
                 case 2:
                     return getResources().getString(R.string.tab_3);
+                case 3:
+                    return "CONTRACTIONS";
             }
             return null;
         }
