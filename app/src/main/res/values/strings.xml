@@ -5,8 +5,8 @@
     <string name="action_settings">Settings</string>
 
     <!---->
-    <string name="tab_1">CALENDAR</string>
-    <string name="tab_2">SUMMARY</string>
+    <string name="tab_1">SUMMARY</string>
+    <string name="tab_2">CALENDAR</string>
     <string name="tab_3">RENDEZ-VOUS</string>
 
     <!---->
@@ -38,5 +38,18 @@
     <string name="card_sonogram_3_description">todo</string>
     <string name="card_trisomy_21_title">Trisomy 21 detection</string>
     <string name="card_trisomy_21_description">todo</string>
+
+
+
+    <string name="start" translatable="false">START</string>
+    <string name="stop" translatable="false">STOP</string>
+
+    <string name="delete_title">Deleting</string>
+    <plurals name="delete_confirmation">
+        <item quantity="one">You\'re going to delete %1$d line</item>
+        <item quantity="other">You\'re going to delete %1$d lines</item>
+    </plurals>
+    <string name="positive_button_continue">Continue ?</string>
+    <string name="delete_done">Delete done</string>
 
 </resources>

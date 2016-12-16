@@ -12,8 +12,8 @@
     <string name="date_conception">Conception</string>
     <string name="month_month">mois %1$d</string>
     <string name="birth_range_and">et</string>
-    <string name="tab_1">CALENDRIER</string>
-    <string name="tab_2">RÉSUMÉ</string>
+    <string name="tab_1">RÉSUMÉ</string>
+    <string name="tab_2">CALENDRIER</string>
     <string name="tab_3">RENDEZ-VOUS</string>
     <string name="date_error_day">Jour incorrecte</string>
     <string name="date_error_month">Mois incorrecte</string>
@@ -31,4 +31,15 @@
     <string name="card_trisomy_21_description">"Le 1er trimestre de votre grossesse est le moment de la première échographie. Lors de cet examen, le praticien de santé mesure la clarté nucale de bébé afin de dépister la trisomie 21, l’une des plus fréquentes anomalies chromosomiques."</string>
     <string name="another_date_0">Date dernière règles :</string>
     <string name="another_date_1">Date de conception :</string>
+
+
+    <string name="delete_title">Suppression</string>
+    <plurals name="delete_confirmation">
+        <item quantity="one">Vous êtes sur le point d\'effacer %1$d ligne</item>
+        <item quantity="other">Vous êtes sur le point d\'effacer %1$d lignes</item>
+    </plurals>
+
+    <string name="positive_button_continue">Continuer ?</string>
+    <string name="delete_done">Suppression effectuée</string>
+
 </resources>

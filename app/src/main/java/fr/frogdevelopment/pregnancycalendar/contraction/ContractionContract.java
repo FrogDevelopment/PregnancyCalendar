@@ -31,6 +31,7 @@ class ContractionContract implements BaseColumns {
 
     static class Contraction {
 
+        String id;
         LocalDateTime dateTime;
         Long duration;
 

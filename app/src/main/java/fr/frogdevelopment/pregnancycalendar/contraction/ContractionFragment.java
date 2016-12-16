@@ -1,18 +1,26 @@
 package fr.frogdevelopment.pregnancycalendar.contraction;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ListView;
@@ -27,8 +35,10 @@ import org.threeten.bp.format.FormatStyle;
 import org.threeten.bp.temporal.ChronoUnit;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import fr.frogdevelopment.pregnancycalendar.R;
@@ -59,6 +69,49 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
         });
 
         ListView mChronoList = (ListView) rootView.findViewById(R.id.chrono_list);
+        mChronoList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mChronoList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+
+            final private Set<Integer> selectedRows = new HashSet<>();
+
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                if (checked) {
+                    selectedRows.add(position);
+                } else {
+                    selectedRows.remove(position);
+                }
+
+                mode.invalidate();
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                getActivity().getMenuInflater().inflate(R.menu.menu_contraction, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_delete:
+                        onDelete(actionMode, selectedRows);
+                        break;
+                }
+
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+                selectedRows.clear();
+            }
+        });
 
         mAdapter = new ContractionCursorAdapter(getActivity());
         mChronoList.setAdapter(mAdapter);
@@ -66,6 +119,50 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
         getLoaderManager().initLoader(666, null, this);
 
         return rootView;
+    }
+
+    private void onDelete(final ActionMode actionMode, final Set<Integer> selectedRows) {
+        final int nbSelectedRows = selectedRows.size();
+        // Ask the user if they want to delete
+        new AlertDialog.Builder(getActivity())
+//                .setIcon(R.drawable.ic_warning_black)
+                .setTitle(R.string.delete_title)
+                .setMessage(getResources().getQuantityString(R.plurals.delete_confirmation, nbSelectedRows, nbSelectedRows))
+                .setPositiveButton(R.string.positive_button_continue, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (nbSelectedRows == 1) {
+                            final Contraction item = mAdapter.getItem(selectedRows.iterator().next());
+                            Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
+                            ContractionFragment.this.getActivity().getContentResolver().delete(uri, null, null);
+                        } else {
+                            StringBuilder inList = new StringBuilder(nbSelectedRows * 2);
+                            final String[] selectionArgs = new String[nbSelectedRows];
+                            int i = 0;
+                            Contraction item;
+                            for (Integer position : selectedRows) {
+                                if (i > 0) {
+                                    inList.append(",");
+                                }
+                                inList.append("?");
+
+                                item = mAdapter.getItem(position);
+                                selectionArgs[i] = item.id;
+                                i++;
+                            }
+
+                            final String selection = "_ID IN (" + inList.toString() + ")";
+                            ContractionFragment.this.getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, selection, selectionArgs);
+                        }
+
+                        Snackbar.make(getView(), R.string.delete_done, Snackbar.LENGTH_LONG).show();
+                        actionMode.finish();
+
+                        getLoaderManager().restartLoader(666, null, ContractionFragment.this);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
     }
 
     private void startOrStop() {
@@ -186,6 +283,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
             Contraction item;
             while (cursor.moveToNext()) {
                 item = new Contraction();
+                item.id = cursor.getString(ContractionContract.INDEX_ID);
                 item.dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(cursor.getLong(ContractionContract.INDEX_DATETIME)), zoneId);
                 item.duration = cursor.getLong(ContractionContract.INDEX_DURATION);
 

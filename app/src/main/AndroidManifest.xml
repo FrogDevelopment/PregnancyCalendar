@@ -4,10 +4,15 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_sonograph"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <provider
+            android:name=".contraction.ContractionContentProvider"
+            android:authorities="fr.frogdevelopment.pregnancycalendar.contraction.ContractionContentProvider"
+            android:exported="false"/>
 
         <activity
             android:name=".SplashScreenActivity"
@@ -27,7 +32,6 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden"/>
     </application>
 
