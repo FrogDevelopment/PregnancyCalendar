@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -61,12 +60,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
         mChronometer.setBase(SystemClock.elapsedRealtime());
 
         mButton = (Button) rootView.findViewById(R.id.chrono_button);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startOrStop();
-            }
-        });
+        mButton.setOnClickListener(view -> startOrStop());
 
         ListView mChronoList = (ListView) rootView.findViewById(R.id.chrono_list);
         mChronoList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -128,38 +122,35 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 //                .setIcon(R.drawable.ic_warning_black)
                 .setTitle(R.string.delete_title)
                 .setMessage(getResources().getQuantityString(R.plurals.delete_confirmation, nbSelectedRows, nbSelectedRows))
-                .setPositiveButton(R.string.positive_button_continue, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (nbSelectedRows == 1) {
-                            final Contraction item = mAdapter.getItem(selectedRows.iterator().next());
-                            Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
-                            ContractionFragment.this.getActivity().getContentResolver().delete(uri, null, null);
-                        } else {
-                            StringBuilder inList = new StringBuilder(nbSelectedRows * 2);
-                            final String[] selectionArgs = new String[nbSelectedRows];
-                            int i = 0;
-                            Contraction item;
-                            for (Integer position : selectedRows) {
-                                if (i > 0) {
-                                    inList.append(",");
-                                }
-                                inList.append("?");
-
-                                item = mAdapter.getItem(position);
-                                selectionArgs[i] = item.id;
-                                i++;
+                .setPositiveButton(R.string.positive_button_continue, (dialog, which) -> {
+                    if (nbSelectedRows == 1) {
+                        final Contraction item = mAdapter.getItem(selectedRows.iterator().next());
+                        Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
+                        ContractionFragment.this.getActivity().getContentResolver().delete(uri, null, null);
+                    } else {
+                        StringBuilder inList = new StringBuilder(nbSelectedRows * 2);
+                        final String[] selectionArgs = new String[nbSelectedRows];
+                        int i = 0;
+                        Contraction item;
+                        for (Integer position : selectedRows) {
+                            if (i > 0) {
+                                inList.append(",");
                             }
+                            inList.append("?");
 
-                            final String selection = "_ID IN (" + inList.toString() + ")";
-                            ContractionFragment.this.getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, selection, selectionArgs);
+                            item = mAdapter.getItem(position);
+                            selectionArgs[i] = item.id;
+                            i++;
                         }
 
-                        Snackbar.make(getView(), R.string.delete_done, Snackbar.LENGTH_LONG).show();
-                        actionMode.finish();
-
-                        getLoaderManager().restartLoader(666, null, ContractionFragment.this);
+                        final String selection = "_ID IN (" + inList.toString() + ")";
+                        ContractionFragment.this.getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, selection, selectionArgs);
                     }
+
+                    Snackbar.make(getView(), R.string.delete_done, Snackbar.LENGTH_LONG).show();
+                    actionMode.finish();
+
+                    getLoaderManager().restartLoader(666, null, ContractionFragment.this);
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .show();

@@ -40,17 +40,14 @@ public class PregnancyUtils {
         return amenorrheaDate.plusDays(GESTATION_LENGTH_MAX);
     }
 
-    @NonNull
     public static long getCurrentMonth(LocalDate conceptionDate, LocalDate now) {
         return ChronoUnit.MONTHS.between(conceptionDate, now) + 1; // +1 car idem mais pour le mois
     }
 
-    @NonNull
     public static long getCurrentWeek(LocalDate amenorrheaDate, LocalDate now) {
         return ChronoUnit.WEEKS.between(amenorrheaDate, now);
     }
 
-    @NonNull
     public static long getCurrentWeek() {
         return ChronoUnit.WEEKS.between(amenorrheaDate, LocalDate.now());
     }

@@ -7,13 +7,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
@@ -26,9 +24,6 @@ import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
 import org.threeten.bp.temporal.ChronoField;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.AMENORRHEA;
 import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.amenorrheaDate;
 import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.conceptionDate;
@@ -38,226 +33,193 @@ import static fr.frogdevelopment.pregnancycalendar.R.id.year;
 
 public class SummaryFragment extends Fragment {
 
-    public interface RefreshListener {
-        void onRefresh();
-    }
+	public interface RefreshListener {
+		void onRefresh();
+	}
 
-    private RefreshListener listener;
+	private RefreshListener listener;
 
-    private LocalDate mNow;
-    private int mDay;
-    private int mMonth;
-    private int mYear;
-    private int mTypeDate;
+	private LocalDate mNow;
+	private int       mDay;
+	private int       mMonth;
+	private int       mYear;
+	private int       mTypeDate;
 
-    private Unbinder unbinder;
+	private TextInputLayout   dayTextViewWrapper;
+	private TextInputEditText dayTextView;
+	private TextInputLayout   monthTextViewWrapper;
+	private EditText          monthTextView;
+	private TextInputLayout   yearTextViewWrapper;
+	private TextInputEditText yearTextView;
+	private TextView          birthRangeStart;
+	private TextView          birthRangeEnd;
+	private TextView          otherDateText;
+	private TextView          otherDateValue;
+	private TextView          currentWeek;
+	private TextView          currentMonth;
 
-    private TextInputLayout dayTextViewWrapper;
-    private TextInputEditText dayTextView;
-    private TextInputLayout monthTextViewWrapper;
-    private EditText monthTextView;
-    private TextInputLayout yearTextViewWrapper;
-    private TextInputEditText yearTextView;
-    private TextView birthRangeStart;
-    private TextView birthRangeEnd;
-    private TextView otherDateText;
-    private TextView otherDateValue;
-    private TextView currentWeek;
-    private TextView currentMonth;
+	// https://developer.android.com/guide/topics/ui/controls/pickers.html#DatePicker ?
 
-    // https://developer.android.com/guide/topics/ui/controls/pickers.html#DatePicker ?
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_summary, container, false);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_summary, container, false);
+		dayTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.dayWrapper);
+		dayTextView = (TextInputEditText) rootView.findViewById(day);
+		monthTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.monthWrapper);
+		monthTextView = (EditText) rootView.findViewById(month);
+		yearTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.yearWrapper);
+		yearTextView = (TextInputEditText) rootView.findViewById(year);
+		otherDateText = (TextView) rootView.findViewById(R.id.other_date_text);
+		otherDateValue = (TextView) rootView.findViewById(R.id.other_date_value);
+		currentWeek = (TextView) rootView.findViewById(R.id.current_week_value);
+		currentMonth = (TextView) rootView.findViewById(R.id.current_month_value);
+		birthRangeStart = (TextView) rootView.findViewById(R.id.birth_range_start);
+		birthRangeEnd = (TextView) rootView.findViewById(R.id.birth_range_end);
 
-        unbinder = ButterKnife.bind(this, rootView);
+		mNow = LocalDate.now();
 
-        dayTextViewWrapper = ButterKnife.findById(rootView, R.id.dayWrapper);
-        dayTextView = ButterKnife.findById(rootView, day);
-        monthTextViewWrapper = ButterKnife.findById(rootView, R.id.monthWrapper);
-        monthTextView = ButterKnife.findById(rootView, month);
-        yearTextViewWrapper = ButterKnife.findById(rootView, R.id.yearWrapper);
-        yearTextView = ButterKnife.findById(rootView, year);
-        otherDateText = ButterKnife.findById(rootView, R.id.other_date_text);
-        otherDateValue = ButterKnife.findById(rootView, R.id.other_date_value);
-        currentWeek = ButterKnife.findById(rootView, R.id.current_week_value);
-        currentMonth = ButterKnife.findById(rootView, R.id.current_month_value);
-        birthRangeStart = ButterKnife.findById(rootView, R.id.birth_range_start);
-        birthRangeEnd = ButterKnife.findById(rootView, R.id.birth_range_end);
+		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+		mDay = sharedPref.getInt("day", mNow.getDayOfMonth());
+		mMonth = sharedPref.getInt("month", mNow.getMonthValue());
+		mYear = sharedPref.getInt("year", mNow.getYear());
+		mTypeDate = sharedPref.getInt("typeDate", PregnancyUtils.CONCEPTION);
 
-        mNow = LocalDate.now();
+		dayTextView.setText(String.valueOf(mDay));
+		monthTextView.setText(String.valueOf(mMonth));
+		yearTextView.setText(String.valueOf(mYear));
+		yearTextView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+			if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+				SummaryFragment.this.refresh();
+				return true;
+			}
 
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        mDay = sharedPref.getInt("day", mNow.getDayOfMonth());
-        mMonth = sharedPref.getInt("month", mNow.getMonthValue());
-        mYear = sharedPref.getInt("year", mNow.getYear());
-        mTypeDate = sharedPref.getInt("typeDate", PregnancyUtils.CONCEPTION);
+			return false;
+		});
 
-        dayTextView.setText(String.valueOf(mDay));
-        monthTextView.setText(String.valueOf(mMonth));
-        yearTextView.setText(String.valueOf(mYear));
-        yearTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-                    SummaryFragment.this.refresh();
-                    return true;
-                }
+		RadioGroup toggle = (RadioGroup) rootView.findViewById(R.id.toggle);
+		switch (mTypeDate) {
+			case AMENORRHEA:
+				toggle.check(R.id.amenorrhea);
+				break;
+			case PregnancyUtils.CONCEPTION:
+				toggle.check(R.id.conception);
+				break;
+		}
+		toggle.setOnCheckedChangeListener((radioGroup, i) -> {
+			switch (i) {
+				case R.id.amenorrhea:
+					mTypeDate = AMENORRHEA;
+					break;
+				case R.id.conception:
+					mTypeDate = PregnancyUtils.CONCEPTION;
+					break;
+			}
 
-                return false;
-            }
-        });
+			SummaryFragment.this.refresh();
+		});
 
-        RadioGroup toggle = ButterKnife.findById(rootView, R.id.toggle);
-        switch (mTypeDate) {
-            case AMENORRHEA:
-                toggle.check(R.id.amenorrhea);
-                break;
-            case PregnancyUtils.CONCEPTION:
-                toggle.check(R.id.conception);
-                break;
-        }
-        toggle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                switch (i) {
-                    case R.id.amenorrhea:
-                        mTypeDate = AMENORRHEA;
-                        break;
-                    case R.id.conception:
-                        mTypeDate = PregnancyUtils.CONCEPTION;
-                        break;
-                }
+		ImageButton imageButton = (ImageButton) rootView.findViewById(R.id.date_picker_button);
+		imageButton.setOnClickListener(view -> {
+			DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), (datePicker, year1, month1, dayOfMonth) -> {
+				dayTextView.setText(String.valueOf(dayOfMonth));
+				monthTextView.setText(String.valueOf(month1 + 1/*base 0*/));
+				yearTextView.setText(String.valueOf(year1));
 
-                SummaryFragment.this.refresh();
-            }
-        });
+				SummaryFragment.this.refresh();
 
-        ImageButton imageButton = ButterKnife.findById(rootView, R.id.date_picker_button);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(SummaryFragment.this.getContext(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                        dayTextView.setText(String.valueOf(dayOfMonth));
-                        monthTextView.setText(String.valueOf(month + 1/*base 0*/));
-                        yearTextView.setText(String.valueOf(year));
+			}, mYear, mMonth - 1/*base 0*/, mDay);
 
-                        SummaryFragment.this.refresh();
+			datePickerDialog.getDatePicker().setMinDate(mNow.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond());
+			datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
 
-                    }
-                }, mYear, mMonth - 1/*base 0*/, mDay);
+			datePickerDialog.show();
+		});
 
-                datePickerDialog.getDatePicker().setMinDate(mNow.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond());
-                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+		Button calculateButton = (Button) rootView.findViewById(R.id.calculate);
+		calculateButton.setOnClickListener(view -> refresh());
 
-                datePickerDialog.show();
-            }
-        });
+		calculate();
 
-        Button calculateButton = ButterKnife.findById(rootView, R.id.calculate);
-        calculateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SummaryFragment.this.refresh();
-            }
-        });
+		return rootView;
+	}
 
-        calculate();
+	private void refresh() {
+		mDay = Integer.valueOf(dayTextView.getText().toString());
+		mMonth = Integer.valueOf(monthTextView.getText().toString());
+		mYear = Integer.valueOf(yearTextView.getText().toString());
 
-        return rootView;
-    }
+		if (calculate()) {
+			SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+			SharedPreferences.Editor editor = sharedPref.edit();
+			editor.putInt("day", mDay);
+			editor.putInt("month", mMonth);
+			editor.putInt("year", mYear);
+			editor.putInt("typeDate", mTypeDate);
+			editor.apply();
 
-    private void refresh() {
-        mDay = Integer.valueOf(dayTextView.getText().toString());
-        mMonth = Integer.valueOf(monthTextView.getText().toString());
-        mYear = Integer.valueOf(yearTextView.getText().toString());
+			listener.onRefresh();
+		}
+	}
 
-        if (calculate()) {
-            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt("day", mDay);
-            editor.putInt("month", mMonth);
-            editor.putInt("year", mYear);
-            editor.putInt("typeDate", mTypeDate);
-            editor.apply();
+	@Override
+	public void onAttach(Context context) {
+		super.onAttach(context);
+		try {
+			listener = (RefreshListener) context;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(context.toString() + " must implements " + RefreshListener.class);
+		}
+	}
 
-            listener.onRefresh();
-        }
-    }
+	private boolean calculate() {
+		// check correct inputs
+		try {
+			dayTextViewWrapper.setError(null);
+			ChronoField.DAY_OF_MONTH.checkValidValue((long) mDay);
+		} catch (DateTimeException e) {
+			dayTextViewWrapper.setError(getString(R.string.date_error_day));
+			return false;
+		}
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            listener = (RefreshListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implements " + RefreshListener.class);
-        }
-    }
+		try {
+			monthTextViewWrapper.setError(null);
+			ChronoField.MONTH_OF_YEAR.checkValidValue((long) mMonth);
+		} catch (DateTimeException e) {
+			monthTextViewWrapper.setError(getString(R.string.date_error_month));
+			return false;
+		}
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
-    }
+		try {
+			yearTextViewWrapper.setError(null);
+			ChronoField.YEAR.checkValidValue((long) mYear);
+		} catch (DateTimeException e) {
+			yearTextViewWrapper.setError(getString(R.string.date_error_year));
+			return false;
+		}
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
+		try {
+			PregnancyUtils.setDates(mYear, mMonth, mDay, mTypeDate);
+		} catch (DateTimeException e) {
+			return false; // fixme
+		}
 
-    private boolean calculate() {
-        // check correct inputs
-        try {
-            dayTextViewWrapper.setError(null);
-            ChronoField.DAY_OF_MONTH.checkValidValue((long) mDay);
-        } catch (DateTimeException e) {
-            dayTextViewWrapper.setError(getString(R.string.date_error_day));
-            return false;
-        }
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
 
-        try {
-            monthTextViewWrapper.setError(null);
-            ChronoField.MONTH_OF_YEAR.checkValidValue((long) mMonth);
-        } catch (DateTimeException e) {
-            monthTextViewWrapper.setError(getString(R.string.date_error_month));
-            return false;
-        }
+		if (mTypeDate == AMENORRHEA) {
+			otherDateText.setText(getString(R.string.another_date_1));
+			otherDateValue.setText(conceptionDate.format(dateTimeFormatter));
+		} else {
+			otherDateText.setText(getString(R.string.another_date_0));
+			otherDateValue.setText(amenorrheaDate.format(dateTimeFormatter));
+		}
 
-        try {
-            yearTextViewWrapper.setError(null);
-            ChronoField.YEAR.checkValidValue((long) mYear);
-        } catch (DateTimeException e) {
-            yearTextViewWrapper.setError(getString(R.string.date_error_year));
-            return false;
-        }
+		currentWeek.setText(String.valueOf(PregnancyUtils.getCurrentWeek(amenorrheaDate, mNow)));
+		currentMonth.setText(String.valueOf(PregnancyUtils.getCurrentMonth(conceptionDate, mNow)));
 
-        try {
-            PregnancyUtils.setDates(mYear, mMonth, mDay, mTypeDate);
-        } catch (DateTimeException e) {
-            return false; // fixme
-        }
+		birthRangeStart.setText(PregnancyUtils.getBirthRangeStart(amenorrheaDate).format(dateTimeFormatter));
+		birthRangeEnd.setText(PregnancyUtils.getBirthRangeEnd(amenorrheaDate).format(dateTimeFormatter));
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
-
-        if (mTypeDate == AMENORRHEA) {
-            otherDateText.setText(getString(R.string.another_date_1));
-            otherDateValue.setText(conceptionDate.format(dateTimeFormatter));
-        } else {
-            otherDateText.setText(getString(R.string.another_date_0));
-            otherDateValue.setText(amenorrheaDate.format(dateTimeFormatter));
-        }
-
-        currentWeek.setText(String.valueOf(PregnancyUtils.getCurrentWeek(amenorrheaDate, mNow)));
-        currentMonth.setText(String.valueOf(PregnancyUtils.getCurrentMonth(conceptionDate, mNow)));
-
-        birthRangeStart.setText(PregnancyUtils.getBirthRangeStart(amenorrheaDate).format(dateTimeFormatter));
-        birthRangeEnd.setText(PregnancyUtils.getBirthRangeEnd(amenorrheaDate).format(dateTimeFormatter));
-
-        return true;
-    }
+		return true;
+	}
 }
