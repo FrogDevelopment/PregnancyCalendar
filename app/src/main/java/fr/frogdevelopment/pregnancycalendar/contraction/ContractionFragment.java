@@ -175,6 +175,8 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
         mChronometer.start();
 
         mAdapter.add(currentContraction);
+
+        getView().setBackgroundResource(R.drawable.chrono_background_started);
     }
 
     private void stop() {
@@ -193,6 +195,8 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
         mAdapter.notifyDataSetChanged();
 
         getActivity().getContentResolver().insert(ContractionContentProvider.URI_CONTRACTION, values);
+
+        getView().setBackgroundResource(R.drawable.chrono_background_stoped);
     }
 
     @Override
