@@ -3,6 +3,7 @@
                 android:id="@+id/chrono_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:padding="10dp"
                 android:background="@drawable/chrono_background_stoped"
                 tools:context="fr.frogdevelopment.pregnancycalendar.contraction.ContractionFragment">
 
