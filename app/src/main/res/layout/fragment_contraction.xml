@@ -1,9 +1,8 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout android:id="@+id/chrono_layout"
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/chrono_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp"
                 android:background="@drawable/chrono_background_stoped"
                 tools:context="fr.frogdevelopment.pregnancycalendar.contraction.ContractionFragment">
 
@@ -13,6 +12,7 @@
         android:layout_height="wrap_content"
         android:format="%s"
         android:gravity="center"
+        android:textColor="@android:color/darker_gray"
         android:textSize="60sp"/>
 
     <Button
@@ -27,9 +27,9 @@
 
     <ListView
         android:id="@+id/chrono_list"
-        android:layout_below="@id/chrono_button"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/chrono_button"/>
 
 </RelativeLayout>

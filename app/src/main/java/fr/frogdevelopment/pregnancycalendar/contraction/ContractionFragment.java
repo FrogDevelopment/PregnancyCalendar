@@ -45,6 +45,7 @@ import fr.frogdevelopment.pregnancycalendar.contraction.ContractionContract.Cont
 
 public class ContractionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private View mRootView;
     private Chronometer mChronometer;
     private Button mButton;
 
@@ -54,15 +55,15 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_contraction, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_contraction, container, false);
 
-        mChronometer = (Chronometer) rootView.findViewById(R.id.chronometer);
+        mChronometer = (Chronometer) mRootView.findViewById(R.id.chronometer);
         mChronometer.setBase(SystemClock.elapsedRealtime());
 
-        mButton = (Button) rootView.findViewById(R.id.chrono_button);
+        mButton = (Button) mRootView.findViewById(R.id.chrono_button);
         mButton.setOnClickListener(view -> startOrStop());
 
-        ListView mChronoList = (ListView) rootView.findViewById(R.id.chrono_list);
+        ListView mChronoList = (ListView) mRootView.findViewById(R.id.chrono_list);
         mChronoList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         mChronoList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
 
@@ -112,7 +113,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
         getLoaderManager().initLoader(666, null, this);
 
-        return rootView;
+        return mRootView;
     }
 
     private void onDelete(final ActionMode actionMode, final Set<Integer> selectedRows) {
@@ -147,7 +148,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
                         getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, selection, selectionArgs);
                     }
 
-                    Snackbar.make(getView(), R.string.delete_done, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mRootView, R.string.delete_done, Snackbar.LENGTH_LONG).show();
                     actionMode.finish();
 
                     getLoaderManager().restartLoader(666, null, ContractionFragment.this);
@@ -176,7 +177,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
         mAdapter.add(currentContraction);
 
-        getView().setBackgroundResource(R.drawable.chrono_background_started);
+        mRootView.setBackgroundResource(R.drawable.chrono_background_started);
     }
 
     private void stop() {
@@ -196,7 +197,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
         getActivity().getContentResolver().insert(ContractionContentProvider.URI_CONTRACTION, values);
 
-        getView().setBackgroundResource(R.drawable.chrono_background_stoped);
+        mRootView.setBackgroundResource(R.drawable.chrono_background_stoped);
     }
 
     @Override

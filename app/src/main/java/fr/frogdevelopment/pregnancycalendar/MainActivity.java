@@ -11,7 +11,6 @@ import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import fr.frogdevelopment.pregnancycalendar.contraction.ContractionFragment;
 import fr.frogdevelopment.pregnancycalendar.months.MonthsFragment;
-import fr.frogdevelopment.pregnancycalendar.todo.TodoFragment;
 
 public class MainActivity extends AppCompatActivity implements SummaryFragment.RefreshListener {
 
@@ -74,11 +73,8 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
                     item = new MonthsFragment();
                     break;
                 case 2:
-                    item = new TodoFragment();
-                    break;
-
-                case 3:
                     item = new ContractionFragment();
+                    break;
             }
 
             return item;
@@ -86,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
 
         @Override
         public int getCount() {
-            return 4;
+            return 3;
         }
 
         @Override
@@ -98,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
                 case 1:
                     return getResources().getString(R.string.tab_2);
                 case 2:
-                    return getResources().getString(R.string.tab_3);
-                case 3:
                     return "CONTRACTIONS";
             }
             return null;
