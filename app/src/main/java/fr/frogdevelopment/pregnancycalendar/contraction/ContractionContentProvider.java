@@ -143,6 +143,10 @@ public class ContractionContentProvider extends ContentProvider {
                 rowsDeleted = sqlDB.delete(ContractionContract.TABLE_NAME, ContractionContract._ID + "=" + uri.getLastPathSegment(), null);
                 break;
 
+            case CONTRACTIONS:
+                rowsDeleted = sqlDB.delete(ContractionContract.TABLE_NAME, selection, selectionArgs);
+                break;
+
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }

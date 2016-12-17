@@ -126,7 +126,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
                     if (nbSelectedRows == 1) {
                         final Contraction item = mAdapter.getItem(selectedRows.iterator().next());
                         Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
-                        ContractionFragment.this.getActivity().getContentResolver().delete(uri, null, null);
+                        getActivity().getContentResolver().delete(uri, null, null);
                     } else {
                         StringBuilder inList = new StringBuilder(nbSelectedRows * 2);
                         final String[] selectionArgs = new String[nbSelectedRows];
@@ -144,7 +144,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
                         }
 
                         final String selection = "_ID IN (" + inList.toString() + ")";
-                        ContractionFragment.this.getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, selection, selectionArgs);
+                        getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, selection, selectionArgs);
                     }
 
                     Snackbar.make(getView(), R.string.delete_done, Snackbar.LENGTH_LONG).show();
