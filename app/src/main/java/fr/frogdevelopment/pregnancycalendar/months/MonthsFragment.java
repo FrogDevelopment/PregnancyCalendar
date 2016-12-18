@@ -10,6 +10,6 @@ public class MonthsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return new MonthsView(getContext());
+        return new MonthsView(getActivity());
     }
 }
