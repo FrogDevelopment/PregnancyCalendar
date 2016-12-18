@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
                 case 1:
                     return getResources().getString(R.string.tab_2);
                 case 2:
-                    return "CONTRACTIONS";
+                    return getResources().getString(R.string.tab_3);
             }
             return null;
         }
