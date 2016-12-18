@@ -52,6 +52,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 	private ContractionCursorAdapter mAdapter;
 	private Contraction              currentContraction;
+	private ActionMode               mActionMode;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,48 +67,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 		ListView mChronoList = (ListView) mRootView.findViewById(R.id.chrono_list);
 		mChronoList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-		mChronoList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-
-			final private Set<Integer> selectedRows = new HashSet<>();
-
-			@Override
-			public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-				if (checked) {
-					selectedRows.add(position);
-				} else {
-					selectedRows.remove(position);
-				}
-
-				mode.invalidate();
-			}
-
-			@Override
-			public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-				getActivity().getMenuInflater().inflate(R.menu.menu_contraction, menu);
-				return true;
-			}
-
-			@Override
-			public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-				return false;
-			}
-
-			@Override
-			public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-				switch (menuItem.getItemId()) {
-					case R.id.action_delete:
-						onDelete(actionMode, selectedRows);
-						break;
-				}
-
-				return false;
-			}
-
-			@Override
-			public void onDestroyActionMode(ActionMode actionMode) {
-				selectedRows.clear();
-			}
-		});
+		mChronoList.setMultiChoiceModeListener(mChoiceModeListener);
 
 		mAdapter = new ContractionCursorAdapter(getActivity());
 		mChronoList.setAdapter(mAdapter);
@@ -115,6 +75,14 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		getLoaderManager().initLoader(666, null, this);
 
 		return mRootView;
+	}
+
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		super.setUserVisibleHint(isVisibleToUser);
+		if (!isVisibleToUser && mActionMode != null) {
+			mActionMode.finish();
+		}
 	}
 
 	private void onDelete(final ActionMode actionMode, final Set<Integer> selectedRows) {
@@ -150,7 +118,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 					}
 
 					Snackbar.make(mRootView, R.string.delete_done, Snackbar.LENGTH_LONG).show();
-					actionMode.finish();
+					actionMode.finish(); // Action picked, so close the CAB
 
 					getLoaderManager().restartLoader(666, null, ContractionFragment.this);
 				})
@@ -358,5 +326,50 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 
 	}
+
+	private AbsListView.MultiChoiceModeListener mChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
+
+		final private Set<Integer> selectedRows = new HashSet<>();
+
+		@Override
+		public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+			if (checked) {
+				selectedRows.add(position);
+			} else {
+				selectedRows.remove(position);
+			}
+
+			mode.invalidate();
+		}
+
+		@Override
+		public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+			getActivity().getMenuInflater().inflate(R.menu.menu_contraction, menu);
+			mActionMode = actionMode;
+			return true;
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+			return false;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+			switch (menuItem.getItemId()) {
+				case R.id.action_delete:
+					onDelete(actionMode, selectedRows);
+					break;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode actionMode) {
+			selectedRows.clear();
+			mActionMode = null;
+		}
+	};
 
 }
