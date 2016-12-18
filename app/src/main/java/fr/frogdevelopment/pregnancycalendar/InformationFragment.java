@@ -31,7 +31,7 @@ import static fr.frogdevelopment.pregnancycalendar.R.id.day;
 import static fr.frogdevelopment.pregnancycalendar.R.id.month;
 import static fr.frogdevelopment.pregnancycalendar.R.id.year;
 
-public class SummaryFragment extends Fragment {
+public class InformationFragment extends Fragment {
 
 	public interface RefreshListener {
 		void onRefresh();
@@ -62,7 +62,7 @@ public class SummaryFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_summary, container, false);
+		View rootView = inflater.inflate(R.layout.fragment_information, container, false);
 
 		dayTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.dayWrapper);
 		dayTextView = (TextInputEditText) rootView.findViewById(day);
@@ -90,7 +90,7 @@ public class SummaryFragment extends Fragment {
 		yearTextView.setText(String.valueOf(mYear));
 		yearTextView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
 			if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-				SummaryFragment.this.refresh();
+				refresh();
 				return true;
 			}
 
@@ -116,7 +116,7 @@ public class SummaryFragment extends Fragment {
 					break;
 			}
 
-			SummaryFragment.this.refresh();
+			refresh();
 		});
 
 		ImageButton imageButton = (ImageButton) rootView.findViewById(R.id.date_picker_button);
@@ -126,7 +126,7 @@ public class SummaryFragment extends Fragment {
 				monthTextView.setText(String.valueOf(month1 + 1/*base 0*/));
 				yearTextView.setText(String.valueOf(year1));
 
-				SummaryFragment.this.refresh();
+				InformationFragment.this.refresh();
 
 			}, mYear, mMonth - 1/*base 0*/, mDay);
 

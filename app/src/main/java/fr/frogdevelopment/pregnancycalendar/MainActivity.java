@@ -10,9 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import fr.frogdevelopment.pregnancycalendar.contraction.ContractionFragment;
-import fr.frogdevelopment.pregnancycalendar.months.MonthsFragment;
 
-public class MainActivity extends AppCompatActivity implements SummaryFragment.RefreshListener {
+public class MainActivity extends AppCompatActivity implements InformationFragment.RefreshListener {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -31,30 +30,8 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
 
     @Override
     public void onRefresh() {
-        mSectionsPagerAdapter.notifyDataSetChanged();
+//        mSectionsPagerAdapter.notifyDataSetChanged();
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -67,12 +44,12 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
             Fragment item = null;
             switch (position) {
                 case 0:
-                    item = new SummaryFragment();
+                    item = new InformationFragment();
                     break;
                 case 1:
-                    item = new MonthsFragment();
-                    break;
-                case 2:
+//                    item = new MonthsFragment();
+//                    break;
+//                case 2:
                     item = new ContractionFragment();
                     break;
             }
@@ -82,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -92,19 +69,19 @@ public class MainActivity extends AppCompatActivity implements SummaryFragment.R
                 case 0:
                     return getResources().getString(R.string.tab_1);
                 case 1:
-                    return getResources().getString(R.string.tab_2);
-                case 2:
+//                    return getResources().getString(R.string.tab_2);
+//                case 2:
                     return getResources().getString(R.string.tab_3);
             }
             return null;
         }
 
-        @Override
-        public int getItemPosition(Object object) {
-            if (object instanceof SummaryFragment) {
-                return POSITION_UNCHANGED;
-            }
-            return POSITION_NONE;
-        }
+//        @Override
+//        public int getItemPosition(Object object) {
+//            if (object instanceof InformationFragment) {
+//                return POSITION_UNCHANGED;
+//            }
+//            return POSITION_NONE;
+//        }
     }
 }
