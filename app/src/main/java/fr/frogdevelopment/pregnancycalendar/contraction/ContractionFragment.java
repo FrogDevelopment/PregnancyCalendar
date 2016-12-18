@@ -169,6 +169,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		mAdapter.notifyDataSetChanged();
 
 		mRootView.setBackgroundResource(R.drawable.background_chrono_stoped);
+		mChronometer.setBase(SystemClock.elapsedRealtime());
 		currentContraction = null;
 	}
 

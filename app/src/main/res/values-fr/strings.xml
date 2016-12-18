@@ -47,5 +47,8 @@
 
     <string name="positive_button_continue">Continuer ?</string>
     <string name="delete_done">Suppression effectuée</string>
+    <string name="chrono_header_date">Date</string>
+    <string name="chrono_header_intervale">Intervale</string>
+    <string name="chrono_header_duration">Durée</string>
 
 </resources>

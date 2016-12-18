@@ -25,11 +25,43 @@
         android:text="@string/start"
         android:textSize="40sp"/>
 
+    <LinearLayout
+        android:id="@+id/chrono_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chrono_button"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/chrono_header_date"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/chrono_header_intervale"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/chrono_header_duration"/>
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/chrono_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@id/chrono_button"/>
+        android:layout_below="@id/chrono_header"/>
 
 </RelativeLayout>
