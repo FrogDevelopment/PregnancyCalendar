@@ -204,7 +204,7 @@ public class SummaryFragment extends Fragment {
 			return false; // fixme
 		}
 
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
 
 		if (mTypeDate == AMENORRHEA) {
 			otherDateText.setText(getString(R.string.another_date_1));

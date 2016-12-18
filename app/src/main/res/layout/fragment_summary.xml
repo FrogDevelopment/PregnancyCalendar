@@ -142,6 +142,7 @@
             android:layout_toEndOf="@id/other_date_text"
             android:paddingEnd="5dp"
             android:paddingStart="5dp"
+            android:textSize="20sp"
             android:textStyle="bold"/>
 
         <TextView
@@ -163,6 +164,7 @@
             android:layout_toEndOf="@id/current_week_text"
             android:paddingEnd="5dp"
             android:paddingStart="5dp"
+            android:textSize="20sp"
             android:textStyle="bold"/>
 
         <TextView
@@ -184,6 +186,7 @@
             android:layout_toEndOf="@id/current_month_text"
             android:paddingEnd="5dp"
             android:paddingStart="5dp"
+            android:textSize="20sp"
             android:textStyle="bold"/>
 
         <TextView
