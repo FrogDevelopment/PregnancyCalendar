@@ -146,7 +146,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 		mAdapter.add(currentContraction);
 
-		mRootView.setBackgroundResource(R.drawable.chrono_background_started);
+		mRootView.setBackgroundResource(R.drawable.background_chrono_started);
 	}
 
 	private void stop() {
@@ -168,7 +168,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 		mAdapter.notifyDataSetChanged();
 
-		mRootView.setBackgroundResource(R.drawable.chrono_background_stoped);
+		mRootView.setBackgroundResource(R.drawable.background_chrono_stoped);
 		currentContraction = null;
 	}
 

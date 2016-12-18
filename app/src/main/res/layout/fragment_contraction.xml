@@ -3,7 +3,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/chrono_background_stoped"
+                android:background="@drawable/background_chrono_stoped"
                 tools:context="fr.frogdevelopment.pregnancycalendar.contraction.ContractionFragment">
 
     <Chronometer

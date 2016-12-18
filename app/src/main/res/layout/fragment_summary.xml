@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_today_black_24dp"/>
+                android:src="@drawable/ic_today"/>
         </LinearLayout>
 
         <!-- http://stackoverflow.com/a/33231991/244911 -->
@@ -87,7 +87,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/pink_out_line"
+            android:background="@drawable/background_radio_group"
             android:checkedButton="@+id/amenorrhea"
             android:orientation="horizontal">
 
@@ -96,7 +96,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/toggle_widget_background"
+                android:background="@drawable/background_radio_button"
                 android:button="@null"
                 android:gravity="center"
                 android:text="@string/date_amenorrhea"
@@ -107,7 +107,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/toggle_widget_background"
+                android:background="@drawable/background_radio_button"
                 android:button="@null"
                 android:gravity="center"
                 android:text="@string/date_conception"
