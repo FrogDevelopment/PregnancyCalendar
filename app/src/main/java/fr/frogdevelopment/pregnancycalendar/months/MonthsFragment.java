@@ -26,7 +26,7 @@ import fr.frogdevelopment.pregnancycalendar.R;
 public class MonthsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return new MonthsView(getActivity());
+		return new fr.frogdevelopment.pregnancycalendar.months.MonthsView(getActivity());
 	}
 
 //	private MonthsView mMonthsView;
