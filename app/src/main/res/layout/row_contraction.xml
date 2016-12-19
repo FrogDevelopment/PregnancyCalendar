@@ -4,12 +4,12 @@
               android:layout_height="match_parent"
               android:background="?android:attr/activatedBackgroundIndicator"
               android:gravity="bottom"
-              android:paddingStart="10dp"
+              android:orientation="horizontal"
               android:paddingEnd="10dp"
-              android:orientation="horizontal">
+              android:paddingStart="10dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12/16/2016"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@android:color/white"
             android:textSize="15sp"/>
 
         <TextView
@@ -35,6 +35,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="center_horizontal"
         android:text="18:23"
         android:textSize="25sp"/>
 
@@ -43,6 +44,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="center_horizontal"
         android:text="05:11"
         android:textSize="25sp"/>
 
