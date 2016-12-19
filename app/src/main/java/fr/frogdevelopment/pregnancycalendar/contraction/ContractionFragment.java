@@ -46,318 +46,309 @@ import fr.frogdevelopment.pregnancycalendar.contraction.ContractionContract.Cont
 
 public class ContractionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private View mRootView;
-    private Chronometer mChronometer;
-    private Button mButton;
+	private View        mRootView;
+	private Chronometer mChronometer;
+	private Button      mButton;
 
-    private ContractionCursorAdapter mAdapter;
-    private Contraction currentContraction;
-    private ActionMode mActionMode;
+	private ContractionAdapter mAdapter;
+	private Contraction        currentContraction;
+	private ActionMode         mActionMode;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        mRootView = inflater.inflate(R.layout.fragment_contraction, container, false);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		// Inflate the layout for this fragment
+		mRootView = inflater.inflate(R.layout.fragment_contraction, container, false);
 
-        mChronometer = (Chronometer) mRootView.findViewById(R.id.chronometer);
-        mChronometer.setBase(SystemClock.elapsedRealtime());
+		mChronometer = (Chronometer) mRootView.findViewById(R.id.chronometer);
+		mChronometer.setBase(SystemClock.elapsedRealtime());
 
-        mButton = (Button) mRootView.findViewById(R.id.chrono_button);
-        mButton.setOnClickListener(view -> startOrStop());
+		mButton = (Button) mRootView.findViewById(R.id.chrono_button);
+		mButton.setOnClickListener(view -> startOrStop());
 
-        ListView mChronoList = (ListView) mRootView.findViewById(R.id.chrono_list);
-        mChronoList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        mChronoList.setMultiChoiceModeListener(mChoiceModeListener);
+		ListView mChronoList = (ListView) mRootView.findViewById(R.id.chrono_list);
+		mChronoList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		mChronoList.setMultiChoiceModeListener(mChoiceModeListener);
 
-        mAdapter = new ContractionCursorAdapter(getActivity());
-        mChronoList.setAdapter(mAdapter);
+		mAdapter = new ContractionAdapter(getActivity());
+		mChronoList.setAdapter(mAdapter);
 
-        getLoaderManager().initLoader(666, null, this);
+		getLoaderManager().initLoader(666, null, this);
 
-        return mRootView;
-    }
+		return mRootView;
+	}
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (!isVisibleToUser && mActionMode != null) {
-            mActionMode.finish();
-        }
-    }
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		super.setUserVisibleHint(isVisibleToUser);
+		if (!isVisibleToUser && mActionMode != null) {
+			mActionMode.finish();
+		}
+	}
 
-    private void onDelete(final ActionMode actionMode, final Set<Integer> selectedRows) {
-        final int nbSelectedRows = selectedRows.size();
-        // Ask the user if they want to delete
-        new AlertDialog.Builder(getActivity())
+	private void onDelete(final ActionMode actionMode, final Set<Integer> selectedRows) {
+		final int nbSelectedRows = selectedRows.size();
+		// Ask the user if they want to delete
+		new AlertDialog.Builder(getActivity())
 //                .setIcon(R.drawable.ic_warning_black)
-                .setTitle(R.string.delete_title)
-                .setMessage(getResources().getQuantityString(R.plurals.delete_confirmation, nbSelectedRows, nbSelectedRows))
-                .setPositiveButton(R.string.positive_button_continue, (dialog, which) -> {
-                    if (nbSelectedRows == 1) {
-                        final Contraction item = mAdapter.getItem(selectedRows.iterator().next());
-                        Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
-                        getActivity().getContentResolver().delete(uri, null, null);
-                    } else {
-                        StringBuilder inList = new StringBuilder(nbSelectedRows * 2);
-                        final String[] selectionArgs = new String[nbSelectedRows];
-                        int i = 0;
-                        Contraction item;
-                        for (Integer position : selectedRows) {
-                            if (i > 0) {
-                                inList.append(",");
-                            }
-                            inList.append("?");
+				.setTitle(R.string.delete_title)
+				.setMessage(getResources().getQuantityString(R.plurals.delete_confirmation, nbSelectedRows, nbSelectedRows))
+				.setPositiveButton(R.string.positive_button_continue, (dialog, which) -> {
+					if (nbSelectedRows == 1) {
+						final Contraction item = mAdapter.getItem(selectedRows.iterator().next());
+						Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
+						getActivity().getContentResolver().delete(uri, null, null);
+					} else {
+						StringBuilder inList = new StringBuilder(nbSelectedRows * 2);
+						final String[] selectionArgs = new String[nbSelectedRows];
+						int i = 0;
+						Contraction item;
+						for (Integer position : selectedRows) {
+							if (i > 0) {
+								inList.append(",");
+							}
+							inList.append("?");
 
-                            item = mAdapter.getItem(position);
-                            selectionArgs[i] = item.id;
-                            i++;
-                        }
+							item = mAdapter.getItem(position);
+							selectionArgs[i] = item.id;
+							i++;
+						}
 
-                        final String selection = "_ID IN (" + inList.toString() + ")";
-                        getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, selection, selectionArgs);
-                    }
+						final String selection = "_ID IN (" + inList.toString() + ")";
+						getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, selection, selectionArgs);
+					}
 
-                    Snackbar.make(mRootView, R.string.delete_done, Snackbar.LENGTH_LONG).show();
-                    actionMode.finish(); // Action picked, so close the CAB
+					Snackbar.make(mRootView, R.string.delete_done, Snackbar.LENGTH_LONG).show();
+					actionMode.finish(); // Action picked, so close the CAB
 
-                    getLoaderManager().restartLoader(666, null, ContractionFragment.this);
-                })
-                .setNegativeButton(android.R.string.no, null)
-                .show();
-    }
+					getLoaderManager().restartLoader(666, null, ContractionFragment.this);
+				})
+				.setNegativeButton(android.R.string.no, null)
+				.show();
+	}
 
-    private void startOrStop() {
-        if (currentContraction == null) {
-            start();
-        } else {
-            stop();
-        }
-    }
+	private void startOrStop() {
+		if (currentContraction == null) {
+			start();
+		} else {
+			stop();
+		}
+	}
 
-    private void start() {
-        currentContraction = new Contraction();
-        currentContraction.dateTime = LocalDateTime.now();
+	private void start() {
+		currentContraction = new Contraction();
+		currentContraction.dateTime = LocalDateTime.now();
 
-        mButton.setText(R.string.stop);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_stop, 0, 0, 0);
+		mButton.setText(R.string.stop);
+		mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_stop, 0, 0, 0);
 
-        mChronometer.setBase(SystemClock.elapsedRealtime());
-        mChronometer.start();
+		mChronometer.setBase(SystemClock.elapsedRealtime());
+		mChronometer.start();
 
-        mAdapter.add(currentContraction);
+		mAdapter.add(currentContraction);
 
-        mRootView.setBackgroundResource(R.drawable.background_chrono_started);
-    }
+		mRootView.setBackgroundResource(R.drawable.background_chrono_started);
+	}
 
-    private void stop() {
-        mChronometer.stop();
-        LocalDateTime mStopDateTime = LocalDateTime.now();
-        mButton.setText(R.string.start);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_start, 0, 0, 0);
+	private void stop() {
+		mChronometer.stop();
+		LocalDateTime mStopDateTime = LocalDateTime.now();
+		mButton.setText(R.string.start);
+		mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_start, 0, 0, 0);
 
-        currentContraction.duration = ChronoUnit.MILLIS.between(currentContraction.dateTime, mStopDateTime);
+		currentContraction.duration = ChronoUnit.MILLIS.between(currentContraction.dateTime, mStopDateTime);
 
-        final ContentValues values = new ContentValues();
-        values.put(ContractionContract.DATETIME, currentContraction.dateTime.atZone(zoneId).toEpochSecond());
-        values.put(ContractionContract.DURATION, currentContraction.duration);
+		final ContentValues values = new ContentValues();
+		values.put(ContractionContract.DATETIME, currentContraction.dateTime.atZone(zoneId).toEpochSecond());
+		values.put(ContractionContract.DURATION, currentContraction.duration);
 
-        Uri insertUri = getActivity().getContentResolver().insert(ContractionContentProvider.URI_CONTRACTION, values);
+		Uri insertUri = getActivity().getContentResolver().insert(ContractionContentProvider.URI_CONTRACTION, values);
 
-        long newId = ContentUris.parseId(insertUri);
-        currentContraction.id = String.valueOf(newId);
+		long newId = ContentUris.parseId(insertUri);
+		currentContraction.id = String.valueOf(newId);
 
-        mAdapter.notifyDataSetChanged();
+		mAdapter.notifyDataSetChanged();
 
-        mRootView.setBackgroundResource(R.drawable.background_chrono_stoped);
-        mChronometer.setBase(SystemClock.elapsedRealtime());
-        currentContraction = null;
-    }
+		mRootView.setBackgroundResource(R.drawable.background_chrono_stoped);
+		mChronometer.setBase(SystemClock.elapsedRealtime());
+		currentContraction = null;
+	}
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(getActivity(), ContractionContentProvider.URI_CONTRACTION, ContractionContract.COLUMNS, null, null, null);
-    }
+	@Override
+	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+		return new CursorLoader(getActivity(), ContractionContentProvider.URI_CONTRACTION, ContractionContract.COLUMNS, null, null, null);
+	}
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        mAdapter.clear();
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		mAdapter.clear();
 
-        if (cursor != null) {
-            Contraction item;
-            final List<Contraction> rows = new ArrayList<>();
-            while (cursor.moveToNext()) {
-                item = new Contraction();
-                item.id = cursor.getString(ContractionContract.INDEX_ID);
-                item.dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(cursor.getLong(ContractionContract.INDEX_DATETIME)), zoneId);
-                item.duration = cursor.getLong(ContractionContract.INDEX_DURATION);
+		if (cursor != null) {
+			Contraction item;
+			final List<Contraction> rows = new ArrayList<>();
+			while (cursor.moveToNext()) {
+				item = new Contraction();
+				item.id = cursor.getString(ContractionContract.INDEX_ID);
+				item.dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(cursor.getLong(ContractionContract.INDEX_DATETIME)), zoneId);
+				item.duration = cursor.getLong(ContractionContract.INDEX_DURATION);
 
-                // Add the definition to the list
-                rows.add(item);
-            }
+				// Add the definition to the list
+				rows.add(item);
+			}
 
-            cursor.close();
+			cursor.close();
 
-            mAdapter.addAll(rows);
-        }
+			mAdapter.addAll(rows);
+		}
 
-        getLoaderManager().destroyLoader(loader.getId());
-    }
+		getLoaderManager().destroyLoader(loader.getId());
+	}
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-    }
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+	}
 
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
-    private DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
-    private ZoneId zoneId = ZoneId.systemDefault();
+	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+	private DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
+	private ZoneId            zoneId        = ZoneId.systemDefault();
 
-    private class ViewHolder {
+	private class ViewHolder {
 
-        private final TextView date;
-        private final TextView time;
-        private final TextView duration;
-        private final TextView last;
+		private final TextView date;
+		private final TextView time;
+		private final TextView duration;
+		private final TextView last;
 
-        private ViewHolder(View view) {
-            date = (TextView) view.findViewById(R.id.row_contraction_date);
-            time = (TextView) view.findViewById(R.id.row_contraction_time);
-            duration = (TextView) view.findViewById(R.id.row_contraction_duration);
-            last = (TextView) view.findViewById(R.id.row_contraction_last);
-        }
-    }
+		private ViewHolder(View view) {
+			date = (TextView) view.findViewById(R.id.row_contraction_date);
+			time = (TextView) view.findViewById(R.id.row_contraction_time);
+			duration = (TextView) view.findViewById(R.id.row_contraction_duration);
+			last = (TextView) view.findViewById(R.id.row_contraction_last);
+		}
+	}
 
-    private class ContractionCursorAdapter extends ArrayAdapter<Contraction> {
+	private class ContractionAdapter extends ArrayAdapter<Contraction> {
 
-        private final LayoutInflater mInflater;
+		private final LayoutInflater mInflater;
+		private final Locale locale = Locale.getDefault();
 
-        private ContractionCursorAdapter(Activity context) {
-            super(context, 0, new ArrayList<>());
+		private ContractionAdapter(Activity context) {
+			super(context, 0, new ArrayList<>());
 
-            mInflater = context.getLayoutInflater();
-        }
+			mInflater = context.getLayoutInflater();
+		}
 
-        @Override
-        public Contraction getItem(int position) {
-            try {
-                return super.getItem(getCount() - position - 1); // reverse order
-            } catch (ArrayIndexOutOfBoundsException e) {
-                return null;
-            }
-        }
+		@Override
+		public Contraction getItem(int position) {
+			try {
+				return super.getItem(getCount() - position - 1); // reverse order
+			} catch (ArrayIndexOutOfBoundsException e) {
+				return null;
+			}
+		}
 
-        @NonNull
-        @Override
-        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-            ViewHolder holder;
+		@NonNull
+		@Override
+		public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+			ViewHolder holder;
 
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.row_contraction, parent, false);
-                holder = new ViewHolder(convertView);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
+			if (convertView == null) {
+				convertView = mInflater.inflate(R.layout.row_contraction, parent, false);
+				holder = new ViewHolder(convertView);
+				convertView.setTag(holder);
+			} else {
+				holder = (ViewHolder) convertView.getTag();
+			}
 
-            Contraction current = getItem(position);
-            if (current != null) {
-                holder.date.setText(current.dateTime.format(dateFormatter));
-                holder.time.setText(current.dateTime.format(timeFormatter));
+			Contraction current = getItem(position);
+			if (current != null) {
+				holder.date.setText(current.dateTime.format(dateFormatter));
+				holder.time.setText(current.dateTime.format(timeFormatter));
 
-                if (current.duration != null) {
-                    holder.duration.setText(String.format(
-                            Locale.getDefault()
-                            , "%02d:%02d",
-                            TimeUnit.MILLISECONDS.toMinutes(current.duration),
-                            TimeUnit.MILLISECONDS.toSeconds(current.duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(current.duration))
-                    ));
-                } else {
-                    holder.duration.setText("--:--");
-                }
+				if (current.duration != null) {
+					holder.duration.setText(durationToLabel(current.duration));
+				} else {
+					holder.duration.setText("--:--");
+				}
 
-                Contraction previous = getItem(position + 1); // +1 as reverse order ...
-                if (previous != null) {
-                    long durationSincePrevious = ChronoUnit.MILLIS.between(previous.dateTime.plus(previous.duration, ChronoUnit.MILLIS), current.dateTime);
-                    long minutes = TimeUnit.MILLISECONDS.toMinutes(durationSincePrevious);
-                    String text;
-                    if (minutes >= 60) {
-                        long hour = TimeUnit.MINUTES.toHours(minutes);
-                        if (hour >= 24) {
-                            long days = TimeUnit.HOURS.toDays(hour);
-                            text = String.format(
-                                    Locale.getDefault()
-                                    , "%02dj%02dh",
-                                    days,
-                                    TimeUnit.MILLISECONDS.toHours(durationSincePrevious) - TimeUnit.HOURS.toHours(days)
-                            );
-                        } else {
-                            text = String.format(
-                                    Locale.getDefault()
-                                    , "%02dh%02dmin",
-                                    hour,
-                                    TimeUnit.MILLISECONDS.toMinutes(durationSincePrevious) - TimeUnit.MINUTES.toMinutes(hour)
-                            );
-                        }
-                    } else {
-                        text = String.format(
-                                Locale.getDefault()
-                                , "%02dmin%02d s",
-                                minutes,
-                                TimeUnit.MILLISECONDS.toSeconds(durationSincePrevious) - TimeUnit.MINUTES.toSeconds(minutes)
-                        );
-                    }
-                    holder.last.setText(text);
-                } else {
-                    holder.last.setText("--:--");
-                }
-            }
+				Contraction previous = getItem(position + 1); // +1 as reverse order ...
+				if (previous != null) {
+					long durationSincePrevious = ChronoUnit.MILLIS.between(previous.dateTime.plus(previous.duration, ChronoUnit.MILLIS), current.dateTime);
+					holder.last.setText(durationToLabel(durationSincePrevious));
+				} else {
+					holder.last.setText("--:--");
+				}
+			}
 
-            return convertView;
-        }
-    }
+			return convertView;
+		}
 
-    private AbsListView.MultiChoiceModeListener mChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
+		private String durationToLabel(long duration) {
+			String label;
+			long seconds = TimeUnit.MILLISECONDS.toSeconds(duration);
+			if (seconds < 60) { // less than 1 minute
+				label = String.format(locale, "%02dsec", seconds);
+			} else { // more than 1 minute
+				long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+				if (minutes < 60) { // less than 1 hour
+					label = String.format(locale, "%02dmin%02d", minutes, seconds - TimeUnit.MINUTES.toSeconds(minutes));
+				} else { //more than 1 hour
+					long hour = TimeUnit.MINUTES.toHours(minutes);
+					if (hour < 24) { // less than 1 day
+						label = String.format(locale, "%02dh%02d", hour, minutes - TimeUnit.HOURS.toMinutes(hour));
+					} else { // more than 1 day
+						long days = TimeUnit.HOURS.toDays(hour);
+						label = String.format(locale, "%02dj%02dh", days, TimeUnit.MILLISECONDS.toHours(duration) - TimeUnit.DAYS.toHours(days));
+					}
+				}
+			}
 
-        final private Set<Integer> selectedRows = new HashSet<>();
+			return label;
+		}
+	}
 
-        @Override
-        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            if (checked) {
-                selectedRows.add(position);
-            } else {
-                selectedRows.remove(position);
-            }
+	private AbsListView.MultiChoiceModeListener mChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
 
-            mode.invalidate();
-        }
+		final private Set<Integer> selectedRows = new HashSet<>();
 
-        @Override
-        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-            getActivity().getMenuInflater().inflate(R.menu.menu_contraction, menu);
-            mActionMode = actionMode;
-            return true;
-        }
+		@Override
+		public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+			if (checked) {
+				selectedRows.add(position);
+			} else {
+				selectedRows.remove(position);
+			}
 
-        @Override
-        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-            return false;
-        }
+			mode.invalidate();
+		}
 
-        @Override
-        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.action_delete:
-                    onDelete(actionMode, selectedRows);
-                    break;
-            }
+		@Override
+		public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+			getActivity().getMenuInflater().inflate(R.menu.menu_contraction, menu);
+			mActionMode = actionMode;
+			return true;
+		}
 
-            return false;
-        }
+		@Override
+		public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+			return false;
+		}
 
-        @Override
-        public void onDestroyActionMode(ActionMode actionMode) {
-            selectedRows.clear();
-            mActionMode = null;
-        }
-    };
+		@Override
+		public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+			switch (menuItem.getItemId()) {
+				case R.id.action_delete:
+					onDelete(actionMode, selectedRows);
+					break;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode actionMode) {
+			selectedRows.clear();
+			mActionMode = null;
+		}
+	};
 
 }
