@@ -11,7 +11,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import fr.frogdevelopment.pregnancycalendar.contraction.ContractionFragment;
 
-public class MainActivity extends AppCompatActivity implements InformationFragment.RefreshListener {
+public class MainActivity extends AppCompatActivity {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -28,11 +28,6 @@ public class MainActivity extends AppCompatActivity implements InformationFragme
         mViewPager.setAdapter(mSectionsPagerAdapter);
     }
 
-    @Override
-    public void onRefresh() {
-//        mSectionsPagerAdapter.notifyDataSetChanged();
-    }
-
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         SectionsPagerAdapter(FragmentManager fm) {
@@ -47,9 +42,6 @@ public class MainActivity extends AppCompatActivity implements InformationFragme
                     item = new InformationFragment();
                     break;
                 case 1:
-//                    item = new MonthsFragment();
-//                    break;
-//                case 2:
                     item = new ContractionFragment();
                     break;
             }
@@ -69,19 +61,9 @@ public class MainActivity extends AppCompatActivity implements InformationFragme
                 case 0:
                     return getResources().getString(R.string.tab_1);
                 case 1:
-//                    return getResources().getString(R.string.tab_2);
-//                case 2:
-                    return getResources().getString(R.string.tab_3);
+                    return getResources().getString(R.string.tab_2);
             }
             return null;
         }
-
-//        @Override
-//        public int getItemPosition(Object object) {
-//            if (object instanceof InformationFragment) {
-//                return POSITION_UNCHANGED;
-//            }
-//            return POSITION_NONE;
-//        }
     }
 }

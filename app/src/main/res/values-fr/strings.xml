@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Calendrier Grossesse</string>
     <string name="action_settings">Paramètres</string>
 
     <!---->
     <string name="tab_1">INFORMATIONS</string>
-    <string name="tab_2">CALENDRIER</string>
-    <string name="tab_3">CONTRACTIONS</string>
+    <string name="tab_2">CONTRACTIONS</string>
 
     <!---->
     <string name="date_day">jour</string>
@@ -27,21 +27,10 @@
     <string name="current_week">Semaine aménorrhée actuelle :</string>
     <string name="month_month">mois %1$d</string>
 
-    <!-- description : http://www.planet.vertbaudet.com/ma-grossesse/au-fil-des-mois/grossesse-mois-par-mois.htm -->
-
-    <string name="card_sonogram_1_title">1ère Échographie</string>
-    <string name="card_sonogram_1_description">"L'échographie du premier trimestre : cette première échographie, réalisée vers 2 mois et demi de grossesse, est très attendue. Normal : il s’agit de la première « rencontre » avec votre bébé, avant même de le sentir bouger ou de voir votre ventre s’arrondir. C’est aussi et surtout un examen clé dans le suivi de la grossesse."</string>
-    <string name="card_sonogram_2_title">2ème Échographie</string>
-    <string name="card_sonogram_2_description">"L’échographie du deuxième trimestre : à quoi sert-elle ? Réalisée au cours du cinquième mois de grossesse, la deuxième échographie, dite « morphologique », est un examen essentiel pour s’assurer que le bébé grandit bien. Mais surtout pour dépister certaines anomalies du fœtus et éventuellement décider d’une surveillance particulière."</string>
-    <string name="card_sonogram_3_title">3ème Échographie</string>
-    <string name="card_sonogram_3_description">"Si votre grossesse se déroule normalement, la troisième échographie se fait à environ 32 semaines d’aménorrhée. Pour la majorité d’entre vous, ce sera la dernière avant le jour « J », c’est dire si elle est importante."</string>
-    <string name="card_trisomy_21_title">Détection Trisomie 21</string>
-    <string name="card_trisomy_21_description">"Le 1er trimestre de votre grossesse est le moment de la première échographie. Lors de cet examen, le praticien de santé mesure la clarté nucale de bébé afin de dépister la trisomie 21, l’une des plus fréquentes anomalies chromosomiques."</string>
-
     <!---->
     <string name="delete_title">Suppression</string>
     <plurals name="delete_confirmation">
-        <item quantity="one">Vous êtes sur le point d\'effacer %1$d ligne</item>
+        <item quantity="one">Vous êtes sur le point d\'effacer la ligne</item>
         <item quantity="other">Vous êtes sur le point d\'effacer %1$d lignes</item>
     </plurals>
 

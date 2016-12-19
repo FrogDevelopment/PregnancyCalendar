@@ -33,12 +33,6 @@ import static fr.frogdevelopment.pregnancycalendar.R.id.year;
 
 public class InformationFragment extends Fragment {
 
-	public interface RefreshListener {
-		void onRefresh();
-	}
-
-	private RefreshListener listener;
-
 	private LocalDate mNow;
 	private int       mDay;
 	private int       mMonth;
@@ -157,18 +151,6 @@ public class InformationFragment extends Fragment {
 			editor.putInt("year", mYear);
 			editor.putInt("typeDate", mTypeDate);
 			editor.apply();
-
-			listener.onRefresh();
-		}
-	}
-
-	@Override
-	public void onAttach(Context context) {
-		super.onAttach(context);
-		try {
-			listener = (RefreshListener) context;
-		} catch (ClassCastException e) {
-			throw new ClassCastException(context.toString() + " must implements " + RefreshListener.class);
 		}
 	}
 
