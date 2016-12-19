@@ -21,10 +21,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import org.threeten.bp.Instant;
@@ -180,7 +180,26 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        mAdapter.swapCursor(cursor);
+        mAdapter.clear();
+
+        if (cursor != null) {
+            Contraction item;
+            final List<Contraction> rows = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                item = new Contraction();
+                item.id = cursor.getString(ContractionContract.INDEX_ID);
+                item.dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(cursor.getLong(ContractionContract.INDEX_DATETIME)), zoneId);
+                item.duration = cursor.getLong(ContractionContract.INDEX_DURATION);
+
+                // Add the definition to the list
+                rows.add(item);
+            }
+
+            cursor.close();
+
+            mAdapter.addAll(rows);
+        }
+
         getLoaderManager().destroyLoader(loader.getId());
     }
 
@@ -207,75 +226,20 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
         }
     }
 
-    private class ContractionCursorAdapter extends SimpleCursorAdapter {
+    private class ContractionCursorAdapter extends ArrayAdapter<Contraction> {
 
         private final LayoutInflater mInflater;
-        private final List<Contraction> rows = new ArrayList<>();
 
         private ContractionCursorAdapter(Activity context) {
-            super(context, 0, null, ContractionContract.COLUMNS, null, 0);
+            super(context, 0, new ArrayList<>());
 
             mInflater = context.getLayoutInflater();
-        }
-
-//        // FIXME find sql request to try directly with cursor newView and bindView
-//        @Override
-//        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-//            View view = mInflater.inflate(R.layout.row_contraction, parent, false);
-//            ViewHolder holder = new ViewHolder(view);
-//            view.setTag(holder);
-//
-//            return view;
-//        }
-//
-//        @Override
-//        public void bindView(View view, Context context, Cursor cursor) {
-//            ViewHolder viewHolder = (ViewHolder) view.getTag();
-//        }
-
-        private void add(Contraction item) {
-            rows.add(item);
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public Cursor swapCursor(Cursor cursor) {
-//            super.swapCursor(cursor);
-
-            rows.clear();
-
-            if (cursor == null) {
-                notifyDataSetChanged();
-                return null;
-            }
-
-            Contraction item;
-            while (cursor.moveToNext()) {
-                item = new Contraction();
-                item.id = cursor.getString(ContractionContract.INDEX_ID);
-                item.dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(cursor.getLong(ContractionContract.INDEX_DATETIME)), zoneId);
-                item.duration = cursor.getLong(ContractionContract.INDEX_DURATION);
-
-                // Add the definition to the list
-                rows.add(item);
-            }
-
-            cursor.close();
-
-            notifyDataSetChanged();
-
-            return cursor;
-        }
-
-        @Override
-        public int getCount() {
-            return rows.size();
         }
 
         @Override
         public Contraction getItem(int position) {
             try {
-                return rows.get(getCount() - position - 1); // reverse order
+                return super.getItem(getCount() - position - 1); // reverse order
             } catch (ArrayIndexOutOfBoundsException e) {
                 return null;
             }
@@ -317,7 +281,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
                     String text;
                     if (minutes >= 60) {
                         long hour = TimeUnit.MINUTES.toHours(minutes);
-                        if (hour >=24) {
+                        if (hour >= 24) {
                             long days = TimeUnit.HOURS.toDays(hour);
                             text = String.format(
                                     Locale.getDefault()
@@ -325,7 +289,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
                                     days,
                                     TimeUnit.MILLISECONDS.toHours(durationSincePrevious) - TimeUnit.HOURS.toHours(days)
                             );
-                        }else {
+                        } else {
                             text = String.format(
                                     Locale.getDefault()
                                     , "%02dh%02dmin",
@@ -349,8 +313,6 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
             return convertView;
         }
-
-
     }
 
     private AbsListView.MultiChoiceModeListener mChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
