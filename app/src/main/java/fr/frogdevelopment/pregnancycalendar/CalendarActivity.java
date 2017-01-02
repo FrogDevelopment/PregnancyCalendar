@@ -1,27 +1,45 @@
 package fr.frogdevelopment.pregnancycalendar;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 
+import org.threeten.bp.LocalDate;
+
 import fr.frogdevelopment.pregnancycalendar.months.MonthsView;
+
+import static fr.frogdevelopment.pregnancycalendar.InformationFragment.ISO_DATE_FORMATTER;
 
 public class CalendarActivity extends AppCompatActivity {
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    private LocalDate mMyDate;
 
-		MonthsView monthsView = new MonthsView(this);
-		monthsView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		ScrollView scrollView = new ScrollView(this);
-		scrollView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-		scrollView.addView(monthsView);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-		setContentView(scrollView);
-	}
+        String date = sharedPref.getString("my_date", null);
+        if (date == null) {
+            return; // fixme
+        }
+
+        LocalDate myDate = LocalDate.parse(date, ISO_DATE_FORMATTER);
+
+
+        MonthsView monthsView = new MonthsView(this);
+        monthsView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        scrollView.addView(monthsView);
+
+        setContentView(scrollView);
+    }
 
 //	class MonthsView extends ScrollView {
 //

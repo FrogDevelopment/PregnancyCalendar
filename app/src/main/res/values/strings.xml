@@ -3,6 +3,11 @@
     <string name="start" translatable="false">START</string>
     <string name="stop" translatable="false">STOP</string>
 
+    <integer name="default_gestation_min" translatable="false">280</integer>
+    <integer name="default_gestation_max" translatable="false">290</integer>
+    <integer name="default_days_to_fecondation" translatable="false">14</integer>
+
+
     <string name="app_name">PregnancyCalendar</string>
     <string name="action_settings">Settings</string>
 

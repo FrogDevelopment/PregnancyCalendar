@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="pref_key_duration_settings"
+        android:title="Jours et durées">
+
+        <EditTextPreference
+            android:defaultValue="@integer/default_gestation_min"
+            android:key="pref_key_gestation_min"
+            android:summary="fixme"
+            android:numeric="integer"
+            android:title="Durée de gestation minimum"/>
+
+        <EditTextPreference
+            android:defaultValue="@integer/default_gestation_max"
+            android:key="pref_key_gestation_max"
+            android:summary="fixme"
+            android:numeric="integer"
+            android:title="Durée de gestation maximum"/>
+
+        <EditTextPreference
+            android:defaultValue="@integer/default_days_to_fecondation"
+            android:key="pref_key_days_to_fecondation"
+            android:summary="fixme"
+            android:numeric="integer"
+            android:title="Jours to fecondation"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
