@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_pregnant_woman"
         android:label="@string/app_name"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
@@ -16,7 +16,6 @@
 
         <activity
             android:name=".SplashScreenActivity"
-            android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
