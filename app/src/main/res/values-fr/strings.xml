@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Calendrier Grossesse</string>
     <string name="action_settings">Paramètres</string>
 
@@ -19,25 +19,29 @@
     <string name="date_error_year">Année incorrecte</string>
 
     <!---->
+    <string name="another_date_0">Date dernière règles :</string>
+    <string name="another_date_1">Date de conception :</string>
+    <string name="current_month">Mois actuel :</string>
+    <string name="current_week">Semaine actuelle :</string>
+    <string name="current_trimester">Trimestre actuel :</string>
+    <string name="month_month">mois %1$d</string>
+    <string name="trimester_1">1er trimestre</string>
+    <string name="trimester_2">2e trimestre</string>
+    <string name="trimester_3">3e trimestre</string>
     <string name="birth_range">Naissance prévue entre</string>
     <string name="birth_range_and">et</string>
-    <string name="another_date_0">Date dernière règles :</string>
-    <string name="current_month">Mois actuel :</string>
-    <string name="another_date_1">Date de conception :</string>
-    <string name="current_week">Semaine aménorrhée actuelle :</string>
-    <string name="month_month">mois %1$d</string>
 
     <!---->
     <string name="delete_title">Suppression</string>
     <plurals name="delete_confirmation">
-        <item quantity="one">Vous êtes sur le point d\'effacer la ligne</item>
-        <item quantity="other">Vous êtes sur le point d\'effacer %1$d lignes</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Vous êtes sur le point d\'effacer l\'enregistrement</item>
+        <item quantity="other">Vous êtes sur le point d\'effacer %1$d enregistrements</item>
     </plurals>
 
     <string name="positive_button_continue">Continuer ?</string>
     <string name="delete_done">Suppression effectuée</string>
     <string name="chrono_header_date">Date</string>
-    <string name="chrono_header_intervale">Intervale</string>
+    <string name="chrono_header_interval">Intervale</string>
     <string name="chrono_header_duration">Durée</string>
 
 </resources>

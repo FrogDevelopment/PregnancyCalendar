@@ -1,4 +1,5 @@
-<resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="frog_development" translatable="false">FROG DEVELOPMENT</string>
     <string name="start" translatable="false">START</string>
     <string name="stop" translatable="false">STOP</string>
@@ -8,7 +9,7 @@
     <integer name="default_days_to_fecondation" translatable="false">14</integer>
 
 
-    <string name="app_name">PregnancyCalendar</string>
+    <string name="app_name">Pregnancy Calendar</string>
     <string name="action_settings">Settings</string>
 
     <!---->
@@ -27,24 +28,28 @@
     <string name="date_error_year">Year incorrect</string>
 
     <!---->
-    <string name="birth_range">Birth expected between</string>
-    <string name="birth_range_and">and</string>
     <string name="another_date_0">Last menstruation date :</string>
     <string name="another_date_1">Conception date :</string>
-    <string name="current_week">Current amenorrhea week :</string>
+    <string name="current_week">Current week :</string>
     <string name="current_month">Current month :</string>
+    <string name="current_trimester">Current trimester :</string>
     <string name="month_month">month %1$d</string>
+    <string name="trimester_1">1st trimester</string>
+    <string name="trimester_2">2th trimester</string>
+    <string name="trimester_3">3th trimester</string>
+    <string name="birth_range">Birth expected between</string>
+    <string name="birth_range_and">and</string>
 
     <!---->
     <string name="delete_title">Deleting</string>
     <plurals name="delete_confirmation">
-        <item quantity="one">You\'re going to delete %1$d line</item>
-        <item quantity="other">You\'re going to delete %1$d lines</item>
+        <item quantity="one"  tools:ignore="ImpliedQuantity">You\'re going to delete the record</item>
+        <item quantity="other">You\'re going to delete %1$d records</item>
     </plurals>
     <string name="positive_button_continue">Continue ?</string>
     <string name="delete_done">Delete done</string>
     <string name="chrono_header_date">Date</string>
-    <string name="chrono_header_intervale">Intervale</string>
-    <string name="chrono_header_duration">Durée</string>
+    <string name="chrono_header_interval">Interval</string>
+    <string name="chrono_header_duration">Duration</string>
 
 </resources>

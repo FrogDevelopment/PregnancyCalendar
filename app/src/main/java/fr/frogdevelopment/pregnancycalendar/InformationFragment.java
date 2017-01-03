@@ -26,10 +26,6 @@ import org.threeten.bp.format.FormatStyle;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 
-import static fr.frogdevelopment.pregnancycalendar.R.id.day;
-import static fr.frogdevelopment.pregnancycalendar.R.id.month;
-import static fr.frogdevelopment.pregnancycalendar.R.id.year;
-
 public class InformationFragment extends Fragment {
 
     private LocalDate mNow;
@@ -50,6 +46,7 @@ public class InformationFragment extends Fragment {
     private TextView otherDateValue;
     private TextView currentWeek;
     private TextView currentMonth;
+    private TextView currentTrimester;
 
     // https://developer.android.com/guide/topics/ui/controls/pickers.html#DatePicker ?
 
@@ -64,15 +61,16 @@ public class InformationFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_information, container, false);
 
         dayTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.dayWrapper);
-        dayTextView = (TextInputEditText) rootView.findViewById(day);
+        dayTextView = (TextInputEditText) rootView.findViewById(R.id.day);
         monthTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.monthWrapper);
-        monthTextView = (EditText) rootView.findViewById(month);
+        monthTextView = (EditText) rootView.findViewById(R.id.month);
         yearTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.yearWrapper);
-        yearTextView = (TextInputEditText) rootView.findViewById(year);
+        yearTextView = (TextInputEditText) rootView.findViewById(R.id.year);
         otherDateText = (TextView) rootView.findViewById(R.id.other_date_text);
         otherDateValue = (TextView) rootView.findViewById(R.id.other_date_value);
         currentWeek = (TextView) rootView.findViewById(R.id.current_week_value);
         currentMonth = (TextView) rootView.findViewById(R.id.current_month_value);
+        currentTrimester = (TextView) rootView.findViewById(R.id.current_trimester_value);
         birthRangeStart = (TextView) rootView.findViewById(R.id.birth_range_start);
         birthRangeEnd = (TextView) rootView.findViewById(R.id.birth_range_end);
 
@@ -208,8 +206,16 @@ public class InformationFragment extends Fragment {
             otherDateValue.setText(amenorrheaDate.format(LONG_DATE_FORMATTER));
         }
 
-        currentWeek.setText(String.valueOf(getCurrentWeek(amenorrheaDate)));
+        long currentWeek = getCurrentWeek(amenorrheaDate);
+        this.currentWeek.setText(String.valueOf(currentWeek));
         currentMonth.setText(String.valueOf(getCurrentMonth(conceptionDate)));
+        if (currentWeek <= 14) {
+            currentTrimester.setText(R.string.trimester_1);
+        } else if (currentWeek <= 28) {
+            currentTrimester.setText(R.string.trimester_2);
+        } else {
+            currentTrimester.setText(R.string.trimester_3);
+        }
 
         birthRangeStart.setText(getBirthRangeStart(amenorrheaDate).format(LONG_DATE_FORMATTER));
         birthRangeEnd.setText(getBirthRangeEnd(amenorrheaDate).format(LONG_DATE_FORMATTER));
