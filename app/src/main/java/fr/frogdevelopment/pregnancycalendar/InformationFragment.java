@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
@@ -24,270 +23,207 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ChronoUnit;
+
+import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.AMENORRHEA;
+import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.CONCEPTION;
 
 public class InformationFragment extends Fragment {
 
-    private LocalDate mNow;
-    private int mDay;
-    private int mMonth;
-    private int mYear;
-    private int mTypeDate;
+	private LocalDate mNow;
+	private int       mDay;
+	private int       mMonth;
+	private int       mYear;
+	private int       mTypeDate;
 
-    private TextInputLayout dayTextViewWrapper;
-    private TextInputEditText dayTextView;
-    private TextInputLayout monthTextViewWrapper;
-    private EditText monthTextView;
-    private TextInputLayout yearTextViewWrapper;
-    private TextInputEditText yearTextView;
-    private TextView birthRangeStart;
-    private TextView birthRangeEnd;
-    private TextView otherDateText;
-    private TextView otherDateValue;
-    private TextView currentWeek;
-    private TextView currentMonth;
-    private TextView currentTrimester;
+	private TextInputLayout   dayTextViewWrapper;
+	private TextInputEditText dayTextView;
+	private TextInputLayout   monthTextViewWrapper;
+	private EditText          monthTextView;
+	private TextInputLayout   yearTextViewWrapper;
+	private TextInputEditText yearTextView;
+	private TextView          birthRangeStart;
+	private TextView          birthRangeEnd;
+	private TextView          otherDateText;
+	private TextView          otherDateValue;
+	private TextView          currentWeek;
+	private TextView          currentMonth;
+	private TextView          currentTrimester;
 
-    // https://developer.android.com/guide/topics/ui/controls/pickers.html#DatePicker ?
+	// https://developer.android.com/guide/topics/ui/controls/pickers.html#DatePicker ?
 
-    static final DateTimeFormatter ISO_DATE_FORMATTER = DateTimeFormatter.BASIC_ISO_DATE;
-    private DateTimeFormatter LONG_DATE_FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
+	static final DateTimeFormatter ISO_DATE_FORMATTER  = DateTimeFormatter.BASIC_ISO_DATE;
+	private      DateTimeFormatter LONG_DATE_FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
 
-    private LocalDate mMyDate;
-    private SharedPreferences mSharedPref;
+	private LocalDate         mMyDate;
+	private SharedPreferences mSharedPref;
+	private PregnancyUtils    pregnancyUtils;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_information, container, false);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_information, container, false);
 
-        dayTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.dayWrapper);
-        dayTextView = (TextInputEditText) rootView.findViewById(R.id.day);
-        monthTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.monthWrapper);
-        monthTextView = (EditText) rootView.findViewById(R.id.month);
-        yearTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.yearWrapper);
-        yearTextView = (TextInputEditText) rootView.findViewById(R.id.year);
-        otherDateText = (TextView) rootView.findViewById(R.id.other_date_text);
-        otherDateValue = (TextView) rootView.findViewById(R.id.other_date_value);
-        currentWeek = (TextView) rootView.findViewById(R.id.current_week_value);
-        currentMonth = (TextView) rootView.findViewById(R.id.current_month_value);
-        currentTrimester = (TextView) rootView.findViewById(R.id.current_trimester_value);
-        birthRangeStart = (TextView) rootView.findViewById(R.id.birth_range_start);
-        birthRangeEnd = (TextView) rootView.findViewById(R.id.birth_range_end);
+		pregnancyUtils = new PregnancyUtils(getActivity().getResources(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
 
-        mNow = LocalDate.now();
+		dayTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.dayWrapper);
+		dayTextView = (TextInputEditText) rootView.findViewById(R.id.day);
+		monthTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.monthWrapper);
+		monthTextView = (EditText) rootView.findViewById(R.id.month);
+		yearTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.yearWrapper);
+		yearTextView = (TextInputEditText) rootView.findViewById(R.id.year);
+		otherDateText = (TextView) rootView.findViewById(R.id.other_date_text);
+		otherDateValue = (TextView) rootView.findViewById(R.id.other_date_value);
+		currentWeek = (TextView) rootView.findViewById(R.id.current_week_value);
+		currentMonth = (TextView) rootView.findViewById(R.id.current_month_value);
+		currentTrimester = (TextView) rootView.findViewById(R.id.current_trimester_value);
+		birthRangeStart = (TextView) rootView.findViewById(R.id.birth_range_start);
+		birthRangeEnd = (TextView) rootView.findViewById(R.id.birth_range_end);
 
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String date = mSharedPref.getString("my_date", null);
+		mNow = LocalDate.now();
 
-        if (date != null) {
-            mMyDate = LocalDate.parse(date, ISO_DATE_FORMATTER);
-        } else {
-            mMyDate = mNow;
-        }
+		mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		String date = mSharedPref.getString("my_date", null);
 
-        mDay = mMyDate.getDayOfMonth();
-        mMonth = mMyDate.getMonthValue();
-        mYear = mMyDate.getYear();
-        mTypeDate = mSharedPref.getInt("type_date", CONCEPTION);
+		if (date != null) {
+			mMyDate = LocalDate.parse(date, ISO_DATE_FORMATTER);
+		} else {
+			mMyDate = mNow;
+		}
 
-        dayTextView.setText(String.valueOf(mDay));
-        monthTextView.setText(String.valueOf(mMonth));
-        yearTextView.setText(String.valueOf(mYear));
-        yearTextView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-                refresh();
-                return true;
-            }
+		mDay = mMyDate.getDayOfMonth();
+		mMonth = mMyDate.getMonthValue();
+		mYear = mMyDate.getYear();
+		mTypeDate = mSharedPref.getInt("type_date", CONCEPTION);
 
-            return false;
-        });
+		dayTextView.setText(String.valueOf(mDay));
+		monthTextView.setText(String.valueOf(mMonth));
+		yearTextView.setText(String.valueOf(mYear));
+		yearTextView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+			if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+				refresh();
+				return true;
+			}
 
-        RadioGroup toggle = (RadioGroup) rootView.findViewById(R.id.toggle);
-        switch (mTypeDate) {
-            case AMENORRHEA:
-                toggle.check(R.id.amenorrhea);
-                break;
-            case CONCEPTION:
-                toggle.check(R.id.conception);
-                break;
-        }
-        toggle.setOnCheckedChangeListener((radioGroup, i) -> {
-            switch (i) {
-                case R.id.amenorrhea:
-                    mTypeDate = AMENORRHEA;
-                    break;
-                case R.id.conception:
-                    mTypeDate = CONCEPTION;
-                    break;
-            }
+			return false;
+		});
 
-            refresh();
-        });
+		RadioGroup toggle = (RadioGroup) rootView.findViewById(R.id.toggle);
+		switch (mTypeDate) {
+			case AMENORRHEA:
+				toggle.check(R.id.amenorrhea);
+				break;
+			case CONCEPTION:
+				toggle.check(R.id.conception);
+				break;
+		}
+		toggle.setOnCheckedChangeListener((radioGroup, i) -> {
+			switch (i) {
+				case R.id.amenorrhea:
+					mTypeDate = AMENORRHEA;
+					break;
+				case R.id.conception:
+					mTypeDate = CONCEPTION;
+					break;
+			}
 
-        ImageButton imageButton = (ImageButton) rootView.findViewById(R.id.date_picker_button);
-        imageButton.setOnClickListener(view -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), (datePicker, year1, month1, dayOfMonth) -> {
-                dayTextView.setText(String.valueOf(dayOfMonth));
-                monthTextView.setText(String.valueOf(month1 + 1/*base 0*/));
-                yearTextView.setText(String.valueOf(year1));
+			refresh();
+		});
 
-                InformationFragment.this.refresh();
+		ImageButton imageButton = (ImageButton) rootView.findViewById(R.id.date_picker_button);
+		imageButton.setOnClickListener(view -> {
+			DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), (datePicker, year1, month1, dayOfMonth) -> {
+				dayTextView.setText(String.valueOf(dayOfMonth));
+				monthTextView.setText(String.valueOf(month1 + 1/*base 0*/));
+				yearTextView.setText(String.valueOf(year1));
 
-            }, mYear, mMonth - 1/*base 0*/, mDay);
+				InformationFragment.this.refresh();
 
-            datePickerDialog.getDatePicker().setMinDate(mNow.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond());
-            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+			}, mYear, mMonth - 1/*base 0*/, mDay);
 
-            datePickerDialog.show();
-        });
+			datePickerDialog.getDatePicker().setMinDate(mNow.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond());
+			datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
 
-        Button calculateButton = (Button) rootView.findViewById(R.id.calculate);
-        calculateButton.setOnClickListener(view -> refresh());
+			datePickerDialog.show();
+		});
 
-        calculate();
+		Button calculateButton = (Button) rootView.findViewById(R.id.calculate);
+		calculateButton.setOnClickListener(view -> refresh());
 
-        return rootView;
-    }
+		calculate();
 
-    private void refresh() {
-        mDay = Integer.valueOf(dayTextView.getText().toString());
-        mMonth = Integer.valueOf(monthTextView.getText().toString());
-        mYear = Integer.valueOf(yearTextView.getText().toString());
+		return rootView;
+	}
 
-        if (calculate()) {
-            SharedPreferences.Editor editor = mSharedPref.edit();
-            editor.putString("my_date", mMyDate.format(ISO_DATE_FORMATTER));
-            editor.putInt("type_date", mTypeDate);
-            editor.apply();
-        }
-    }
+	private void refresh() {
+		mDay = Integer.valueOf(dayTextView.getText().toString());
+		mMonth = Integer.valueOf(monthTextView.getText().toString());
+		mYear = Integer.valueOf(yearTextView.getText().toString());
 
-    private boolean calculate() {
-        // check correct inputs
-        try {
-            dayTextViewWrapper.setError(null);
-            ChronoField.DAY_OF_MONTH.checkValidValue((long) mDay);
-        } catch (DateTimeException e) {
-            dayTextViewWrapper.setError(getString(R.string.date_error_day));
-            return false;
-        }
+		if (calculate()) {
+			SharedPreferences.Editor editor = mSharedPref.edit();
+			editor.putString("my_date", mMyDate.format(ISO_DATE_FORMATTER));
+			editor.putInt("type_date", mTypeDate);
+			editor.apply();
+		}
+	}
 
-        try {
-            monthTextViewWrapper.setError(null);
-            ChronoField.MONTH_OF_YEAR.checkValidValue((long) mMonth);
-        } catch (DateTimeException e) {
-            monthTextViewWrapper.setError(getString(R.string.date_error_month));
-            return false;
-        }
+	private boolean calculate() {
+		// check correct inputs
+		try {
+			dayTextViewWrapper.setError(null);
+			ChronoField.DAY_OF_MONTH.checkValidValue((long) mDay);
+		} catch (DateTimeException e) {
+			dayTextViewWrapper.setError(getString(R.string.date_error_day));
+			return false;
+		}
 
-        try {
-            yearTextViewWrapper.setError(null);
-            ChronoField.YEAR.checkValidValue((long) mYear);
-        } catch (DateTimeException e) {
-            yearTextViewWrapper.setError(getString(R.string.date_error_year));
-            return false;
-        }
+		try {
+			monthTextViewWrapper.setError(null);
+			ChronoField.MONTH_OF_YEAR.checkValidValue((long) mMonth);
+		} catch (DateTimeException e) {
+			monthTextViewWrapper.setError(getString(R.string.date_error_month));
+			return false;
+		}
 
-        mMyDate = LocalDate.of(mYear, mMonth, mDay);
+		try {
+			yearTextViewWrapper.setError(null);
+			ChronoField.YEAR.checkValidValue((long) mYear);
+		} catch (DateTimeException e) {
+			yearTextViewWrapper.setError(getString(R.string.date_error_year));
+			return false;
+		}
 
-        LocalDate amenorrheaDate;
-        LocalDate conceptionDate;
-        if (mTypeDate == AMENORRHEA) {
-            amenorrheaDate = mMyDate;
-            conceptionDate = getConceptionDate(amenorrheaDate);
+		mMyDate = LocalDate.of(mYear, mMonth, mDay);
 
-            otherDateText.setText(getString(R.string.another_date_1));
-            otherDateValue.setText(conceptionDate.format(LONG_DATE_FORMATTER));
-        } else {
-            conceptionDate = mMyDate;
-            amenorrheaDate = getAmenorrheaDate(conceptionDate);
+		LocalDate amenorrheaDate;
+		LocalDate conceptionDate;
+		if (mTypeDate == AMENORRHEA) {
+			amenorrheaDate = mMyDate;
+			conceptionDate = pregnancyUtils.getConceptionDate(amenorrheaDate);
 
-            otherDateText.setText(getString(R.string.another_date_0));
-            otherDateValue.setText(amenorrheaDate.format(LONG_DATE_FORMATTER));
-        }
+			otherDateText.setText(getString(R.string.another_date_1));
+			otherDateValue.setText(conceptionDate.format(LONG_DATE_FORMATTER));
+		} else {
+			conceptionDate = mMyDate;
+			amenorrheaDate = pregnancyUtils.getAmenorrheaDate(conceptionDate);
 
-        long currentWeek = getCurrentWeek(amenorrheaDate);
-        this.currentWeek.setText(String.valueOf(currentWeek));
-        currentMonth.setText(String.valueOf(getCurrentMonth(conceptionDate)));
-        if (currentWeek <= 14) {
-            currentTrimester.setText(R.string.trimester_1);
-        } else if (currentWeek <= 28) {
-            currentTrimester.setText(R.string.trimester_2);
-        } else {
-            currentTrimester.setText(R.string.trimester_3);
-        }
+			otherDateText.setText(getString(R.string.another_date_0));
+			otherDateValue.setText(amenorrheaDate.format(LONG_DATE_FORMATTER));
+		}
 
-        birthRangeStart.setText(getBirthRangeStart(amenorrheaDate).format(LONG_DATE_FORMATTER));
-        birthRangeEnd.setText(getBirthRangeEnd(amenorrheaDate).format(LONG_DATE_FORMATTER));
+		long currentWeek = pregnancyUtils.getCurrentWeek(amenorrheaDate);
+		this.currentWeek.setText(String.valueOf(currentWeek));
+		currentMonth.setText(String.valueOf(pregnancyUtils.getCurrentMonth(conceptionDate)));
+		if (currentWeek <= 14) {
+			currentTrimester.setText(R.string.trimester_1);
+		} else if (currentWeek <= 28) {
+			currentTrimester.setText(R.string.trimester_2);
+		} else {
+			currentTrimester.setText(R.string.trimester_3);
+		}
 
-        return true;
-    }
+		birthRangeStart.setText(pregnancyUtils.getBirthRangeStart(amenorrheaDate).format(LONG_DATE_FORMATTER));
+		birthRangeEnd.setText(pregnancyUtils.getBirthRangeEnd(amenorrheaDate).format(LONG_DATE_FORMATTER));
 
-    // ****************************************************************************************
-    // http://aly-abbara.com/utilitaires/calendrier/calendrier_de_grossesse.html
-    // http://aly-abbara.com/utilitaires/calendrier/calculatrice_age_de_grossesse.html
-
-    // http://www.guidegrossesse.com/grossesse/duree-d-une-grossesse.htm
-
-    // http://naitreetgrandir.com/fr/grossesse/trimestre1/fiche.aspx?doc=duree-grossesse
-
-    static final int AMENORRHEA = 0;
-    static final int CONCEPTION = 1;
-
-    @NonNull
-    private LocalDate getAmenorrheaDate(LocalDate conceptionDate) {
-        int daysToFecondation;
-        String value = mSharedPref.getString("pref_key_days_to_fecondation", null);
-        if (value != null) {
-            daysToFecondation = Integer.parseInt(value);
-        } else {
-            daysToFecondation = getResources().getInteger(R.integer.default_days_to_fecondation);
-        }
-        return conceptionDate.minusDays(daysToFecondation);
-    }
-
-    @NonNull
-    private LocalDate getConceptionDate(LocalDate amenorrheaDate) {
-        int daysToFecondation;
-        String value = mSharedPref.getString("pref_key_days_to_fecondation", null);
-        if (value != null) {
-            daysToFecondation = Integer.parseInt(value);
-        } else {
-            daysToFecondation = getResources().getInteger(R.integer.default_days_to_fecondation);
-        }
-        return amenorrheaDate.plusDays(daysToFecondation);
-    }
-
-    @NonNull
-    private LocalDate getBirthRangeStart(LocalDate amenorrheaDate) {
-        int gestationMin;
-        String value = mSharedPref.getString("pref_key_gestation_min", null);
-        if (value != null) {
-            gestationMin = Integer.parseInt(value);
-        } else {
-            gestationMin = getResources().getInteger(R.integer.default_gestation_min);
-        }
-        return amenorrheaDate.plusDays(gestationMin);
-    }
-
-    @NonNull
-    private LocalDate getBirthRangeEnd(LocalDate amenorrheaDate) {
-        int gestationMax;
-        String value = mSharedPref.getString("pref_key_gestation_max", null);
-        if (value != null) {
-            gestationMax = Integer.parseInt(value);
-        } else {
-            gestationMax = getResources().getInteger(R.integer.default_gestation_max);
-        }
-        return amenorrheaDate.plusDays(gestationMax);
-    }
-
-    private long getCurrentMonth(LocalDate conceptionDate) {
-        return ChronoUnit.MONTHS.between(conceptionDate, mNow) + 1; // fixme pour le +1 ?
-    }
-
-    private long getCurrentWeek(LocalDate amenorrheaDate) {
-        return ChronoUnit.WEEKS.between(amenorrheaDate, mNow);
-    }
-
+		return true;
+	}
 }

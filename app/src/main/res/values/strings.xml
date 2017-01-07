@@ -6,7 +6,7 @@
 
     <integer name="default_gestation_min" translatable="false">280</integer>
     <integer name="default_gestation_max" translatable="false">290</integer>
-    <integer name="default_days_to_fecondation" translatable="false">14</integer>
+    <integer name="default_days_to_fecundation" translatable="false">14</integer>
 
 
     <string name="app_name">Pregnancy Calendar</string>

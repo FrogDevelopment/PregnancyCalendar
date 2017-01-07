@@ -20,8 +20,8 @@
             android:title="Durée de gestation maximum"/>
 
         <EditTextPreference
-            android:defaultValue="@integer/default_days_to_fecondation"
-            android:key="pref_key_days_to_fecondation"
+            android:defaultValue="@integer/default_days_to_fecundation"
+            android:key="pref_key_days_to_fecundation"
             android:summary="fixme"
             android:numeric="integer"
             android:title="Jours to fecondation"/>

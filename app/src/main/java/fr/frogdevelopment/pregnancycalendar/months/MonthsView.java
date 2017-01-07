@@ -30,10 +30,10 @@ public class MonthsView extends View {
         this.drawPaint = new Paint();
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        int mDaysToFecondation = sharedPref.getInt("pref_key_days_to_fecondation", getResources().getInteger(R.integer.default_days_to_fecondation));
+        int mDaysToFecundation = sharedPref.getInt("pref_key_days_to_fecundation", getResources().getInteger(R.integer.default_days_to_fecundation));
         int mGestationMax = sharedPref.getInt("pref_key_gestation_max", getResources().getInteger(R.integer.default_gestation_max));
 
-        mDuration = mGestationMax - mDaysToFecondation;
+        mDuration = mGestationMax - mDaysToFecundation;
     }
 
     @Override
