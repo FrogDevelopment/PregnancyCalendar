@@ -34,16 +34,25 @@
     <string name="current_month">Current month :</string>
     <string name="current_trimester">Current trimester :</string>
     <string name="month_month">month %1$d</string>
-    <string name="trimester_1">1st trimester</string>
-    <string name="trimester_2">2th trimester</string>
-    <string name="trimester_3">3th trimester</string>
+    <plurals name="week_n">
+        <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> week</item>
+        <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> week</item>
+    </plurals>
+    <plurals name="month_n">
+        <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> month</item>
+        <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> month</item>
+    </plurals>
+    <plurals name="trimester_n">
+        <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> trimester</item>
+        <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> trimester</item>
+    </plurals>
     <string name="birth_range">Birth expected between</string>
     <string name="birth_range_and">and</string>
 
     <!---->
     <string name="delete_title">Deleting</string>
     <plurals name="delete_confirmation">
-        <item quantity="one"  tools:ignore="ImpliedQuantity">You\'re going to delete the record</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">You\'re going to delete the record</item>
         <item quantity="other">You\'re going to delete %1$d records</item>
     </plurals>
     <string name="positive_button_continue">Continue ?</string>

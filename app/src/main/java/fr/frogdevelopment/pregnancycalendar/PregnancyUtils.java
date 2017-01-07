@@ -80,13 +80,26 @@ class PregnancyUtils {
 		return amenorrheaDate.plusDays(gestationMax);
 	}
 
-	long getCurrentMonth(LocalDate conceptionDate) {
-		return ChronoUnit.MONTHS.between(conceptionDate, LocalDate.now()) + 1;
+	int getCurrentMonth(LocalDate conceptionDate) {
+		return (int) (ChronoUnit.MONTHS.between(conceptionDate, LocalDate.now()) + 1);
 		// +1 => current month (0 unit) is as 1
 	}
 
-	long getCurrentWeek(LocalDate amenorrheaDate) {
-		return ChronoUnit.WEEKS.between(amenorrheaDate, LocalDate.now()) + 1;
+	int getCurrentWeek(LocalDate amenorrheaDate) {
+		return (int) (ChronoUnit.WEEKS.between(amenorrheaDate, LocalDate.now()) + 1);
 		// +1 => current week (0 unit) is as 1
+	}
+
+	int getCurrentTrimester(int currentWeek) {
+		int currentTrimester;
+		if (currentWeek <= 14) {
+			currentTrimester = 1;
+		} else if (currentWeek <= 28) {
+			currentTrimester = 2;
+		} else {
+			currentTrimester = 3;
+		}
+
+		return currentTrimester;
 	}
 }

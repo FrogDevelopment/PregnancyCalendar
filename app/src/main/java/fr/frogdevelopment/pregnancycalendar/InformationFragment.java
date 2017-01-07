@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -210,16 +211,14 @@ public class InformationFragment extends Fragment {
 			otherDateValue.setText(amenorrheaDate.format(LONG_DATE_FORMATTER));
 		}
 
-		long currentWeek = pregnancyUtils.getCurrentWeek(amenorrheaDate);
-		this.currentWeek.setText(String.valueOf(currentWeek));
-		currentMonth.setText(String.valueOf(pregnancyUtils.getCurrentMonth(conceptionDate)));
-		if (currentWeek <= 14) {
-			currentTrimester.setText(R.string.trimester_1);
-		} else if (currentWeek <= 28) {
-			currentTrimester.setText(R.string.trimester_2);
-		} else {
-			currentTrimester.setText(R.string.trimester_3);
-		}
+		int currentWeek = pregnancyUtils.getCurrentWeek(amenorrheaDate);
+		this.currentWeek.setText(Html.fromHtml(getResources().getQuantityString(R.plurals.week_n, currentWeek, currentWeek)));
+
+		int currentMonth = pregnancyUtils.getCurrentMonth(conceptionDate);
+		this.currentMonth.setText(Html.fromHtml(getResources().getQuantityString(R.plurals.month_n, currentMonth, currentMonth)));
+
+		int currentTrimester = pregnancyUtils.getCurrentTrimester(currentWeek);
+		this.currentTrimester.setText(Html.fromHtml(getResources().getQuantityString(R.plurals.trimester_n, currentTrimester, currentTrimester)));
 
 		birthRangeStart.setText(pregnancyUtils.getBirthRangeStart(amenorrheaDate).format(LONG_DATE_FORMATTER));
 		birthRangeEnd.setText(pregnancyUtils.getBirthRangeEnd(amenorrheaDate).format(LONG_DATE_FORMATTER));
