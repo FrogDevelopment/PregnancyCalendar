@@ -2,29 +2,29 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:key="pref_key_duration_settings"
-        android:title="Jours et durées">
+        android:title="@string/pref_gestation_title">
 
         <EditTextPreference
             android:defaultValue="@integer/default_gestation_min"
             android:key="pref_key_gestation_min"
-            android:summary="fixme"
             android:numeric="integer"
-            android:title="Durée de gestation minimum"/>
+            android:title="@string/pref_gestation_min_title"/>
 
         <EditTextPreference
             android:defaultValue="@integer/default_gestation_max"
             android:key="pref_key_gestation_max"
-            android:summary="fixme"
             android:numeric="integer"
-            android:title="Durée de gestation maximum"/>
+            android:title="@string/pref_gestation_max_title"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_days_title">
 
         <EditTextPreference
             android:defaultValue="@integer/default_days_to_fecundation"
             android:key="pref_key_days_to_fecundation"
-            android:summary="fixme"
             android:numeric="integer"
-            android:title="Jours to fecondation"/>
+            android:title="@string/pref_days_to_fecundation_title"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

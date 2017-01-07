@@ -44,4 +44,11 @@
     <string name="chrono_header_interval">Intervale</string>
     <string name="chrono_header_duration">Durée</string>
 
+    <!---->
+    <string name="pref_gestation_title">Durée de gestation</string>
+    <string name="pref_gestation_min_title">Minimum</string>
+    <string name="pref_gestation_max_title">Maximum</string>
+    <string name="pref_days_title">Jours entre la fécondation et la conception</string>
+    <string name="pref_days_to_fecundation_title">Nb Jours</string>
+
 </resources>
