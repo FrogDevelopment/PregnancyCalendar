@@ -1,4 +1,4 @@
-package fr.frogdevelopment.pregnancycalendar;
+package fr.frogdevelopment.pregnancycalendar.infos;
 
 import android.app.DatePickerDialog;
 import android.app.Fragment;
@@ -8,11 +8,13 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.Html;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
@@ -25,8 +27,11 @@ import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
 import org.threeten.bp.temporal.ChronoField;
 
-import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.AMENORRHEA;
-import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.CONCEPTION;
+import fr.frogdevelopment.pregnancycalendar.R;
+import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils;
+
+import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.AMENORRHEA;
+import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.CONCEPTION;
 
 public class InformationFragment extends Fragment {
 
@@ -57,7 +62,7 @@ public class InformationFragment extends Fragment {
 
 	private LocalDate         mMyDate;
 	private SharedPreferences mSharedPref;
-	private PregnancyUtils    pregnancyUtils;
+	private PregnancyUtils pregnancyUtils;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -98,13 +103,16 @@ public class InformationFragment extends Fragment {
 		dayTextView.setText(String.valueOf(mDay));
 		monthTextView.setText(String.valueOf(mMonth));
 		yearTextView.setText(String.valueOf(mYear));
-		yearTextView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
-			if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-				refresh();
-				return true;
-			}
+		yearTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+				if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+					InformationFragment.this.refresh();
+					return true;
+				}
 
-			return false;
+				return false;
+			}
 		});
 
 		RadioGroup toggle = (RadioGroup) rootView.findViewById(R.id.toggle);
@@ -116,38 +124,52 @@ public class InformationFragment extends Fragment {
 				toggle.check(R.id.conception);
 				break;
 		}
-		toggle.setOnCheckedChangeListener((radioGroup, i) -> {
-			switch (i) {
-				case R.id.amenorrhea:
-					mTypeDate = AMENORRHEA;
-					break;
-				case R.id.conception:
-					mTypeDate = CONCEPTION;
-					break;
-			}
+		toggle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup radioGroup, int i) {
+				switch (i) {
+					case R.id.amenorrhea:
+						mTypeDate = AMENORRHEA;
+						break;
+					case R.id.conception:
+						mTypeDate = CONCEPTION;
+						break;
+				}
 
-			refresh();
+				InformationFragment.this.refresh();
+			}
 		});
 
 		ImageButton imageButton = (ImageButton) rootView.findViewById(R.id.date_picker_button);
-		imageButton.setOnClickListener(view -> {
-			DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), (datePicker, year1, month1, dayOfMonth) -> {
-				dayTextView.setText(String.valueOf(dayOfMonth));
-				monthTextView.setText(String.valueOf(month1 + 1/*base 0*/));
-				yearTextView.setText(String.valueOf(year1));
+		imageButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				DatePickerDialog datePickerDialog = new DatePickerDialog(InformationFragment.this.getActivity(), new DatePickerDialog.OnDateSetListener() {
+					@Override
+					public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+						dayTextView.setText(String.valueOf(dayOfMonth));
+						monthTextView.setText(String.valueOf(month + 1/*base 0*/));
+						yearTextView.setText(String.valueOf(year));
 
-				InformationFragment.this.refresh();
+						InformationFragment.this.refresh();
 
-			}, mYear, mMonth - 1/*base 0*/, mDay);
+					}
+				}, mYear, mMonth - 1/*base 0*/, mDay);
 
-			datePickerDialog.getDatePicker().setMinDate(mNow.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond());
-			datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+				datePickerDialog.getDatePicker().setMinDate(mNow.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond());
+				datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
 
-			datePickerDialog.show();
+				datePickerDialog.show();
+			}
 		});
 
 		Button calculateButton = (Button) rootView.findViewById(R.id.calculate);
-		calculateButton.setOnClickListener(view -> refresh());
+		calculateButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				InformationFragment.this.refresh();
+			}
+		});
 
 		calculate();
 

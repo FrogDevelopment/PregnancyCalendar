@@ -1,4 +1,4 @@
-package fr.frogdevelopment.pregnancycalendar;
+package fr.frogdevelopment.pregnancycalendar.utils;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -7,19 +7,21 @@ import android.support.annotation.NonNull;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.ChronoUnit;
 
-class PregnancyUtils {
+import fr.frogdevelopment.pregnancycalendar.R;
 
-	static final int AMENORRHEA = 0;
-	static final int CONCEPTION = 1;
+public class PregnancyUtils {
 
-	static final String KEY_DAYS_TO_FECUNDATION = "pref_key_days_to_fecundation";
-	static final String KEY_GESTATION_MIN       = "pref_key_gestation_min";
-	static final String KEY_GESTATION_MAX       = "pref_key_gestation_max";
+	public static final int AMENORRHEA = 0;
+	public static final int CONCEPTION = 1;
+
+	public static final String KEY_DAYS_TO_FECUNDATION = "pref_key_days_to_fecundation";
+	public static final String KEY_GESTATION_MIN       = "pref_key_gestation_min";
+	public static final String KEY_GESTATION_MAX       = "pref_key_gestation_max";
 
 	private final Resources         mResources;
 	private final SharedPreferences mSharedPref;
 
-	PregnancyUtils(Resources resources, SharedPreferences sharedPref) {
+	public PregnancyUtils(Resources resources, SharedPreferences sharedPref) {
 		this.mResources = resources;
 		this.mSharedPref = sharedPref;
 	}
@@ -33,7 +35,7 @@ class PregnancyUtils {
 	// http://naitreetgrandir.com/fr/grossesse/trimestre1/fiche.aspx?doc=duree-grossesse
 
 	@NonNull
-	LocalDate getAmenorrheaDate(LocalDate conceptionDate) {
+	public LocalDate getAmenorrheaDate(LocalDate conceptionDate) {
 		int daysToFecundation;
 		String value = mSharedPref.getString(KEY_DAYS_TO_FECUNDATION, null);
 		if (value != null) {
@@ -45,7 +47,7 @@ class PregnancyUtils {
 	}
 
 	@NonNull
-	LocalDate getConceptionDate(LocalDate amenorrheaDate) {
+	public LocalDate getConceptionDate(LocalDate amenorrheaDate) {
 		int daysToFecundation;
 		String value = mSharedPref.getString(KEY_DAYS_TO_FECUNDATION, null);
 		if (value != null) {
@@ -57,7 +59,7 @@ class PregnancyUtils {
 	}
 
 	@NonNull
-	LocalDate getBirthRangeStart(LocalDate amenorrheaDate) {
+	public LocalDate getBirthRangeStart(LocalDate amenorrheaDate) {
 		int gestationMin;
 		String value = mSharedPref.getString(KEY_GESTATION_MIN, null);
 		if (value != null) {
@@ -69,7 +71,7 @@ class PregnancyUtils {
 	}
 
 	@NonNull
-	LocalDate getBirthRangeEnd(LocalDate amenorrheaDate) {
+	public LocalDate getBirthRangeEnd(LocalDate amenorrheaDate) {
 		int gestationMax;
 		String value = mSharedPref.getString(KEY_GESTATION_MAX, null);
 		if (value != null) {
@@ -80,17 +82,17 @@ class PregnancyUtils {
 		return amenorrheaDate.plusDays(gestationMax);
 	}
 
-	int getCurrentMonth(LocalDate conceptionDate) {
+	public int getCurrentMonth(LocalDate conceptionDate) {
 		return (int) (ChronoUnit.MONTHS.between(conceptionDate, LocalDate.now()) + 1);
 		// +1 => current month (0 unit) is as 1
 	}
 
-	int getCurrentWeek(LocalDate amenorrheaDate) {
+	public int getCurrentWeek(LocalDate amenorrheaDate) {
 		return (int) (ChronoUnit.WEEKS.between(amenorrheaDate, LocalDate.now()) + 1);
 		// +1 => current week (0 unit) is as 1
 	}
 
-	int getCurrentTrimester(int currentWeek) {
+	public int getCurrentTrimester(int currentWeek) {
 		int currentTrimester;
 		if (currentWeek <= 14) {
 			currentTrimester = 1;

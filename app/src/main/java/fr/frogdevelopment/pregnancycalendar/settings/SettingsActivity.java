@@ -1,4 +1,4 @@
-package fr.frogdevelopment.pregnancycalendar;
+package fr.frogdevelopment.pregnancycalendar.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,9 +8,11 @@ import android.preference.PreferenceFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
-import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.KEY_DAYS_TO_FECUNDATION;
-import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.KEY_GESTATION_MAX;
-import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.KEY_GESTATION_MIN;
+import fr.frogdevelopment.pregnancycalendar.R;
+
+import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.KEY_DAYS_TO_FECUNDATION;
+import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.KEY_GESTATION_MAX;
+import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.KEY_GESTATION_MIN;
 
 public class SettingsActivity extends AppCompatActivity {
 

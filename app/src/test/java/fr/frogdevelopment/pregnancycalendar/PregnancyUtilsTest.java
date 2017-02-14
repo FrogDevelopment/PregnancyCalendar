@@ -13,9 +13,11 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.threeten.bp.LocalDate;
 
-import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.KEY_DAYS_TO_FECUNDATION;
-import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.KEY_GESTATION_MAX;
-import static fr.frogdevelopment.pregnancycalendar.PregnancyUtils.KEY_GESTATION_MIN;
+import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils;
+
+import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.KEY_DAYS_TO_FECUNDATION;
+import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.KEY_GESTATION_MAX;
+import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.KEY_GESTATION_MIN;
 
 @RunWith(JUnit4.class)
 public class PregnancyUtilsTest {

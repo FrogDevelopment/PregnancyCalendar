@@ -7,6 +7,8 @@ package fr.frogdevelopment.pregnancycalendar.contraction;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.threeten.bp.LocalDateTime;
 
 class ContractionContract implements BaseColumns {
@@ -35,6 +37,25 @@ class ContractionContract implements BaseColumns {
         LocalDateTime dateTime;
         Long duration;
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Contraction that = (Contraction) o;
+
+            return new EqualsBuilder()
+                    .append(id, that.id)
+                    .isEquals();
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder(17, 37)
+                    .append(id)
+                    .toHashCode();
+        }
     }
 
 }

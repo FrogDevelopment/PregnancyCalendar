@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import fr.frogdevelopment.pregnancycalendar.contraction.ContractionFragment;
+import fr.frogdevelopment.pregnancycalendar.infos.InformationFragment;
+import fr.frogdevelopment.pregnancycalendar.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
