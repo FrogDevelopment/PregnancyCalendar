@@ -21,37 +21,36 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import fr.frogdevelopment.pregnancycalendar.R;
+import fr.frogdevelopment.pregnancycalendar.contraction.ContractionContract.Contraction;
 
-
-// essayer http://nemanjakovacevic.net/blog/english/2016/01/12/recyclerview-swipe-to-delete-no-3rd-party-lib-necessary/
+// http://nemanjakovacevic.net/blog/english/2016/01/12/recyclerview-swipe-to-delete-no-3rd-party-lib-necessary/
 class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 
-	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
-	private DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
+	private static final int PENDING_REMOVAL_TIMEOUT = 3000; // 3sec
+	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+	private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
 
 	private final Context mContext;
 	private final LayoutInflater mInflater;
 
 	private final Locale locale = Locale.getDefault();
-	private final List<ContractionContract.Contraction> mRows = new ArrayList<>();
-	private final List<ContractionContract.Contraction> mPendingRemovalRows = new ArrayList<>();
+	private final List<Contraction> mRows = new ArrayList<>();
+	private final List<String> mPendingRemovalRows = new ArrayList<>();
 
-	private static final int PENDING_REMOVAL_TIMEOUT = 3000; // 3sec
-	private Handler handler = new Handler(); // hanlder for running delayed runnables
-	private Map<ContractionContract.Contraction, Runnable> pendingRunnables = new HashMap<>(); // map of items to pending runnables, so we can cancel a removal if need be
-
+	private final Handler mHandler = new Handler(); // hanlder for running delayed runnables
+	private final Map<String, Runnable> mPendingRunnables = new HashMap<>(); // map of items to pending runnables, so we can cancel a removal if need be
 
 	ContractionAdapter(Activity context) {
 		mContext = context;
 		mInflater = context.getLayoutInflater();
 	}
 
-	void add(ContractionContract.Contraction contraction) {
+	void add(Contraction contraction) {
 		mRows.add(contraction);
 		notifyDataSetChanged();
 	}
 
-	void addAll(List<ContractionContract.Contraction> contractions) {
+	void addAll(List<Contraction> contractions) {
 		mRows.addAll(contractions);
 		notifyDataSetChanged();
 	}
@@ -66,10 +65,10 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 		return mRows.size();
 	}
 
-	private ContractionContract.Contraction getItem(int position) {
+	private Contraction getItem(int position) {
 		try {
 			return mRows.get(getItemCount() - position - 1); // reverse order
-		} catch (ArrayIndexOutOfBoundsException e) {
+		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}
 	}
@@ -87,55 +86,54 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 	@Override
 	public void onBindViewHolder(ContractionViewHolder viewHolder, int position) {
 		// Get the data model based on position
-		final ContractionContract.Contraction current = getItem(position);
+		final Contraction item = getItem(position);
 
-		if (current == null) {
+		if (item == null) {
 			return;
 		}
 
-		if (mPendingRemovalRows.contains(current)) {
-			/** {show swipe layout} and {hide regular layout} */
+		if (mPendingRemovalRows.contains(item.id)) {
+			/** {show undo layout} and {hide regular layout} */
 			viewHolder.regularLayout.setVisibility(View.GONE);
-			viewHolder.swipeLayout.setVisibility(View.VISIBLE);
+			viewHolder.undoLayout.setVisibility(View.VISIBLE);
 
 			viewHolder.undo.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					undoOpt(current);
+					// user wants to undo the removal, let's cancel the pending task
+					Runnable pendingRemovalRunnable = mPendingRunnables.get(item.id);
+					mPendingRunnables.remove(item.id);
+					if (pendingRemovalRunnable != null) {
+						mHandler.removeCallbacks(pendingRemovalRunnable);
+					}
+					mPendingRemovalRows.remove(item.id);
+					// this will rebind the row in "normal" state
+//					notifyItemChanged(mRows.indexOf(item)); // fixme à vérifier
+					notifyDataSetChanged();
 				}
 			});
 		} else {
-			/** {show regular layout} and {hide swipe layout} */
+			/** {show regular layout} and {hide undo layout} */
 			viewHolder.regularLayout.setVisibility(View.VISIBLE);
-			viewHolder.swipeLayout.setVisibility(View.GONE);
+			viewHolder.undoLayout.setVisibility(View.GONE);
 
-			viewHolder.date.setText(current.dateTime.format(dateFormatter));
-			viewHolder.time.setText(current.dateTime.format(timeFormatter));
+			viewHolder.date.setText(item.dateTime.format(dateFormatter));
+			viewHolder.time.setText(item.dateTime.format(timeFormatter));
 
-			if (current.duration != null) {
-				viewHolder.duration.setText(durationToLabel(current.duration));
+			if (item.duration != null) {
+				viewHolder.duration.setText(durationToLabel(item.duration));
 			} else {
 				viewHolder.duration.setText("--:--");
 			}
 
-			ContractionContract.Contraction previous = getItem(position + 1); // +1 as reverse order ...
+			Contraction previous = getItem(position + 1); // +1 as reverse order ...
 			if (previous != null) {
-				long durationSincePrevious = ChronoUnit.MILLIS.between(previous.dateTime.plus(previous.duration, ChronoUnit.MILLIS), current.dateTime);
+				long durationSincePrevious = ChronoUnit.MILLIS.between(previous.dateTime.plus(previous.duration, ChronoUnit.MILLIS), item.dateTime);
 				viewHolder.last.setText(durationToLabel(durationSincePrevious));
 			} else {
 				viewHolder.last.setText("--:--");
 			}
 		}
-	}
-
-	private void undoOpt(ContractionContract.Contraction data) {
-		Runnable pendingRemovalRunnable = pendingRunnables.get(data);
-		pendingRunnables.remove(data);
-		if (pendingRemovalRunnable != null)
-			handler.removeCallbacks(pendingRemovalRunnable);
-		mPendingRemovalRows.remove(data);
-		// this will rebind the row in "normal" state
-		notifyItemChanged(mRows.indexOf(data));
 	}
 
 	private String durationToLabel(long duration) {
@@ -164,42 +162,40 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 	void pendingRemoval(RecyclerView.ViewHolder viewHolder) {
 		int position = viewHolder.getAdapterPosition();
 
-		final ContractionContract.Contraction data = mRows.get(position);
+		final Contraction item = getItem(position);
 
-		if (!mPendingRemovalRows.contains(data)) {
-			mPendingRemovalRows.add(data);
+		if (item != null && !mPendingRemovalRows.contains(item.id)) {
+			mPendingRemovalRows.add(item.id);
 			// this will redraw row in "undo" state
 			notifyItemChanged(position);
 			// let's create, store and post a runnable to remove the data
 			Runnable pendingRemovalRunnable = new Runnable() {
 				@Override
 				public void run() {
-					remove(mRows.indexOf(data));
+					remove(item);
 				}
 			};
-			handler.postDelayed(pendingRemovalRunnable, PENDING_REMOVAL_TIMEOUT);
-			pendingRunnables.put(data, pendingRemovalRunnable);
+			mHandler.postDelayed(pendingRemovalRunnable, PENDING_REMOVAL_TIMEOUT);
+			mPendingRunnables.put(item.id, pendingRemovalRunnable);
 		}
 	}
 
-	private void remove(int position) {
-		ContractionContract.Contraction data = mRows.get(position);
-		if (mPendingRemovalRows.contains(data)) {
-			mPendingRemovalRows.remove(data);
+	private void remove(Contraction item) {
+		if (mPendingRemovalRows.contains(item.id)) {
+			mPendingRemovalRows.remove(item.id);
 		}
-		if (mRows.contains(data)) {
-			mRows.remove(position);
-			notifyItemRemoved(position);
+		if (mRows.contains(item)) {
+			mRows.remove(item);
+//			notifyItemRemoved(mRows.indexOf(item)); // fixme à vérifier
+			notifyDataSetChanged();
 
-			Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + data.id);
+			Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
 			mContext.getContentResolver().delete(uri, null, null);
 		}
 	}
 
 	boolean isPendingRemoval(RecyclerView.ViewHolder viewHolder) {
-		int position = viewHolder.getAdapterPosition();
-
-		ContractionContract.Contraction data = mRows.get(position);
-		return mPendingRemovalRows.contains(data);
+		Contraction item = getItem(viewHolder.getAdapterPosition());
+		return item != null && mPendingRemovalRows.contains(item.id);
 	}
 }

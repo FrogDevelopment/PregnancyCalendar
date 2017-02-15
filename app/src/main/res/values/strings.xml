@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="frog_development" translatable="false">FROG DEVELOPMENT</string>
     <string name="start" translatable="false">START</string>
     <string name="stop" translatable="false">STOP</string>
@@ -51,12 +51,10 @@
 
     <!---->
     <string name="delete_title">Deleting</string>
-    <plurals name="delete_confirmation">
-        <item quantity="one" tools:ignore="ImpliedQuantity">You\'re going to delete the record</item>
-        <item quantity="other">You\'re going to delete %1$d records</item>
-    </plurals>
-    <string name="positive_button_continue">Continue ?</string>
+    <string name="delete_confirmation">You\'re going to delete all records</string>
+    <string name="delete_positive_button_continue">Continue ?</string>
     <string name="delete_done">Delete done</string>
+
     <string name="chrono_header_date">Date</string>
     <string name="chrono_header_interval">Interval</string>
     <string name="chrono_header_duration">Duration</string>

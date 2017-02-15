@@ -15,20 +15,20 @@ class ContractionViewHolder extends RecyclerView.ViewHolder {
 	final TextView duration;
 	final TextView last;
 
-	final LinearLayout swipeLayout;
+	final LinearLayout undoLayout;
 	final TextView undo;
 
 	ContractionViewHolder(View view) {
 		super(view);
 
-		regularLayout = (LinearLayout) view.findViewById(R.id.regularLayout);
+		regularLayout = (LinearLayout) view.findViewById(R.id.row_regular_layout);
 
 		date = (TextView) view.findViewById(R.id.row_contraction_date);
 		time = (TextView) view.findViewById(R.id.row_contraction_time);
 		duration = (TextView) view.findViewById(R.id.row_contraction_duration);
 		last = (TextView) view.findViewById(R.id.row_contraction_last);
 
-		swipeLayout = (LinearLayout) view.findViewById(R.id.swipeLayout);
+		undoLayout = (LinearLayout) view.findViewById(R.id.row_undo_layout);
 		undo = (TextView) view.findViewById(R.id.undo);
 	}
 }

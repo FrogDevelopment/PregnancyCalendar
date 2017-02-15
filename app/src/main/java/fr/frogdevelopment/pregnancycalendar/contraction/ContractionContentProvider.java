@@ -144,7 +144,7 @@ public class ContractionContentProvider extends ContentProvider {
                 break;
 
             case CONTRACTIONS:
-                rowsDeleted = sqlDB.delete(ContractionContract.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = sqlDB.delete(ContractionContract.TABLE_NAME, null, null);
                 break;
 
             default:

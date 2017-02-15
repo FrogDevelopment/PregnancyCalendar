@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Calendrier Grossesse</string>
     <string name="action_settings">Paramètres</string>
 
@@ -42,13 +42,10 @@
 
     <!---->
     <string name="delete_title">Suppression</string>
-    <plurals name="delete_confirmation">
-        <item quantity="one" tools:ignore="ImpliedQuantity">Vous êtes sur le point d\'effacer l\'enregistrement</item>
-        <item quantity="other">Vous êtes sur le point d\'effacer %1$d enregistrements</item>
-    </plurals>
-
-    <string name="positive_button_continue">Continuer ?</string>
+    <string name="delete_confirmation">Vous êtes sur le point d\'effacer tous les enregistrements</string>
+    <string name="delete_positive_button_continue">Continuer ?</string>
     <string name="delete_done">Suppression effectuée</string>
+
     <string name="chrono_header_date">Date</string>
     <string name="chrono_header_interval">Intervale</string>
     <string name="chrono_header_duration">Durée</string>
