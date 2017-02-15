@@ -56,5 +56,6 @@
     <string name="pref_gestation_max_title">Maximum</string>
     <string name="pref_days_title">Jours entre la fécondation et la conception</string>
     <string name="pref_days_to_fecundation_title">Nb Jours</string>
+    <string name="undo">Annuler</string>
 
 </resources>
