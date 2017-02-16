@@ -231,7 +231,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 		private void init() {
 			background = new ColorDrawable(Color.RED);
-			xMark = ContextCompat.getDrawable(context, R.drawable.ic_clear_white);
+			xMark = ContextCompat.getDrawable(context, R.drawable.ic_delete);
 			xMark.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
 			xMarkMargin = (int) context.getResources().getDimension(R.dimen.ic_clear_margin);
 			initiated = true;
@@ -253,11 +253,6 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				return;
 			}
 
-			if (dX == 0) {
-				// not interested in those
-				return;
-			}
-
 			if (!initiated) {
 				init();
 			}
@@ -266,18 +261,21 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 			background.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
 			background.draw(c);
 
-			// draw x mark
-			int itemHeight = itemView.getBottom() - itemView.getTop();
-			int intrinsicWidth = xMark.getIntrinsicWidth();
-			int intrinsicHeight = xMark.getIntrinsicWidth();
+			if (dX <= -70) {
+				// draw x mark
+				int itemHeight = itemView.getBottom() - itemView.getTop();
+				int intrinsicWidth = xMark.getIntrinsicWidth();
+				int intrinsicHeight = xMark.getIntrinsicWidth();
 
-			int xMarkLeft = itemView.getRight() - xMarkMargin - intrinsicWidth;
-			int xMarkRight = itemView.getRight() - xMarkMargin;
-			int xMarkTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
-			int xMarkBottom = xMarkTop + intrinsicHeight;
-			xMark.setBounds(xMarkLeft, xMarkTop, xMarkRight, xMarkBottom);
+				int xMarkLeft = itemView.getRight() - xMarkMargin - intrinsicWidth;
+				int xMarkRight = itemView.getRight() - xMarkMargin;
+				int xMarkTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
+				int xMarkBottom = xMarkTop + intrinsicHeight;
+				xMark.setBounds(xMarkLeft, xMarkTop, xMarkRight, xMarkBottom);
 
-			xMark.draw(c);
+				xMark.draw(c);
+
+			}
 
 			super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 		}

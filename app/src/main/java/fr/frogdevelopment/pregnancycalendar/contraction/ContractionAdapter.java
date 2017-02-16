@@ -84,7 +84,7 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 
 	// Involves populating data into the item through holder
 	@Override
-	public void onBindViewHolder(ContractionViewHolder viewHolder, int position) {
+	public void onBindViewHolder(final ContractionViewHolder viewHolder, int position) {
 		// Get the data model based on position
 		final Contraction item = getItem(position);
 
@@ -92,7 +92,7 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 			return;
 		}
 
-		if (mPendingRemovalRows.contains(item.id)) {
+		if (isPendingRemoval(viewHolder)) {
 			/** {show undo layout} and {hide regular layout} */
 			viewHolder.regularLayout.setVisibility(View.GONE);
 			viewHolder.undoLayout.setVisibility(View.VISIBLE);
@@ -100,16 +100,7 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 			viewHolder.undo.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					// user wants to undo the removal, let's cancel the pending task
-					Runnable pendingRemovalRunnable = mPendingRunnables.get(item.id);
-					mPendingRunnables.remove(item.id);
-					if (pendingRemovalRunnable != null) {
-						mHandler.removeCallbacks(pendingRemovalRunnable);
-					}
-					mPendingRemovalRows.remove(item.id);
-					// this will rebind the row in "normal" state
-//					notifyItemChanged(mRows.indexOf(item)); // fixme à vérifier
-					notifyDataSetChanged();
+					undo(item, viewHolder.getAdapterPosition());
 				}
 			});
 		} else {
@@ -159,8 +150,13 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 		return label;
 	}
 
-	void pendingRemoval(RecyclerView.ViewHolder viewHolder) {
-		int position = viewHolder.getAdapterPosition();
+	boolean isPendingRemoval(RecyclerView.ViewHolder viewHolder) {
+		Contraction item = getItem(viewHolder.getAdapterPosition());
+		return item != null && mPendingRemovalRows.contains(item.id);
+	}
+
+	void pendingRemoval(final RecyclerView.ViewHolder viewHolder) {
+		final int position = viewHolder.getAdapterPosition();
 
 		final Contraction item = getItem(position);
 
@@ -172,7 +168,7 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 			Runnable pendingRemovalRunnable = new Runnable() {
 				@Override
 				public void run() {
-					remove(item);
+					remove(item, position);
 				}
 			};
 			mHandler.postDelayed(pendingRemovalRunnable, PENDING_REMOVAL_TIMEOUT);
@@ -180,22 +176,29 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 		}
 	}
 
-	private void remove(Contraction item) {
+	private void remove(Contraction item, int adapterPosition) {
 		if (mPendingRemovalRows.contains(item.id)) {
 			mPendingRemovalRows.remove(item.id);
 		}
+
 		if (mRows.contains(item)) {
-			mRows.remove(item);
-//			notifyItemRemoved(mRows.indexOf(item)); // fixme à vérifier
-			notifyDataSetChanged();
 
 			Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
 			mContext.getContentResolver().delete(uri, null, null);
+
+			mRows.remove(item);
+			notifyItemRemoved(adapterPosition);
 		}
 	}
 
-	boolean isPendingRemoval(RecyclerView.ViewHolder viewHolder) {
-		Contraction item = getItem(viewHolder.getAdapterPosition());
-		return item != null && mPendingRemovalRows.contains(item.id);
+	private void undo(Contraction item,int adapterPosition) {
+		// user wants to undo the removal, let's cancel the pending task
+		Runnable pendingRemovalRunnable = mPendingRunnables.remove(item.id);
+		if (pendingRemovalRunnable != null) {
+			mHandler.removeCallbacks(pendingRemovalRunnable);
+		}
+		mPendingRemovalRows.remove(item.id);
+		// this will rebind the row in "normal" state
+		notifyItemChanged(adapterPosition);
 	}
 }
