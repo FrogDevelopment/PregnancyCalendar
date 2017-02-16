@@ -7,15 +7,15 @@
                                                  android:fitsSystemWindows="true"
                                                  tools:context="fr.frogdevelopment.pregnancycalendar.MainActivity">
 
-    <android.support.v4.view.ViewPager
+    <fr.frogdevelopment.pregnancycalendar.MyViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.TabLayout
+        <fr.frogdevelopment.pregnancycalendar.MyTabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </android.support.v4.view.ViewPager>
+    </fr.frogdevelopment.pregnancycalendar.MyViewPager>
 
 </android.support.design.widget.CoordinatorLayout>

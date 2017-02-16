@@ -41,6 +41,8 @@ import org.threeten.bp.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.frogdevelopment.pregnancycalendar.MyTabLayout;
+import fr.frogdevelopment.pregnancycalendar.MyViewPager;
 import fr.frogdevelopment.pregnancycalendar.R;
 import fr.frogdevelopment.pregnancycalendar.contraction.ContractionContract.Contraction;
 
@@ -56,6 +58,8 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 	private Contraction currentContraction;
 	private ItemTouchHelper mItemTouchHelper;
 	private RecyclerView mRecyclerView;
+	private MyViewPager mViewPager;
+	private MyTabLayout mTabLayout;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -86,6 +90,9 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 		getLoaderManager().initLoader(666, null, this);
 
+		mViewPager = (MyViewPager) getActivity().findViewById(R.id.container);
+		mTabLayout = (MyTabLayout) getActivity().findViewById(R.id.tabs);
+
 		setHasOptionsMenu(true);
 
 		return mRootView;
@@ -114,6 +121,8 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		mRootView.setBackgroundResource(R.drawable.background_chrono_started);
 
 		mItemTouchHelper.attachToRecyclerView(null);
+		mViewPager.setEnabled(false);
+		mTabLayout.setEnabled(false);
 	}
 
 	private void stop() {
@@ -140,6 +149,8 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		currentContraction = null;
 
 		mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+		mViewPager.setEnabled(true);
+		mTabLayout.setEnabled(true);
 	}
 
 	@Override
