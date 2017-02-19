@@ -173,6 +173,8 @@ public class InformationFragment extends Fragment {
 
 		calculate();
 
+		setHasOptionsMenu(true);
+
 		return rootView;
 	}
 

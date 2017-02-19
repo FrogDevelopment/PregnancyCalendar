@@ -26,8 +26,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,14 +189,6 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-	}
-
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		menu.clear();
-		inflater.inflate(R.menu.menu_contraction, menu);
-		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
