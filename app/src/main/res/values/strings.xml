@@ -53,7 +53,8 @@
     <string name="delete_title">Deleting</string>
     <string name="delete_confirmation">You\'re going to delete all records</string>
     <string name="delete_positive_button_continue">Continue ?</string>
-    <string name="delete_done">Delete done</string>
+    <string name="delete_deleted">Deleted</string>
+    <string name="undo">Undo</string>
 
     <string name="chrono_header_date">Date</string>
     <string name="chrono_header_interval">Interval</string>
@@ -65,6 +66,5 @@
     <string name="pref_gestation_max_title">Maximum</string>
     <string name="pref_days_title">Days between fecundation and conception</string>
     <string name="pref_days_to_fecundation_title">Nb Days</string>
-    <string name="undo">Undo</string>
 
 </resources>
