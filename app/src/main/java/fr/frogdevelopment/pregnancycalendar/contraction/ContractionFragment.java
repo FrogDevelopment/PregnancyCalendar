@@ -59,16 +59,16 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 	private ZoneId zoneId = ZoneId.systemDefault();
 
-	private View mRootView;
+	private View        mRootView;
 	private Chronometer mChronometer;
-	private Button mButton;
+	private Button      mButton;
 
 	private ContractionAdapter mAdapter;
-	private Contraction currentContraction;
-	private ItemTouchHelper mItemTouchHelper;
-	private RecyclerView mRecyclerView;
-	private MyViewPager mViewPager;
-	private MyTabLayout mTabLayout;
+	private Contraction        currentContraction;
+	private ItemTouchHelper    mItemTouchHelper;
+	private RecyclerView       mRecyclerView;
+	private MyViewPager        mViewPager;
+	private MyTabLayout        mTabLayout;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -173,7 +173,6 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 		if (cursor != null) {
 			Contraction item;
-			final List<Contraction> rows = new ArrayList<>();
 			while (cursor.moveToNext()) {
 				item = new Contraction();
 				item.id = cursor.getString(ContractionContract.INDEX_ID);
@@ -181,12 +180,10 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				item.duration = cursor.getLong(ContractionContract.INDEX_DURATION);
 
 				// Add the definition to the list
-				rows.add(item);
+				mAdapter.add(item);
 			}
 
 			cursor.close();
-
-			mAdapter.addAll(rows);
 		}
 
 		getLoaderManager().destroyLoader(loader.getId());
@@ -216,10 +213,32 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 						.setPositiveButton(R.string.delete_positive_button_continue, new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, null, null);
+								Snackbar.make(mRootView, R.string.delete_deleted, Snackbar.LENGTH_LONG)
+										.setAction(R.string.undo, new View.OnClickListener() {
+											@Override
+											public void onClick(View v) {
+												// reload data
+												getLoaderManager().restartLoader(666, null,ContractionFragment.this);
+											}
+										})
+										.setActionTextColor(Color.RED)
+										.addCallback(new Snackbar.Callback() {
 
-								Snackbar.make(mRootView, R.string.delete_done, Snackbar.LENGTH_LONG).show();
-								mAdapter.clear();
+											@Override
+											public void onShown(Snackbar sb) {
+												// clear view
+												mAdapter.clear();
+											}
+
+											@Override
+											public void onDismissed(Snackbar transientBottomBar, int event) {
+												if (event == DISMISS_EVENT_TIMEOUT) {
+													// clear dataBase
+													 getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, null, null);
+												}
+											}
+										})
+										.show();
 							}
 						})
 						.setNegativeButton(android.R.string.no, null)
@@ -232,6 +251,14 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		}
 	}
 
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		super.setUserVisibleHint(isVisibleToUser);
+		if (isVisibleToUser) {
+			// reload data when showing view
+			getLoaderManager().restartLoader(666, null,ContractionFragment.this);
+		}
+	}
 
 	private class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
 
@@ -315,21 +342,20 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		}
 	}
 
-	private static final int PENDING_REMOVAL_TIMEOUT = 2000; // 2sec
-	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
-	private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
+	private static final int               PENDING_REMOVAL_TIMEOUT = 2000;
+	private static final DateTimeFormatter dateFormatter           = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+	private static final DateTimeFormatter timeFormatter           = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
 
-	// http://nemanjakovacevic.net/blog/english/2016/01/12/recyclerview-swipe-to-delete-no-3rd-party-lib-necessary/
-	class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
+	private class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 
 		private final LayoutInflater mInflater;
 
-		private final Locale locale = Locale.getDefault();
-		private final List<Contraction> mRows = new ArrayList<>();
-		private final List<String> mPendingRemovalRows = new ArrayList<>();
+		private final Locale            locale              = Locale.getDefault();
+		private final List<Contraction> mRows               = new ArrayList<>();
+		private final List<String>      mPendingRemovalRows = new ArrayList<>();
 
-		private final Handler mHandler = new Handler(); // hanlder for running delayed runnables
-		private final Map<String, Runnable> mPendingRunnables = new HashMap<>(); // map of items to pending runnables, so we can cancel a removal if need be
+		private final Handler               mRemoveHandler  = new Handler();
+		private final Map<String, Runnable> mPendingRemoves = new HashMap<>();
 
 		ContractionAdapter() {
 			mInflater = getActivity().getLayoutInflater();
@@ -461,8 +487,8 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 						remove(item, position);
 					}
 				};
-				mHandler.postDelayed(pendingRemovalRunnable, PENDING_REMOVAL_TIMEOUT);
-				mPendingRunnables.put(item.id, pendingRemovalRunnable);
+				mRemoveHandler.postDelayed(pendingRemovalRunnable, PENDING_REMOVAL_TIMEOUT);
+				mPendingRemoves.put(item.id, pendingRemovalRunnable);
 			}
 		}
 
@@ -479,15 +505,15 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				mRows.remove(item);
 				notifyItemRemoved(adapterPosition);
 
-				Snackbar.make(mRootView, R.string.delete_done, Snackbar.LENGTH_LONG).show();
+				Snackbar.make(mRootView, R.string.delete_deleted, Snackbar.LENGTH_LONG).show();
 			}
 		}
 
-		private void undo(Contraction item,int adapterPosition) {
+		private void undo(Contraction item, int adapterPosition) {
 			// user wants to undo the removal, let's cancel the pending task
-			Runnable pendingRemovalRunnable = mPendingRunnables.remove(item.id);
+			Runnable pendingRemovalRunnable = mPendingRemoves.remove(item.id);
 			if (pendingRemovalRunnable != null) {
-				mHandler.removeCallbacks(pendingRemovalRunnable);
+				mRemoveHandler.removeCallbacks(pendingRemovalRunnable);
 			}
 			mPendingRemovalRows.remove(item.id);
 			// this will rebind the row in "normal" state
@@ -498,13 +524,13 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 	class ContractionViewHolder extends RecyclerView.ViewHolder {
 
 		final LinearLayout regularLayout;
-		final TextView date;
-		final TextView time;
-		final TextView duration;
-		final TextView last;
+		final TextView     date;
+		final TextView     time;
+		final TextView     duration;
+		final TextView     last;
 
 		final LinearLayout undoLayout;
-		final TextView undo;
+		final TextView     undo;
 
 		ContractionViewHolder(View view) {
 			super(view);
