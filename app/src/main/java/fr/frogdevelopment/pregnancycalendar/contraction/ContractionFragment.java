@@ -53,20 +53,22 @@ import fr.frogdevelopment.pregnancycalendar.MyViewPager;
 import fr.frogdevelopment.pregnancycalendar.R;
 import fr.frogdevelopment.pregnancycalendar.contraction.ContractionContract.Contraction;
 
+import static android.R.string.no;
+
 public class ContractionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
 	private ZoneId zoneId = ZoneId.systemDefault();
 
-	private View        mRootView;
+	private View mRootView;
 	private Chronometer mChronometer;
-	private Button      mButton;
+	private Button mButton;
 
 	private ContractionAdapter mAdapter;
-	private Contraction        currentContraction;
-	private ItemTouchHelper    mItemTouchHelper;
-	private RecyclerView       mRecyclerView;
-	private MyViewPager        mViewPager;
-	private MyTabLayout        mTabLayout;
+	private Contraction currentContraction;
+	private ItemTouchHelper mItemTouchHelper;
+	private RecyclerView mRecyclerView;
+	private MyViewPager mViewPager;
+	private MyTabLayout mTabLayout;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -183,8 +185,60 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 			cursor.close();
 		}
-
 		getLoaderManager().destroyLoader(loader.getId());
+
+		// compute stats sur les 2 dernières heures
+		if (!mAdapter.mRows.isEmpty()) {
+			List<Long> intervals = new ArrayList<>();
+			List<Long> durations = new ArrayList<>();
+
+			Contraction last = null;
+			Contraction previous = null;
+			Contraction contraction;
+			for (int i = mAdapter.mRows.size() - 1; i >= 0; i--) {
+				contraction = mAdapter.mRows.get(i);
+
+				if (last == null) {
+					last = contraction;
+					previous = contraction;
+					continue;
+				}
+
+				long durationSinceLast = ChronoUnit.HOURS.between(last.dateTime.plus(last.duration, ChronoUnit.MILLIS), contraction.dateTime);
+
+				if (durationSinceLast < 2) {
+					intervals.add(ChronoUnit.MILLIS.between(previous.dateTime.plus(previous.duration, ChronoUnit.MILLIS), contraction.dateTime));
+					durations.add(contraction.duration);
+				} else {
+					// no need to loop any more
+					break;
+				}
+
+				previous = contraction;
+			}
+
+			if (!intervals.isEmpty()) {
+				// interval moyen entre 2 contractions
+				//Long averageInterval = intervals.stream().collect(Collectors.averagingLong(d->d));
+				Long totalInterval = 0L;
+				for (Long interval : intervals) {
+					totalInterval += interval;
+				}
+
+				Long averageInterval = totalInterval / intervals.size();
+				String labelInterval = mAdapter.millisecondsToLabel(averageInterval);
+
+				// duréee moyenne de la contractions
+				// Long averageDuration = durations.stream().collect(Collectors.averagingLong(d->d));
+				Long totalDuration = 0L;
+				for (Long duration : durations) {
+					totalDuration += duration;
+				}
+
+				Long averageDuration = totalDuration / durations.size();
+				String labelDuration = mAdapter.millisecondsToLabel(averageDuration);
+			}
+		}
 	}
 
 	@Override
@@ -208,7 +262,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 											@Override
 											public void onClick(View v) {
 												// reload data
-												getLoaderManager().restartLoader(666, null,ContractionFragment.this);
+												getLoaderManager().restartLoader(666, null, ContractionFragment.this);
 											}
 										})
 										.setActionTextColor(Color.RED)
@@ -224,14 +278,14 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 											public void onDismissed(Snackbar transientBottomBar, int event) {
 												if (event == DISMISS_EVENT_TIMEOUT) {
 													// clear dataBase
-													 getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, null, null);
+													getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, null, null);
 												}
 											}
 										})
 										.show();
 							}
 						})
-						.setNegativeButton(android.R.string.no, null)
+						.setNegativeButton(no, null)
 						.show();
 
 				return true;
@@ -246,7 +300,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		super.setUserVisibleHint(isVisibleToUser);
 		if (isVisibleToUser) {
 			// reload data when showing view
-			getLoaderManager().restartLoader(666, null,ContractionFragment.this);
+			getLoaderManager().restartLoader(666, null, ContractionFragment.this);
 		}
 	}
 
@@ -332,19 +386,19 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		}
 	}
 
-	private static final int               PENDING_REMOVAL_TIMEOUT = 2000;
-	private static final DateTimeFormatter dateFormatter           = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
-	private static final DateTimeFormatter timeFormatter           = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
+	private static final int PENDING_REMOVAL_TIMEOUT = 2000;
+	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+	private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
 
 	private class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 
 		private final LayoutInflater mInflater;
 
-		private final Locale            locale              = Locale.getDefault();
-		private final List<Contraction> mRows               = new ArrayList<>();
-		private final List<String>      mPendingRemovalRows = new ArrayList<>();
+		private final Locale locale = Locale.getDefault();
+		private final List<Contraction> mRows = new ArrayList<>();
+		private final List<String> mPendingRemovalRows = new ArrayList<>();
 
-		private final Handler               mRemoveHandler  = new Handler();
+		private final Handler mRemoveHandler = new Handler();
 		private final Map<String, Runnable> mPendingRemoves = new HashMap<>();
 
 		ContractionAdapter() {
@@ -418,7 +472,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				viewHolder.time.setText(item.dateTime.format(timeFormatter));
 
 				if (item.duration != null) {
-					viewHolder.duration.setText(durationToLabel(item.duration));
+					viewHolder.duration.setText(millisecondsToLabel(item.duration));
 				} else {
 					viewHolder.duration.setText("--:--");
 				}
@@ -426,14 +480,14 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				Contraction previous = getItem(position + 1); // +1 as reverse order ...
 				if (previous != null) {
 					long durationSincePrevious = ChronoUnit.MILLIS.between(previous.dateTime.plus(previous.duration, ChronoUnit.MILLIS), item.dateTime);
-					viewHolder.last.setText(durationToLabel(durationSincePrevious));
+					viewHolder.last.setText(millisecondsToLabel(durationSincePrevious));
 				} else {
 					viewHolder.last.setText("--:--");
 				}
 			}
 		}
 
-		private String durationToLabel(long duration) {
+		private String millisecondsToLabel(long duration) {
 			String label;
 			long seconds = TimeUnit.MILLISECONDS.toSeconds(duration);
 			if (seconds < 60) { // less than 1 minute
@@ -442,7 +496,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
 				if (minutes < 60) { // less than 1 hour
 					label = String.format(locale, "%02dmin%02d", minutes, seconds - TimeUnit.MINUTES.toSeconds(minutes));
-				} else { //more than 1 hour
+				} else { // more than 1 hour
 					long hour = TimeUnit.MINUTES.toHours(minutes);
 					if (hour < 24) { // less than 1 day
 						label = String.format(locale, "%02dh%02d", hour, minutes - TimeUnit.HOURS.toMinutes(hour));
@@ -514,13 +568,13 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 	class ContractionViewHolder extends RecyclerView.ViewHolder {
 
 		final LinearLayout regularLayout;
-		final TextView     date;
-		final TextView     time;
-		final TextView     duration;
-		final TextView     last;
+		final TextView date;
+		final TextView time;
+		final TextView duration;
+		final TextView last;
 
 		final LinearLayout undoLayout;
-		final TextView     undo;
+		final TextView undo;
 
 		ContractionViewHolder(View view) {
 			super(view);
