@@ -17,7 +17,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -31,7 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.threeten.bp.Instant;
@@ -42,10 +40,8 @@ import org.threeten.bp.format.FormatStyle;
 import org.threeten.bp.temporal.ChronoUnit;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import fr.frogdevelopment.pregnancycalendar.MyTabLayout;
@@ -295,7 +291,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 											@Override
 											public void onDismissed(Snackbar transientBottomBar, int event) {
 												if (event == DISMISS_EVENT_TIMEOUT) {
-													// clear dataBase
+													// clear data base if Undo action not clicked
 													getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, null, null);
 												}
 											}
@@ -391,22 +387,12 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 		@Override
 		public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-			mAdapter.pendingRemoval(viewHolder);
-		}
-
-		@Override
-		public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-			if (mAdapter.isPendingRemoval(viewHolder)) {
-				return 0;
-			}
-
-			return super.getSwipeDirs(recyclerView, viewHolder);
+			mAdapter.remove(viewHolder);
 		}
 	}
 
-	private static final int               PENDING_REMOVAL_TIMEOUT = 2000;
-	private static final DateTimeFormatter dateFormatter           = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
-	private static final DateTimeFormatter timeFormatter           = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
+	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+	private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
 
 	private class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 
@@ -414,10 +400,6 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 		private final Locale            locale              = Locale.getDefault();
 		private final List<Contraction> mRows               = new ArrayList<>();
-		private final List<String>      mPendingRemovalRows = new ArrayList<>();
-
-		private final Handler               mRemoveHandler  = new Handler();
-		private final Map<String, Runnable> mPendingRemoves = new HashMap<>();
 
 		ContractionAdapter() {
 			mInflater = getActivity().getLayoutInflater();
@@ -432,11 +414,6 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				public void onItemRangeRemoved(int positionStart, int itemCount) {
 					computeStats();
 				}
-
-//				@Override
-//				public void onItemRangeInserted(int positionStart, int itemCount) {
-//					computeStats();
-//				}
 
 				@Override
 				public void onItemRangeChanged(int positionStart, int itemCount) {
@@ -493,41 +470,23 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				return;
 			}
 
-			if (isPendingRemoval(viewHolder)) {
-				/** {show undo layout} and {hide regular layout} */
-				viewHolder.regularLayout.setVisibility(View.GONE);
-				viewHolder.undoLayout.setVisibility(View.VISIBLE);
+			viewHolder.date.setText(item.dateTime.format(dateFormatter));
+			viewHolder.time.setText(item.dateTime.format(timeFormatter));
 
-				viewHolder.undo.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						undo(item, viewHolder.getAdapterPosition());
-					}
-				});
+			if (item.duration != null) {
+				viewHolder.duration.setText(millisecondsToLabel(item.duration));
 			} else {
-				/** {show regular layout} and {hide undo layout} */
-				viewHolder.regularLayout.setVisibility(View.VISIBLE);
-				viewHolder.undoLayout.setVisibility(View.GONE);
+				viewHolder.duration.setText("--:--");
+			}
 
-				viewHolder.date.setText(item.dateTime.format(dateFormatter));
-				viewHolder.time.setText(item.dateTime.format(timeFormatter));
-
-				if (item.duration != null) {
-					viewHolder.duration.setText(millisecondsToLabel(item.duration));
-				} else {
-					viewHolder.duration.setText("--:--");
-				}
-
-				Contraction previous = getItem(position + 1); // +1 as reverse order ...
-				if (previous != null) {
-					long durationSincePrevious = ChronoUnit.MILLIS.between(previous.dateTime.plus(previous.duration, ChronoUnit.MILLIS), item.dateTime);
-					viewHolder.last.setText(millisecondsToLabel(durationSincePrevious));
-				} else {
-					viewHolder.last.setText("--:--");
-				}
+			Contraction previous = getItem(position + 1); // +1 as reverse order ...
+			if (previous != null) {
+				long durationSincePrevious = ChronoUnit.MILLIS.between(previous.dateTime.plus(previous.duration, ChronoUnit.MILLIS), item.dateTime);
+				viewHolder.last.setText(millisecondsToLabel(durationSincePrevious));
+			} else {
+				viewHolder.last.setText("--:--");
 			}
 		}
-
 
 		private String millisecondsToLabel(long duration) {
 			String label;
@@ -552,84 +511,62 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 			return label;
 		}
 
-		boolean isPendingRemoval(RecyclerView.ViewHolder viewHolder) {
-			Contraction item = getItem(viewHolder.getAdapterPosition());
-			return item != null && mPendingRemovalRows.contains(item.id);
-		}
+		void remove(final RecyclerView.ViewHolder viewHolder) {
+			final int adapterPosition = viewHolder.getAdapterPosition();
 
-		void pendingRemoval(final RecyclerView.ViewHolder viewHolder) {
-			final int position = viewHolder.getAdapterPosition();
+			final Contraction item = getItem(adapterPosition);
 
-			final Contraction item = getItem(position);
+			if (item != null) {
 
-			if (item != null && !mPendingRemovalRows.contains(item.id)) {
-				mPendingRemovalRows.add(item.id);
-				// this will redraw row in "undo" state
-				notifyItemChanged(position);
-				// let's create, store and post a runnable to remove the data
-				Runnable pendingRemovalRunnable = new Runnable() {
-					@Override
-					public void run() {
-						remove(item, position);
-					}
-				};
-				mRemoveHandler.postDelayed(pendingRemovalRunnable, PENDING_REMOVAL_TIMEOUT);
-				mPendingRemoves.put(item.id, pendingRemovalRunnable);
+				final int indexOfItem = mRows.indexOf(item);
+
+				Snackbar.make(mRootView, R.string.delete_deleted, Snackbar.LENGTH_LONG)
+						.setAction(R.string.undo, new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								// re-insert item
+								mRows.add(indexOfItem, item);
+								notifyItemInserted(adapterPosition);
+							}
+						})
+						.setActionTextColor(Color.RED)
+						.addCallback(new Snackbar.Callback() {
+
+							@Override
+							public void onShown(Snackbar sb) {
+								// remove item from view
+								mRows.remove(item);
+								notifyItemRemoved(adapterPosition);
+							}
+
+							@Override
+							public void onDismissed(Snackbar transientBottomBar, int event) {
+								if (event == DISMISS_EVENT_TIMEOUT) {
+									// remove from data base if Undo action not clicked
+									Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
+									getActivity().getContentResolver().delete(uri, null, null);
+								}
+							}
+						})
+						.show();
 			}
-		}
-
-		private void remove(Contraction item, int adapterPosition) {
-			if (mPendingRemovalRows.contains(item.id)) {
-				mPendingRemovalRows.remove(item.id);
-			}
-
-			if (mRows.contains(item)) {
-
-				Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
-				getActivity().getContentResolver().delete(uri, null, null);
-
-				mRows.remove(item);
-				notifyItemRemoved(adapterPosition);
-
-				Snackbar.make(mRootView, R.string.delete_deleted, Snackbar.LENGTH_LONG).show();
-			}
-		}
-
-		private void undo(Contraction item, int adapterPosition) {
-			// user wants to undo the removal, let's cancel the pending task
-			Runnable pendingRemovalRunnable = mPendingRemoves.remove(item.id);
-			if (pendingRemovalRunnable != null) {
-				mRemoveHandler.removeCallbacks(pendingRemovalRunnable);
-			}
-			mPendingRemovalRows.remove(item.id);
-			// this will rebind the row in "normal" state
-			notifyItemChanged(adapterPosition);
 		}
 	}
 
 	class ContractionViewHolder extends RecyclerView.ViewHolder {
 
-		final LinearLayout regularLayout;
 		final TextView     date;
 		final TextView     time;
 		final TextView     duration;
 		final TextView     last;
 
-		final LinearLayout undoLayout;
-		final TextView     undo;
-
 		ContractionViewHolder(View view) {
 			super(view);
-
-			regularLayout = (LinearLayout) view.findViewById(R.id.row_regular_layout);
 
 			date = (TextView) view.findViewById(R.id.row_contraction_date);
 			time = (TextView) view.findViewById(R.id.row_contraction_time);
 			duration = (TextView) view.findViewById(R.id.row_contraction_duration);
 			last = (TextView) view.findViewById(R.id.row_contraction_last);
-
-			undoLayout = (LinearLayout) view.findViewById(R.id.row_undo_layout);
-			undo = (TextView) view.findViewById(R.id.undo);
 		}
 	}
 
