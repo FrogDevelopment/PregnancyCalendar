@@ -59,16 +59,19 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 	private ZoneId zoneId = ZoneId.systemDefault();
 
-	private View mRootView;
+	private View        mRootView;
 	private Chronometer mChronometer;
-	private Button mButton;
+	private Button      mButton;
+
+	private TextView mAverageInterval;
+	private TextView mAverageDuration;
 
 	private ContractionAdapter mAdapter;
-	private Contraction currentContraction;
-	private ItemTouchHelper mItemTouchHelper;
-	private RecyclerView mRecyclerView;
-	private MyViewPager mViewPager;
-	private MyTabLayout mTabLayout;
+	private Contraction        currentContraction;
+	private ItemTouchHelper    mItemTouchHelper;
+	private RecyclerView       mRecyclerView;
+	private MyViewPager        mViewPager;
+	private MyTabLayout        mTabLayout;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,6 +88,9 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				startOrStop();
 			}
 		});
+
+		mAverageInterval = (TextView) mRootView.findViewById(R.id.average_interval);
+		mAverageDuration = (TextView) mRootView.findViewById(R.id.average_duration);
 
 		mRecyclerView = (RecyclerView) mRootView.findViewById(R.id.chrono_list);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -151,7 +157,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		long newId = ContentUris.parseId(insertUri);
 		currentContraction.id = String.valueOf(newId);
 
-		mAdapter.notifyDataSetChanged();
+		mAdapter.notifyItemChanged(0);
 
 		mRootView.setBackgroundResource(R.drawable.background_chrono_stoped);
 		mChronometer.setBase(SystemClock.elapsedRealtime());
@@ -172,6 +178,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		mAdapter.clear();
 
 		if (cursor != null) {
+			List<Contraction> items = new ArrayList<>();
 			Contraction item;
 			while (cursor.moveToNext()) {
 				item = new Contraction();
@@ -180,14 +187,22 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				item.duration = cursor.getLong(ContractionContract.INDEX_DURATION);
 
 				// Add the definition to the list
-				mAdapter.add(item);
+				items.add(item);
 			}
+
+			mAdapter.addAll(items);
 
 			cursor.close();
 		}
 		getLoaderManager().destroyLoader(loader.getId());
+	}
 
-		// compute stats sur les 2 dernières heures
+	private void computeStats() {
+		// reset label
+		mAverageInterval.setText(null);
+		mAverageDuration.setText(null);
+
+		// compute stats on the last 2 hours
 		if (!mAdapter.mRows.isEmpty()) {
 			List<Long> intervals = new ArrayList<>();
 			List<Long> durations = new ArrayList<>();
@@ -201,13 +216,14 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				if (last == null) {
 					last = contraction;
 					previous = contraction;
+					durations.add(contraction.duration);
 					continue;
 				}
 
-				long durationSinceLast = ChronoUnit.HOURS.between(last.dateTime.plus(last.duration, ChronoUnit.MILLIS), contraction.dateTime);
+				long durationSinceLast = ChronoUnit.HOURS.between(contraction.dateTime, last.dateTime);
 
 				if (durationSinceLast < 2) {
-					intervals.add(ChronoUnit.MILLIS.between(previous.dateTime.plus(previous.duration, ChronoUnit.MILLIS), contraction.dateTime));
+					intervals.add(ChronoUnit.MILLIS.between(contraction.dateTime.plus(contraction.duration, ChronoUnit.MILLIS), previous.dateTime));
 					durations.add(contraction.duration);
 				} else {
 					// no need to loop any more
@@ -220,23 +236,25 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 			if (!intervals.isEmpty()) {
 				// interval moyen entre 2 contractions
 				//Long averageInterval = intervals.stream().collect(Collectors.averagingLong(d->d));
-				Long totalInterval = 0L;
-				for (Long interval : intervals) {
+				long totalInterval = 0L;
+				for (long interval : intervals) {
 					totalInterval += interval;
 				}
 
 				Long averageInterval = totalInterval / intervals.size();
 				String labelInterval = mAdapter.millisecondsToLabel(averageInterval);
+				mAverageInterval.setText(labelInterval);
 
 				// duréee moyenne de la contractions
 				// Long averageDuration = durations.stream().collect(Collectors.averagingLong(d->d));
-				Long totalDuration = 0L;
-				for (Long duration : durations) {
+				long totalDuration = 0L;
+				for (long duration : durations) {
 					totalDuration += duration;
 				}
 
 				Long averageDuration = totalDuration / durations.size();
 				String labelDuration = mAdapter.millisecondsToLabel(averageDuration);
+				mAverageDuration.setText(labelDuration);
 			}
 		}
 	}
@@ -386,28 +404,51 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		}
 	}
 
-	private static final int PENDING_REMOVAL_TIMEOUT = 2000;
-	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
-	private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
+	private static final int               PENDING_REMOVAL_TIMEOUT = 2000;
+	private static final DateTimeFormatter dateFormatter           = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+	private static final DateTimeFormatter timeFormatter           = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
 
 	private class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
 
 		private final LayoutInflater mInflater;
 
-		private final Locale locale = Locale.getDefault();
-		private final List<Contraction> mRows = new ArrayList<>();
-		private final List<String> mPendingRemovalRows = new ArrayList<>();
+		private final Locale            locale              = Locale.getDefault();
+		private final List<Contraction> mRows               = new ArrayList<>();
+		private final List<String>      mPendingRemovalRows = new ArrayList<>();
 
-		private final Handler mRemoveHandler = new Handler();
+		private final Handler               mRemoveHandler  = new Handler();
 		private final Map<String, Runnable> mPendingRemoves = new HashMap<>();
 
 		ContractionAdapter() {
 			mInflater = getActivity().getLayoutInflater();
+
+			registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+				@Override
+				public void onChanged() {
+					computeStats();
+				}
+
+				@Override
+				public void onItemRangeRemoved(int positionStart, int itemCount) {
+					computeStats();
+				}
+
+//				@Override
+//				public void onItemRangeInserted(int positionStart, int itemCount) {
+//					computeStats();
+//				}
+
+				@Override
+				public void onItemRangeChanged(int positionStart, int itemCount) {
+					computeStats();
+				}
+			});
 		}
 
 		void add(Contraction contraction) {
 			mRows.add(contraction);
-			notifyDataSetChanged();
+			notifyItemInserted(0);
+			mRecyclerView.getLayoutManager().scrollToPosition(0);
 		}
 
 		void addAll(List<Contraction> contractions) {
@@ -486,6 +527,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				}
 			}
 		}
+
 
 		private String millisecondsToLabel(long duration) {
 			String label;
@@ -568,13 +610,13 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 	class ContractionViewHolder extends RecyclerView.ViewHolder {
 
 		final LinearLayout regularLayout;
-		final TextView date;
-		final TextView time;
-		final TextView duration;
-		final TextView last;
+		final TextView     date;
+		final TextView     time;
+		final TextView     duration;
+		final TextView     last;
 
 		final LinearLayout undoLayout;
-		final TextView undo;
+		final TextView     undo;
 
 		ContractionViewHolder(View view) {
 			super(view);

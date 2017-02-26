@@ -26,10 +26,47 @@
         android:textSize="40sp"/>
 
     <LinearLayout
-        android:id="@+id/chrono_header"
+        android:id="@+id/average_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/chrono_button"
+        android:orientation="horizontal"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Interval moy :"/>
+
+        <TextView
+            android:id="@+id/average_interval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="07s"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Durée moy :"/>
+
+        <TextView
+            android:id="@+id/average_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="07s"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/chrono_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/average_data"
         android:orientation="horizontal"
         android:paddingEnd="10dp"
         android:paddingStart="10dp">
