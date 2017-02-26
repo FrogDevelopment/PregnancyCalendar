@@ -350,36 +350,41 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 		@Override
 		public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-			View itemView = viewHolder.itemView;
+			if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+				View itemView = viewHolder.itemView;
 
-			// not sure why, but this method get's called for viewholder that are already swiped away
-			if (viewHolder.getAdapterPosition() == -1) {
-				// not interested in those
-				return;
-			}
+				// not sure why, but this method get's called for viewholder that are already swiped away
+				if (viewHolder.getAdapterPosition() == -1) {
+					// not interested in those
+					System.out.println("");
+					return;
+				}
 
-			if (!initiated) {
-				init();
-			}
+				if (!initiated) {
+					init();
+				}
 
-			// draw red background
-			background.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-			background.draw(c);
+				// draw red background
+				background.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+				background.draw(c);
 
-			if (dX <= -70) {
-				// draw x mark
-				int itemHeight = itemView.getBottom() - itemView.getTop();
-				int intrinsicWidth = xMark.getIntrinsicWidth();
-				int intrinsicHeight = xMark.getIntrinsicWidth();
+				if (dX <= -70) {
+					// draw x mark
+					int itemHeight = itemView.getBottom() - itemView.getTop();
+					int intrinsicWidth = xMark.getIntrinsicWidth();
+					int intrinsicHeight = xMark.getIntrinsicWidth();
 
-				int xMarkLeft = itemView.getRight() - xMarkMargin - intrinsicWidth;
-				int xMarkRight = itemView.getRight() - xMarkMargin;
-				int xMarkTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
-				int xMarkBottom = xMarkTop + intrinsicHeight;
-				xMark.setBounds(xMarkLeft, xMarkTop, xMarkRight, xMarkBottom);
+					int xMarkLeft = itemView.getRight() - xMarkMargin - intrinsicWidth;
+					int xMarkRight = itemView.getRight() - xMarkMargin;
+					int xMarkTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
+					int xMarkBottom = xMarkTop + intrinsicHeight;
+					xMark.setBounds(xMarkLeft, xMarkTop, xMarkRight, xMarkBottom);
 
-				xMark.draw(c);
+					xMark.draw(c);
 
+				}
+			}else {
+				System.out.println("");
 			}
 
 			super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -398,8 +403,8 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 		private final LayoutInflater mInflater;
 
-		private final Locale            locale              = Locale.getDefault();
-		private final List<Contraction> mRows               = new ArrayList<>();
+		private final Locale            locale = Locale.getDefault();
+		private final List<Contraction> mRows  = new ArrayList<>();
 
 		ContractionAdapter() {
 			mInflater = getActivity().getLayoutInflater();
@@ -555,10 +560,10 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 	class ContractionViewHolder extends RecyclerView.ViewHolder {
 
-		final TextView     date;
-		final TextView     time;
-		final TextView     duration;
-		final TextView     last;
+		final TextView date;
+		final TextView time;
+		final TextView duration;
+		final TextView last;
 
 		ContractionViewHolder(View view) {
 			super(view);
