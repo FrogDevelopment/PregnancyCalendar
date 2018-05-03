@@ -4,8 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.LinearLayout;
 
 public class MyTabLayout extends TabLayout {
@@ -26,11 +24,6 @@ public class MyTabLayout extends TabLayout {
 	public void addTab(@NonNull Tab tab, int position, boolean setSelected) {
 		super.addTab(tab, position, setSelected);
 		LinearLayout tabStrip = ((LinearLayout) getChildAt(0));
-		tabStrip.getChildAt(tab.getPosition()).setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				return !MyTabLayout.this.isEnabled();
-			}
-		});
+		tabStrip.getChildAt(tab.getPosition()).setOnTouchListener((v, event) -> !MyTabLayout.this.isEnabled());
 	}
 }

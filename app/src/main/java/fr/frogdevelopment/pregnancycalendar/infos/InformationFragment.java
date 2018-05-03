@@ -8,13 +8,11 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.Html;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
@@ -70,19 +68,19 @@ public class InformationFragment extends Fragment {
 
 		pregnancyUtils = new PregnancyUtils(getActivity().getResources(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
 
-		dayTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.dayWrapper);
-		dayTextView = (TextInputEditText) rootView.findViewById(R.id.day);
-		monthTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.monthWrapper);
-		monthTextView = (EditText) rootView.findViewById(R.id.month);
-		yearTextViewWrapper = (TextInputLayout) rootView.findViewById(R.id.yearWrapper);
-		yearTextView = (TextInputEditText) rootView.findViewById(R.id.year);
-		otherDateText = (TextView) rootView.findViewById(R.id.other_date_text);
-		otherDateValue = (TextView) rootView.findViewById(R.id.other_date_value);
-		currentWeek = (TextView) rootView.findViewById(R.id.current_week_value);
-		currentMonth = (TextView) rootView.findViewById(R.id.current_month_value);
-		currentTrimester = (TextView) rootView.findViewById(R.id.current_trimester_value);
-		birthRangeStart = (TextView) rootView.findViewById(R.id.birth_range_start);
-		birthRangeEnd = (TextView) rootView.findViewById(R.id.birth_range_end);
+		dayTextViewWrapper = rootView.findViewById(R.id.dayWrapper);
+		dayTextView = rootView.findViewById(R.id.day);
+		monthTextViewWrapper = rootView.findViewById(R.id.monthWrapper);
+		monthTextView = rootView.findViewById(R.id.month);
+		yearTextViewWrapper = rootView.findViewById(R.id.yearWrapper);
+		yearTextView = rootView.findViewById(R.id.year);
+		otherDateText = rootView.findViewById(R.id.other_date_text);
+		otherDateValue = rootView.findViewById(R.id.other_date_value);
+		currentWeek = rootView.findViewById(R.id.current_week_value);
+		currentMonth = rootView.findViewById(R.id.current_month_value);
+		currentTrimester = rootView.findViewById(R.id.current_trimester_value);
+		birthRangeStart = rootView.findViewById(R.id.birth_range_start);
+		birthRangeEnd = rootView.findViewById(R.id.birth_range_end);
 
 		mNow = LocalDate.now();
 
@@ -103,19 +101,16 @@ public class InformationFragment extends Fragment {
 		dayTextView.setText(String.valueOf(mDay));
 		monthTextView.setText(String.valueOf(mMonth));
 		yearTextView.setText(String.valueOf(mYear));
-		yearTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-			@Override
-			public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-				if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-					InformationFragment.this.refresh();
-					return true;
-				}
-
-				return false;
+		yearTextView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+			if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+				InformationFragment.this.refresh();
+				return true;
 			}
+
+			return false;
 		});
 
-		RadioGroup toggle = (RadioGroup) rootView.findViewById(R.id.toggle);
+		RadioGroup toggle = rootView.findViewById(R.id.toggle);
 		switch (mTypeDate) {
 			case AMENORRHEA:
 				toggle.check(R.id.amenorrhea);
@@ -124,52 +119,38 @@ public class InformationFragment extends Fragment {
 				toggle.check(R.id.conception);
 				break;
 		}
-		toggle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup radioGroup, int i) {
-				switch (i) {
-					case R.id.amenorrhea:
-						mTypeDate = AMENORRHEA;
-						break;
-					case R.id.conception:
-						mTypeDate = CONCEPTION;
-						break;
-				}
+		toggle.setOnCheckedChangeListener((radioGroup, i) -> {
+			switch (i) {
+				case R.id.amenorrhea:
+					mTypeDate = AMENORRHEA;
+					break;
+				case R.id.conception:
+					mTypeDate = CONCEPTION;
+					break;
+			}
+
+			InformationFragment.this.refresh();
+		});
+
+		ImageButton imageButton = rootView.findViewById(R.id.date_picker_button);
+		imageButton.setOnClickListener(view -> {
+			DatePickerDialog datePickerDialog = new DatePickerDialog(InformationFragment.this.getActivity(), (view1, year, month, dayOfMonth) -> {
+				dayTextView.setText(String.valueOf(dayOfMonth));
+				monthTextView.setText(String.valueOf(month + 1/*base 0*/));
+				yearTextView.setText(String.valueOf(year));
 
 				InformationFragment.this.refresh();
-			}
+
+			}, mYear, mMonth - 1/*base 0*/, mDay);
+
+			datePickerDialog.getDatePicker().setMinDate(mNow.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond());
+			datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+
+			datePickerDialog.show();
 		});
 
-		ImageButton imageButton = (ImageButton) rootView.findViewById(R.id.date_picker_button);
-		imageButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				DatePickerDialog datePickerDialog = new DatePickerDialog(InformationFragment.this.getActivity(), new DatePickerDialog.OnDateSetListener() {
-					@Override
-					public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-						dayTextView.setText(String.valueOf(dayOfMonth));
-						monthTextView.setText(String.valueOf(month + 1/*base 0*/));
-						yearTextView.setText(String.valueOf(year));
-
-						InformationFragment.this.refresh();
-
-					}
-				}, mYear, mMonth - 1/*base 0*/, mDay);
-
-				datePickerDialog.getDatePicker().setMinDate(mNow.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond());
-				datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-
-				datePickerDialog.show();
-			}
-		});
-
-		Button calculateButton = (Button) rootView.findViewById(R.id.calculate);
-		calculateButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				InformationFragment.this.refresh();
-			}
-		});
+		Button calculateButton = rootView.findViewById(R.id.calculate);
+		calculateButton.setOnClickListener(view -> InformationFragment.this.refresh());
 
 		calculate();
 

@@ -7,7 +7,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Canvas;
@@ -74,21 +73,16 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		// Inflate the layout for this fragment
 		mRootView = inflater.inflate(R.layout.fragment_contraction, container, false);
 
-		mChronometer = (Chronometer) mRootView.findViewById(R.id.chronometer);
+		mChronometer = mRootView.findViewById(R.id.chronometer);
 		mChronometer.setBase(SystemClock.elapsedRealtime());
 
-		mButton = (Button) mRootView.findViewById(R.id.chrono_button);
-		mButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				startOrStop();
-			}
-		});
+		mButton = mRootView.findViewById(R.id.chrono_button);
+		mButton.setOnClickListener(view -> startOrStop());
 
-		mAverageInterval = (TextView) mRootView.findViewById(R.id.average_interval);
-		mAverageDuration = (TextView) mRootView.findViewById(R.id.average_duration);
+		mAverageInterval = mRootView.findViewById(R.id.average_interval);
+		mAverageDuration = mRootView.findViewById(R.id.average_duration);
 
-		mRecyclerView = (RecyclerView) mRootView.findViewById(R.id.chrono_list);
+		mRecyclerView = mRootView.findViewById(R.id.chrono_list);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
 		mRecyclerView.addItemDecoration(itemDecoration);
@@ -101,8 +95,8 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
 		getLoaderManager().initLoader(666, null, this);
 
-		mViewPager = (MyViewPager) getActivity().findViewById(R.id.container);
-		mTabLayout = (MyTabLayout) getActivity().findViewById(R.id.tabs);
+		mViewPager = getActivity().findViewById(R.id.container);
+		mTabLayout = getActivity().findViewById(R.id.tabs);
 
 		setHasOptionsMenu(true);
 
@@ -268,37 +262,29 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 //                .setIcon(R.drawable.ic_warning_black)
 						.setTitle(R.string.delete_title)
 						.setMessage(R.string.delete_confirmation)
-						.setPositiveButton(R.string.delete_positive_button_continue, new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								Snackbar.make(mRootView, R.string.delete_deleted, Snackbar.LENGTH_LONG)
-										.setAction(R.string.undo, new View.OnClickListener() {
-											@Override
-											public void onClick(View v) {
-												// reload data
-												getLoaderManager().restartLoader(666, null, ContractionFragment.this);
-											}
-										})
-										.setActionTextColor(Color.RED)
-										.addCallback(new Snackbar.Callback() {
+						.setPositiveButton(R.string.delete_positive_button_continue, (dialog, which) -> Snackbar.make(mRootView, R.string.delete_deleted, Snackbar.LENGTH_LONG)
+								.setAction(R.string.undo, v -> {
+									// reload data
+									getLoaderManager().restartLoader(666, null, ContractionFragment.this);
+								})
+								.setActionTextColor(Color.RED)
+								.addCallback(new Snackbar.Callback() {
 
-											@Override
-											public void onShown(Snackbar sb) {
-												// clear view
-												mAdapter.clear();
-											}
+									@Override
+									public void onShown(Snackbar sb) {
+										// clear view
+										mAdapter.clear();
+									}
 
-											@Override
-											public void onDismissed(Snackbar transientBottomBar, int event) {
-												if (event == DISMISS_EVENT_TIMEOUT) {
-													// clear data base if Undo action not clicked
-													getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, null, null);
-												}
-											}
-										})
-										.show();
-							}
-						})
+									@Override
+									public void onDismissed(Snackbar transientBottomBar, int event) {
+										if (event == DISMISS_EVENT_TIMEOUT) {
+											// clear data base if Undo action not clicked
+											getActivity().getContentResolver().delete(ContractionContentProvider.URI_CONTRACTION, null, null);
+										}
+									}
+								})
+								.show())
 						.setNegativeButton(no, null)
 						.show();
 
@@ -526,13 +512,10 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 				final int indexOfItem = mRows.indexOf(item);
 
 				Snackbar.make(mRootView, R.string.delete_deleted, Snackbar.LENGTH_LONG)
-						.setAction(R.string.undo, new View.OnClickListener() {
-							@Override
-							public void onClick(View v) {
-								// re-insert item
-								mRows.add(indexOfItem, item);
-								notifyItemInserted(adapterPosition);
-							}
+						.setAction(R.string.undo, v -> {
+							// re-insert item
+							mRows.add(indexOfItem, item);
+							notifyItemInserted(adapterPosition);
 						})
 						.setActionTextColor(Color.RED)
 						.addCallback(new Snackbar.Callback() {
@@ -568,10 +551,10 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 		ContractionViewHolder(View view) {
 			super(view);
 
-			date = (TextView) view.findViewById(R.id.row_contraction_date);
-			time = (TextView) view.findViewById(R.id.row_contraction_time);
-			duration = (TextView) view.findViewById(R.id.row_contraction_duration);
-			last = (TextView) view.findViewById(R.id.row_contraction_last);
+			date = view.findViewById(R.id.row_contraction_date);
+			time = view.findViewById(R.id.row_contraction_time);
+			duration = view.findViewById(R.id.row_contraction_duration);
+			last = view.findViewById(R.id.row_contraction_last);
 		}
 	}
 
