@@ -28,14 +28,14 @@ android {
                 release = null
             } else {
                 debug {
-                    keyAlias props['bbl_key_alias']
-                    keyPassword props['bbl_key_password']
+                    keyAlias props['pc_key_alias']
+                    keyPassword props['pc_key_password']
                     storePassword props['store_password']
                     storeFile file(props['store_file'])
                 }
                 release {
-                    keyAlias props['bbl_key_alias']
-                    keyPassword props['bbl_key_password']
+                    keyAlias props['pc_key_alias']
+                    keyPassword props['pc_key_password']
                     storePassword props['store_password']
                     storeFile file(props['store_file'])
                 }
