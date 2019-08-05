@@ -18,18 +18,19 @@ import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.time.temporal.ChronoField;
+import org.threeten.bp.DateTimeException;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.FormatStyle;
+import org.threeten.bp.temporal.ChronoField;
 
 import fr.frogdevelopment.pregnancycalendar.R;
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils;
 
 import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.AMENORRHEA;
 import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.CONCEPTION;
+import static java.lang.Integer.valueOf;
 
 public class InformationFragment extends Fragment {
 
@@ -160,9 +161,9 @@ public class InformationFragment extends Fragment {
     }
 
     private void refresh() {
-        mDay = Integer.valueOf(dayTextView.getText().toString());
-        mMonth = Integer.valueOf(monthTextView.getText().toString());
-        mYear = Integer.valueOf(yearTextView.getText().toString());
+        mDay = valueOf(dayTextView.getText().toString());
+        mMonth = valueOf(monthTextView.getText().toString());
+        mYear = valueOf(yearTextView.getText().toString());
 
         if (calculate()) {
             SharedPreferences.Editor editor = mSharedPref.edit();

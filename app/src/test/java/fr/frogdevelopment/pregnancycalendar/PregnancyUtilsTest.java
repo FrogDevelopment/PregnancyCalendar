@@ -11,8 +11,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import java.time.LocalDate;
+import org.threeten.bp.LocalDate;
 
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils;
 

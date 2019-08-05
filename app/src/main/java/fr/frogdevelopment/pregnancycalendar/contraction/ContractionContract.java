@@ -8,8 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
-import java.time.LocalDateTime;
+import org.threeten.bp.LocalDateTime;
 
 class ContractionContract implements BaseColumns {
 

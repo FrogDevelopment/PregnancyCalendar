@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.jakewharton.threetenabp.AndroidThreeTen;
+
 import fr.frogdevelopment.pregnancycalendar.contraction.ContractionFragment;
 import fr.frogdevelopment.pregnancycalendar.infos.InformationFragment;
 import fr.frogdevelopment.pregnancycalendar.settings.SettingsActivity;
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        AndroidThreeTen.init(this);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 

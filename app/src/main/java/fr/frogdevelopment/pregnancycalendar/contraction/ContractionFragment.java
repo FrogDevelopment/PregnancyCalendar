@@ -17,6 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
@@ -31,12 +32,13 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.time.temporal.ChronoUnit;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.FormatStyle;
+import org.threeten.bp.temporal.ChronoUnit;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -324,13 +326,13 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
         }
 
         @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             // not important, we don't want drag & drop
             return false;
         }
 
         @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                 View itemView = viewHolder.itemView;
 
@@ -372,7 +374,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
         }
 
         @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             mAdapter.remove(viewHolder);
         }
     }
@@ -437,8 +439,9 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
             }
         }
 
+        @NonNull
         @Override
-        public ContractionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ContractionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             // Inflate the custom layout
             View contactView = mInflater.inflate(R.layout.row_contraction, parent, false);
 
@@ -448,7 +451,7 @@ public class ContractionFragment extends Fragment implements LoaderManager.Loade
 
         // Involves populating data into the item through holder
         @Override
-        public void onBindViewHolder(final ContractionViewHolder viewHolder, int position) {
+        public void onBindViewHolder(@NonNull final ContractionViewHolder viewHolder, int position) {
             // Get the data model based on position
             final Contraction item = getItem(position);
 
