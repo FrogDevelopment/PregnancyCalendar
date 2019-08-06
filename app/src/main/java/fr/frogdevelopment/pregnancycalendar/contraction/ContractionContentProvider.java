@@ -89,14 +89,10 @@ public class ContractionContentProvider extends ContentProvider {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        switch (sURIMatcher.match(uri)) {
-
-            case CONTRACTIONS:
-                queryBuilder.setTables(ContractionContract.TABLE_NAME);
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
+        if (sURIMatcher.match(uri) == CONTRACTIONS) {
+            queryBuilder.setTables(ContractionContract.TABLE_NAME);
+        } else {
+            throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
         Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
@@ -112,13 +108,10 @@ public class ContractionContentProvider extends ContentProvider {
         SQLiteDatabase sqlDB = mOpenHelper.getWritableDatabase();
 
         long id;
-        switch (sURIMatcher.match(uri)) {
-            case CONTRACTIONS:
-                id = sqlDB.insert(ContractionContract.TABLE_NAME, null, contentValues);
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
+        if (sURIMatcher.match(uri) == CONTRACTIONS) {
+            id = sqlDB.insert(ContractionContract.TABLE_NAME, null, contentValues);
+        } else {
+            throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
         Uri newUri = ContentUris.withAppendedId(uri, id);
