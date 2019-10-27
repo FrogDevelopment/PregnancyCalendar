@@ -8,10 +8,11 @@ buildscript {
             url 'https://maven.google.com'
         }
         google()
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath 'com.android.tools.build:gradle:4.0.0-alpha01'
     }
 }
 
