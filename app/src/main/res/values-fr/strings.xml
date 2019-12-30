@@ -6,17 +6,18 @@
     <!---->
     <string name="tab_1">INFORMATIONS</string>
     <string name="tab_2">CONTRACTIONS</string>
+    <string name="title_home">Home</string>
+    <string name="title_chrono">Chrono</string>
+    <string name="title_parameters">Paramètres</string>
 
     <!---->
-    <string name="date_day">jour</string>
-    <string name="date_month">mois</string>
-    <string name="date_year">année</string>
+    <string name="date">Date</string>
+    <string name="date_hint">mm/dd/yyyy</string>
+    <string name="date_helper">jour, mois, année</string>
     <string name="date_amenorrhea">Aménorrhée</string>
     <string name="date_conception">Conception</string>
     <string name="date_calculate">Calculer</string>
-    <string name="date_error_day">Jour incorrecte</string>
-    <string name="date_error_month">Mois incorrecte</string>
-    <string name="date_error_year">Année incorrecte</string>
+    <string name="date_error">Date incorrecte</string>
 
     <!---->
     <string name="another_date_0">Date dernière règles :</string>

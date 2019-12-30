@@ -1,10 +1,10 @@
-<RelativeLayout android:id="@+id/chrono_layout"
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/background_chrono_stoped"
-                tools:context="fr.frogdevelopment.pregnancycalendar.contraction.ContractionFragment">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chrono_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_chrono_stoped"
+    tools:context=".ui.chrono.ContractionFragment">
 
     <Chronometer
         android:id="@+id/chronometer"
@@ -13,7 +13,7 @@
         android:format="%s"
         android:gravity="center"
         android:textColor="@android:color/darker_gray"
-        android:textSize="60sp"/>
+        android:textSize="60sp" />
 
     <Button
         android:id="@+id/chrono_button"
@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:drawableStart="@drawable/ic_start"
         android:text="@string/start"
-        android:textSize="40sp"/>
+        android:textSize="40sp" />
 
     <LinearLayout
         android:id="@+id/average_data"
@@ -31,34 +31,34 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/chrono_button"
         android:orientation="horizontal"
-        android:paddingEnd="10dp"
-        android:paddingStart="10dp">
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Interval moy :"/>
+            android:text="Interval moy :" />
 
         <TextView
             android:id="@+id/average_interval"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="07s"/>
+            android:text="07s" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Durée moy :"/>
+            android:text="Durée moy :" />
 
         <TextView
             android:id="@+id/average_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="07s"/>
+            android:text="07s" />
     </LinearLayout>
 
 
@@ -68,37 +68,37 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/average_data"
         android:orientation="horizontal"
-        android:paddingEnd="10dp"
-        android:paddingStart="10dp">
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/chrono_header_date"/>
+            android:text="@string/chrono_header_date" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/chrono_header_interval"/>
+            android:text="@string/chrono_header_interval" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/chrono_header_duration"/>
+            android:text="@string/chrono_header_duration" />
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chrono_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@id/chrono_header"/>
+        android:layout_below="@id/chrono_header"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

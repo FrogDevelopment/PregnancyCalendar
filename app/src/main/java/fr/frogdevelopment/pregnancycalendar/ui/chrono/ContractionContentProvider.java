@@ -2,7 +2,7 @@
  * Copyright (c) Frog Development 2015.
  */
 
-package fr.frogdevelopment.pregnancycalendar.contraction;
+package fr.frogdevelopment.pregnancycalendar.ui.chrono;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -15,16 +15,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class ContractionContentProvider extends ContentProvider {
 
     private class DictionaryOpenHelper extends SQLiteOpenHelper {
 
         // When changing the database schema, increment the database version.
-        private static final int    DATABASE_VERSION = 1;
-        private static final String DATABASE_NAME    = "PREGNANCY_CALENDAR";
+        private static final int DATABASE_VERSION = 1;
+        private static final String DATABASE_NAME = "PREGNANCY_CALENDAR";
 
         private DictionaryOpenHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -45,12 +46,12 @@ public class ContractionContentProvider extends ContentProvider {
 
     private DictionaryOpenHelper mOpenHelper;
 
-    public static final String AUTHORITY = "fr.frogdevelopment.pregnancycalendar.contraction.ContractionContentProvider";
+    public static final String AUTHORITY = "fr.frogdevelopment.pregnancycalendar.ui.contraction.ContractionContentProvider";
 
     private static final int CONTRACTION_ID = 10;
     private static final int CONTRACTIONS = 20;
     private static final String BASE_PATH_CONTRACTION = "contraction";
-    private static final String CONTENT_CONTRACTION_TYPE      = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + BASE_PATH_CONTRACTION + "s";
+    private static final String CONTENT_CONTRACTION_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + BASE_PATH_CONTRACTION + "s";
     private static final String CONTENT_CONTRACTION_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + BASE_PATH_CONTRACTION;
 
     public static final Uri URI_CONTRACTION = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CONTRACTION);

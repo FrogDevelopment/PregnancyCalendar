@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Frog Development 2015.
- */
-
 package fr.frogdevelopment.pregnancycalendar;
 
 import android.app.Activity;
@@ -17,7 +13,7 @@ public class SplashScreenActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen);
+        setContentView(R.layout.splash_screen_activity);
 
         new Handler().postDelayed(() -> {
             // This method will be executed once the timer is over

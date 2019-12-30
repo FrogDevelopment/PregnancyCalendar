@@ -15,17 +15,18 @@
     <!---->
     <string name="tab_1">INFORMATION</string>
     <string name="tab_2">CONTRACTIONS</string>
+    <string name="title_home">Home</string>
+    <string name="title_chrono">Chrono</string>
+    <string name="title_parameters">Parameters</string>
 
     <!---->
-    <string name="date_day">day</string>
-    <string name="date_month">month</string>
-    <string name="date_year">year</string>
+    <string name="date">Date</string>
+    <string name="date_hint">jj/mm/aaaa</string>
+    <string name="date_helper">date, month, year</string>
     <string name="date_amenorrhea">Amenorrhea</string>
     <string name="date_conception">Conception</string>
     <string name="date_calculate">Calculate</string>
-    <string name="date_error_day">Day incorrect</string>
-    <string name="date_error_month">Month incorrect</string>
-    <string name="date_error_year">Year incorrect</string>
+    <string name="date_error">Date incorrect</string>
 
     <!---->
     <string name="another_date_0">Last menstruation date :</string>

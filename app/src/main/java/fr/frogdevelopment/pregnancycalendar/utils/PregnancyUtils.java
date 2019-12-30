@@ -2,10 +2,11 @@ package fr.frogdevelopment.pregnancycalendar.utils;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
 
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.temporal.ChronoUnit;
+import androidx.annotation.NonNull;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import fr.frogdevelopment.pregnancycalendar.R;
 

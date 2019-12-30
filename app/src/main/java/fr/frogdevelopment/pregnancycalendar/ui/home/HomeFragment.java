@@ -1,51 +1,51 @@
-package fr.frogdevelopment.pregnancycalendar.infos;
+package fr.frogdevelopment.pregnancycalendar.ui.home;
 
-import android.app.DatePickerDialog;
-import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import org.threeten.bp.DateTimeException;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.FormatStyle;
-import org.threeten.bp.temporal.ChronoField;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import fr.frogdevelopment.pregnancycalendar.R;
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils;
 
 import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.AMENORRHEA;
 import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.CONCEPTION;
-import static java.lang.Integer.valueOf;
+import static java.time.format.DateTimeFormatter.BASIC_ISO_DATE;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-public class InformationFragment extends Fragment {
+public class HomeFragment extends Fragment {
 
     private LocalDate mNow;
-    private int mDay;
-    private int mMonth;
-    private int mYear;
     private int mTypeDate;
 
-    private TextInputLayout dayTextViewWrapper;
-    private TextInputEditText dayTextView;
-    private TextInputLayout monthTextViewWrapper;
-    private EditText monthTextView;
-    private TextInputLayout yearTextViewWrapper;
-    private TextInputEditText yearTextView;
+    private TextInputLayout dateTextViewWrapper;
+    private TextInputEditText dateTextView;
+
     private TextView birthRangeStart;
     private TextView birthRangeEnd;
     private TextView otherDateText;
@@ -54,9 +54,7 @@ public class InformationFragment extends Fragment {
     private TextView currentMonth;
     private TextView currentTrimester;
 
-    // https://developer.android.com/guide/topics/ui/controls/pickers.html#DatePicker ?
-
-    static final DateTimeFormatter ISO_DATE_FORMATTER = DateTimeFormatter.BASIC_ISO_DATE;
+    static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private DateTimeFormatter LONG_DATE_FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
 
     private LocalDate mMyDate;
@@ -65,16 +63,12 @@ public class InformationFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_information, container, false);
+        View rootView = inflater.inflate(R.layout.home_fragment, container, false);
 
-        pregnancyUtils = new PregnancyUtils(getActivity().getResources(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
+        pregnancyUtils = new PregnancyUtils(getResources(), PreferenceManager.getDefaultSharedPreferences(requireActivity()));
 
-        dayTextViewWrapper = rootView.findViewById(R.id.dayWrapper);
-        dayTextView = rootView.findViewById(R.id.day);
-        monthTextViewWrapper = rootView.findViewById(R.id.monthWrapper);
-        monthTextView = rootView.findViewById(R.id.month);
-        yearTextViewWrapper = rootView.findViewById(R.id.yearWrapper);
-        yearTextView = rootView.findViewById(R.id.year);
+        dateTextViewWrapper = rootView.findViewById(R.id.dateWrapper);
+        dateTextView = rootView.findViewById(R.id.date);
         otherDateText = rootView.findViewById(R.id.other_date_text);
         otherDateValue = rootView.findViewById(R.id.other_date_value);
         currentWeek = rootView.findViewById(R.id.current_week_value);
@@ -88,23 +82,18 @@ public class InformationFragment extends Fragment {
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String date = mSharedPref.getString("my_date", null);
 
-        if (date != null) {
-            mMyDate = LocalDate.parse(date, ISO_DATE_FORMATTER);
+        if (isNotBlank(date)) {
+            mMyDate = LocalDate.parse(date, getDateTimeFormatter(date));
+            dateTextView.setText(date);
         } else {
             mMyDate = mNow;
         }
 
-        mDay = mMyDate.getDayOfMonth();
-        mMonth = mMyDate.getMonthValue();
-        mYear = mMyDate.getYear();
         mTypeDate = mSharedPref.getInt("type_date", CONCEPTION);
 
-        dayTextView.setText(String.valueOf(mDay));
-        monthTextView.setText(String.valueOf(mMonth));
-        yearTextView.setText(String.valueOf(mYear));
-        yearTextView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+        dateTextView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-                InformationFragment.this.refresh();
+                refresh();
                 return true;
             }
 
@@ -130,76 +119,88 @@ public class InformationFragment extends Fragment {
                     break;
             }
 
-            InformationFragment.this.refresh();
+            refresh();
         });
 
-        ImageButton imageButton = rootView.findViewById(R.id.date_picker_button);
+        long today = MaterialDatePicker.todayInUtcMilliseconds();
+        Calendar calendar = getClearedUtc();
+
+        calendar.setTimeInMillis(today);
+        calendar.add(Calendar.MONTH, -9);
+        long nineMonthsAgo = calendar.getTimeInMillis();
+
+        calendar.setTimeInMillis(today);
+        calendar.add(Calendar.MONTH, 9);
+        long nineMonthsLater = calendar.getTimeInMillis();
+
+        MaterialButton imageButton = rootView.findViewById(R.id.date_picker_button);
         imageButton.setOnClickListener(view -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(InformationFragment.this.getActivity(), (view1, year, month, dayOfMonth) -> {
-                dayTextView.setText(String.valueOf(dayOfMonth));
-                monthTextView.setText(String.valueOf(month + 1/*base 0*/));
-                yearTextView.setText(String.valueOf(year));
 
-                InformationFragment.this.refresh();
+            CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+            constraintsBuilder.setStart(nineMonthsAgo);
+            constraintsBuilder.setEnd(nineMonthsLater);
+            constraintsBuilder.setOpenAt(today);
 
-            }, mYear, mMonth - 1/*base 0*/, mDay);
+            MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                    .setSelection(today)
+                    .setCalendarConstraints(constraintsBuilder.build())
+                    .build();
 
-            datePickerDialog.getDatePicker().setMinDate(mNow.minusYears(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond());
-            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+            datePicker.addOnPositiveButtonClickListener(selection -> {
+                mMyDate = Instant.ofEpochMilli(selection)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+                dateTextView.setText(mMyDate.format(DATE_FORMATTER));
+                refresh();
+            });
 
-            datePickerDialog.show();
+            datePicker.showNow(getParentFragmentManager(), datePicker.toString());
         });
 
         Button calculateButton = rootView.findViewById(R.id.calculate);
-        calculateButton.setOnClickListener(view -> InformationFragment.this.refresh());
+        calculateButton.setOnClickListener(view -> refresh());
 
-        calculate();
-
-        setHasOptionsMenu(true);
+        checkDateIsValid();
 
         return rootView;
     }
 
-    private void refresh() {
-        mDay = valueOf(dayTextView.getText().toString());
-        mMonth = valueOf(monthTextView.getText().toString());
-        mYear = valueOf(yearTextView.getText().toString());
+    private static Calendar getClearedUtc() {
+        Calendar utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        utc.clear();
+        return utc;
+    }
 
-        if (calculate()) {
+    private static DateTimeFormatter getDateTimeFormatter(String value) {
+        if (value.contains("/")) {
+            return DATE_FORMATTER;
+        } else {
+            return BASIC_ISO_DATE;
+        }
+    }
+
+    private void refresh() {
+        if (checkDateIsValid()) {
             SharedPreferences.Editor editor = mSharedPref.edit();
-            editor.putString("my_date", mMyDate.format(ISO_DATE_FORMATTER));
+            editor.putString("my_date", mMyDate.format(DATE_FORMATTER));
             editor.putInt("type_date", mTypeDate);
             editor.apply();
         }
     }
 
-    private boolean calculate() {
-        // check correct inputs
-        try {
-            dayTextViewWrapper.setError(null);
-            ChronoField.DAY_OF_MONTH.checkValidValue((long) mDay);
-        } catch (DateTimeException e) {
-            dayTextViewWrapper.setError(getString(R.string.date_error_day));
+    private boolean checkDateIsValid() {
+        String value = dateTextView.getText().toString();
+        if (isBlank(value)) {
             return false;
         }
 
         try {
-            monthTextViewWrapper.setError(null);
-            ChronoField.MONTH_OF_YEAR.checkValidValue((long) mMonth);
+            dateTextViewWrapper.setError(null);
+            mMyDate = LocalDate.parse(value, getDateTimeFormatter(value));
         } catch (DateTimeException e) {
-            monthTextViewWrapper.setError(getString(R.string.date_error_month));
+            dateTextViewWrapper.setError(getString(R.string.date_error));
             return false;
         }
-
-        try {
-            yearTextViewWrapper.setError(null);
-            ChronoField.YEAR.checkValidValue((long) mYear);
-        } catch (DateTimeException e) {
-            yearTextViewWrapper.setError(getString(R.string.date_error_year));
-            return false;
-        }
-
-        mMyDate = LocalDate.of(mYear, mMonth, mDay);
 
         LocalDate amenorrheaDate;
         LocalDate conceptionDate;

@@ -1,14 +1,12 @@
-/*
- * Copyright (c) Frog Development 2015.
- */
 
-package fr.frogdevelopment.pregnancycalendar.contraction;
+package fr.frogdevelopment.pregnancycalendar.ui.chrono;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.threeten.bp.LocalDateTime;
+
+import java.time.LocalDateTime;
 
 class ContractionContract implements BaseColumns {
 
