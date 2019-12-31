@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/chronometer"
         android:layout_centerHorizontal="true"
-        android:drawableStart="@drawable/ic_start"
+        android:drawableStart="@drawable/ic_baseline_play_arrow_24"
         android:text="@string/start"
         android:textSize="40sp" />
 

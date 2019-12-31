@@ -111,7 +111,7 @@ public class ContractionFragment extends Fragment {
         currentContraction.dateTime = LocalDateTime.now();
 
         mButton.setText(R.string.stop);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_stop, 0, 0, 0);
+        mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_stop_24, 0, 0, 0);
 
         mChronometer.setBase(SystemClock.elapsedRealtime());
         mChronometer.start();
@@ -127,7 +127,7 @@ public class ContractionFragment extends Fragment {
         mChronometer.stop();
         LocalDateTime mStopDateTime = LocalDateTime.now();
         mButton.setText(R.string.start);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_start, 0, 0, 0);
+        mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_play_arrow_24, 0, 0, 0);
 
         currentContraction.duration = ChronoUnit.MILLIS.between(currentContraction.dateTime, mStopDateTime);
 
@@ -302,7 +302,7 @@ public class ContractionFragment extends Fragment {
 
         private void init() {
             background = new ColorDrawable(Color.RED);
-            xMark = ContextCompat.getDrawable(context, R.drawable.ic_delete);
+            xMark = ContextCompat.getDrawable(context, R.drawable.ic_baseline_delete_24);
             xMark.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
             xMarkMargin = (int) context.getResources().getDimension(R.dimen.ic_clear_margin);
             initiated = true;
