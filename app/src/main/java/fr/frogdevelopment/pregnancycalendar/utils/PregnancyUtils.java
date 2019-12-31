@@ -22,11 +22,11 @@ public class PregnancyUtils {
     public static final String KEY_GESTATION_MAX = "pref_key_gestation_max";
 
     private static int getValue(Context context, String keyDaysToFecundation, int id) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt(keyDaysToFecundation, getDefaultValue(context, id));
+        return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(keyDaysToFecundation, getDefaultValue(context, id)));
     }
 
-    private static int getDefaultValue(Context context, int id) {
-        return context.getResources().getInteger(id);
+    private static String getDefaultValue(Context context, int id) {
+        return context.getResources().getString(id);
     }
 
     // ****************************************************************************************

@@ -17,4 +17,9 @@
         android:label="@string/title_chrono"
         tools:layout="@layout/chrono_fragment" />
 
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="fr.frogdevelopment.pregnancycalendar.ui.settings.SettingsFragment"
+        android:label="@string/title_settings" />
+
 </navigation>

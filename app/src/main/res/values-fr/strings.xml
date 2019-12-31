@@ -8,7 +8,7 @@
     <string name="tab_2">CONTRACTIONS</string>
     <string name="title_home">Home</string>
     <string name="title_chrono">Chrono</string>
-    <string name="title_parameters">Paramètres</string>
+    <string name="title_settings">Configuration</string>
 
     <!---->
     <string name="date">Date</string>
@@ -55,10 +55,13 @@
     <string name="chrono_header_duration">Durée</string>
 
     <!---->
-    <string name="pref_gestation_title">Durée de gestation</string>
-    <string name="pref_gestation_min_title">Minimum</string>
-    <string name="pref_gestation_max_title">Maximum</string>
-    <string name="pref_days_title">Jours entre la fécondation et la conception</string>
-    <string name="pref_days_to_fecundation_title">Nb Jours</string>
+    <string name="settings_gestation_title">Durée de gestation</string>
+    <string name="settings_gestation_min_title">Minimum</string>
+    <string name="settings_gestation_max_title">Maximum</string>
+    <string name="settings_days_title">Jours entre la fécondation et la conception</string>
+    <string name="settings_days_to_fecundation_title">Nb Jours</string>
+    <string name="settings_about_application">Application</string>
+    <string name="settings_about_version_title">Version</string>
+    <string name="settings_about_build_title">Build</string>
 
 </resources>

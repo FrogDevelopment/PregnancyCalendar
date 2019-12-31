@@ -1,42 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="frog_development" translatable="false">FROG DEVELOPMENT</string>
-    <string name="start" translatable="false">START</string>
-    <string name="stop" translatable="false">STOP</string>
-
     <integer name="default_gestation_min" translatable="false">280</integer>
     <integer name="default_gestation_max" translatable="false">290</integer>
     <integer name="default_days_to_fecundation" translatable="false">14</integer>
 
-
-    <string name="app_name">Pregnancy Calendar</string>
-    <string name="action_settings">Settings</string>
-
-    <!---->
-    <string name="tab_1">INFORMATION</string>
-    <string name="tab_2">CONTRACTIONS</string>
-    <string name="title_home">Home</string>
-    <string name="title_chrono">Chrono</string>
-    <string name="title_parameters">Parameters</string>
-
-    <!---->
-    <string name="menu_calendar">Calendar</string>
-    <string name="date_value">With selected date %1$s as</string>
-    <string name="date">Date</string>
-    <string name="date_hint">jj/mm/aaaa</string>
-    <string name="date_helper">date, month, year</string>
-    <string name="date_amenorrhea">Amenorrhea</string>
-    <string name="date_conception">Conception</string>
-    <string name="date_calculate">Calculate</string>
-    <string name="date_error">Date incorrect</string>
-
-    <!---->
-    <string name="another_date_0">Last menstruation date :</string>
-    <string name="another_date_1">Conception date :</string>
-    <string name="current_week">Current week :</string>
-    <string name="current_month">Current month :</string>
-    <string name="current_trimester">Current trimester :</string>
-    <string name="month_month">month %1$d</string>
     <plurals name="week_n">
         <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> week</item>
         <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> week</item>
@@ -49,6 +16,39 @@
         <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> trimester</item>
         <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> trimester</item>
     </plurals>
+
+
+    <string name="frog_development" translatable="false">FROG DEVELOPMENT</string>
+    <string name="start" translatable="false">START</string>
+
+    <!---->
+    <string name="stop" translatable="false">STOP</string>
+    <string name="app_name">Pregnancy Calendar</string>
+    <string name="action_settings">Settings</string>
+    <string name="tab_1">INFORMATION</string>
+    <string name="tab_2">CONTRACTIONS</string>
+
+    <!---->
+    <string name="title_home">Home</string>
+    <string name="title_chrono">Chrono</string>
+    <string name="title_settings">Settings</string>
+    <string name="menu_calendar">Calendar</string>
+    <string name="date_value">With selected date %1$s as</string>
+    <string name="date">Date</string>
+    <string name="date_hint">jj/mm/aaaa</string>
+    <string name="date_helper">date, month, year</string>
+    <string name="date_amenorrhea">Amenorrhea</string>
+
+    <!---->
+    <string name="date_conception">Conception</string>
+    <string name="date_calculate">Calculate</string>
+    <string name="date_error">Date incorrect</string>
+    <string name="another_date_0">Last menstruation date :</string>
+    <string name="another_date_1">Conception date :</string>
+    <string name="current_week">Current week :</string>
+    <string name="current_month">Current month :</string>
+    <string name="current_trimester">Current trimester :</string>
+    <string name="month_month">month %1$d</string>
     <string name="birth_range">Birth expected between</string>
     <string name="birth_range_and">and</string>
 
@@ -63,11 +63,14 @@
     <string name="chrono_header_interval">Interval</string>
     <string name="chrono_header_duration">Duration</string>
 
-    <!---->
-    <string name="pref_gestation_title">Gestation duration</string>
-    <string name="pref_gestation_min_title">Minimum</string>
-    <string name="pref_gestation_max_title">Maximum</string>
-    <string name="pref_days_title">Days between fecundation and conception</string>
-    <string name="pref_days_to_fecundation_title">Nb Days</string>
+    <!-- SETTINGS -->
+    <string name="settings_gestation_title">Gestation duration</string>
+    <string name="settings_gestation_min_title">Minimum</string>
+    <string name="settings_gestation_max_title">Maximum</string>
+    <string name="settings_days_title">Days between fecundation and conception</string>
+    <string name="settings_days_to_fecundation_title">Nb Days</string>
+    <string name="settings_about_application">Application</string>
+    <string name="settings_about_version_title">Version</string>
+    <string name="settings_about_build_title">Build</string>
 
 </resources>
