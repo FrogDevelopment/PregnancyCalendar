@@ -12,6 +12,7 @@
 
     <!---->
     <string name="date">Date</string>
+    <string name="date_value">Avec la date sélectionnée %1$s comme</string>
     <string name="date_hint">mm/dd/yyyy</string>
     <string name="date_helper">jour, mois, année</string>
     <string name="date_amenorrhea">Aménorrhée</string>

@@ -21,6 +21,7 @@
 
     <!---->
     <string name="menu_calendar">Calendar</string>
+    <string name="date_value">With selected date %1$s as</string>
     <string name="date">Date</string>
     <string name="date_hint">jj/mm/aaaa</string>
     <string name="date_helper">date, month, year</string>
