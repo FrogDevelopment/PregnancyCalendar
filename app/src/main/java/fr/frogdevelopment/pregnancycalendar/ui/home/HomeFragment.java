@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
@@ -33,6 +33,18 @@ import java.util.TimeZone;
 import fr.frogdevelopment.pregnancycalendar.R;
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils;
 
+import static fr.frogdevelopment.pregnancycalendar.R.id.action_calendar;
+import static fr.frogdevelopment.pregnancycalendar.R.id.birth_range_end;
+import static fr.frogdevelopment.pregnancycalendar.R.id.birth_range_start;
+import static fr.frogdevelopment.pregnancycalendar.R.id.current_month_value;
+import static fr.frogdevelopment.pregnancycalendar.R.id.current_trimester_value;
+import static fr.frogdevelopment.pregnancycalendar.R.id.current_week_value;
+import static fr.frogdevelopment.pregnancycalendar.R.id.date_value;
+import static fr.frogdevelopment.pregnancycalendar.R.id.other_date_text;
+import static fr.frogdevelopment.pregnancycalendar.R.id.other_date_value;
+import static fr.frogdevelopment.pregnancycalendar.R.id.toggle_amenorrhea;
+import static fr.frogdevelopment.pregnancycalendar.R.id.toggle_button_group;
+import static fr.frogdevelopment.pregnancycalendar.R.id.toggle_conception;
 import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.AMENORRHEA;
 import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.CONCEPTION;
 import static java.time.ZoneOffset.UTC;
@@ -72,14 +84,14 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View rootView, @Nullable Bundle savedInstanceState) {
-        dateTextView = rootView.findViewById(R.id.date_value);
-        otherDateText = rootView.findViewById(R.id.other_date_text);
-        otherDateValue = rootView.findViewById(R.id.other_date_value);
-        currentWeek = rootView.findViewById(R.id.current_week_value);
-        currentMonth = rootView.findViewById(R.id.current_month_value);
-        currentTrimester = rootView.findViewById(R.id.current_trimester_value);
-        birthRangeStart = rootView.findViewById(R.id.birth_range_start);
-        birthRangeEnd = rootView.findViewById(R.id.birth_range_end);
+        dateTextView = rootView.findViewById(date_value);
+        otherDateText = rootView.findViewById(other_date_text);
+        otherDateValue = rootView.findViewById(other_date_value);
+        currentWeek = rootView.findViewById(current_week_value);
+        currentMonth = rootView.findViewById(current_month_value);
+        currentTrimester = rootView.findViewById(current_trimester_value);
+        birthRangeStart = rootView.findViewById(birth_range_start);
+        birthRangeEnd = rootView.findViewById(birth_range_end);
 
         String date = mSharedPref.getString("my_date", null);
 
@@ -92,29 +104,15 @@ public class HomeFragment extends Fragment {
 
         mTypeDate = mSharedPref.getInt("type_date", CONCEPTION);
 
-        RadioGroup toggle = rootView.findViewById(R.id.toggle);
-        switch (mTypeDate) {
-            case AMENORRHEA:
-                toggle.check(R.id.amenorrhea);
-                break;
-            case CONCEPTION:
-                toggle.check(R.id.conception);
-                break;
-        }
-        toggle.setOnCheckedChangeListener((radioGroup, i) -> {
-            switch (i) {
-                case R.id.amenorrhea:
-                    mTypeDate = AMENORRHEA;
-                    break;
-                case R.id.conception:
-                    mTypeDate = CONCEPTION;
-                    break;
+        MaterialButtonToggleGroup group = rootView.findViewById(toggle_button_group);
+        group.check(mTypeDate == AMENORRHEA ? toggle_amenorrhea : toggle_conception);
+        group.addOnButtonCheckedListener((group1, checkedId, isChecked) -> {
+            if (isChecked) {
+                mTypeDate = checkedId == toggle_amenorrhea ? AMENORRHEA : CONCEPTION;
             }
 
             refresh();
         });
-
-        checkDateIsValid();
     }
 
     @Override
@@ -124,7 +122,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_calendar) {
+        if (item.getItemId() == action_calendar) {
             long today = MaterialDatePicker.todayInUtcMilliseconds();
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(UTC));
             calendar.clear();
@@ -164,8 +162,8 @@ public class HomeFragment extends Fragment {
 
     private void refresh() {
         if (checkDateIsValid()) {
-
             processDate();
+            save();
         }
     }
 
@@ -219,8 +217,6 @@ public class HomeFragment extends Fragment {
 
         birthRangeStart.setText(pregnancyUtils.getBirthRangeStart(amenorrheaDate).format(LONG_DATE_FORMATTER));
         birthRangeEnd.setText(pregnancyUtils.getBirthRangeEnd(amenorrheaDate).format(LONG_DATE_FORMATTER));
-
-        save();
     }
 
     private void save() {

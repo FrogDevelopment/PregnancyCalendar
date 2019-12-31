@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -13,47 +14,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RadioGroup
-            android:id="@+id/toggle"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@+id/date_value"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="50dp"
-            android:background="@drawable/background_radio_group"
-            android:checkedButton="@+id/amenorrhea"
-            android:orientation="horizontal">
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggle_button_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/date_value">
 
-            <RadioButton
-                android:id="@+id/amenorrhea"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/background_radio_button"
-                android:button="@null"
-                android:gravity="center"
-                android:text="@string/date_amenorrhea"
-                android:textColor="@android:color/white" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/toggle_amenorrhea"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date_amenorrhea" />
 
-            <RadioButton
-                android:id="@+id/conception"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/background_radio_button"
-                android:button="@null"
-                android:gravity="center"
-                android:text="@string/date_conception"
-                android:textColor="@android:color/white" />
-        </RadioGroup>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/toggle_conception"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date_conception" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <!-- http://stackoverflow.com/a/33231991/244911 -->
         <TableLayout
             android:id="@+id/table_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/toggle"
+            android:layout_below="@+id/toggle_button_group"
             android:layout_marginTop="20dp">
 
             <TableRow>
