@@ -18,6 +18,7 @@
     <string name="date_conception">Conception</string>
     <string name="date_calculate">Calculer</string>
     <string name="date_error">Date incorrecte</string>
+    <string name="menu_calendar">Calendrier</string>
 
     <!---->
     <string name="another_date_0">Date dernière règles :</string>

@@ -5,20 +5,21 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.DateTimeException;
 import java.time.Instant;
@@ -34,18 +35,17 @@ import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils;
 
 import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.AMENORRHEA;
 import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.CONCEPTION;
-import static java.time.format.DateTimeFormatter.BASIC_ISO_DATE;
+import static java.time.ZoneOffset.UTC;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class HomeFragment extends Fragment {
 
-    private LocalDate mNow;
+    private static DateTimeFormatter LONG_DATE_FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
+
     private int mTypeDate;
 
-    private TextInputLayout dateTextViewWrapper;
-    private TextInputEditText dateTextView;
-
+    private TextView dateTextView;
     private TextView birthRangeStart;
     private TextView birthRangeEnd;
     private TextView otherDateText;
@@ -53,9 +53,6 @@ public class HomeFragment extends Fragment {
     private TextView currentWeek;
     private TextView currentMonth;
     private TextView currentTrimester;
-
-    static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private DateTimeFormatter LONG_DATE_FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
 
     private LocalDate mMyDate;
     private SharedPreferences mSharedPref;
@@ -66,9 +63,16 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.home_fragment, container, false);
 
         pregnancyUtils = new PregnancyUtils(getResources(), PreferenceManager.getDefaultSharedPreferences(requireActivity()));
+        mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        dateTextViewWrapper = rootView.findViewById(R.id.dateWrapper);
-        dateTextView = rootView.findViewById(R.id.date);
+        setHasOptionsMenu(true);
+
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View rootView, @Nullable Bundle savedInstanceState) {
+        dateTextView = rootView.findViewById(R.id.date_value);
         otherDateText = rootView.findViewById(R.id.other_date_text);
         otherDateValue = rootView.findViewById(R.id.other_date_value);
         currentWeek = rootView.findViewById(R.id.current_week_value);
@@ -77,28 +81,16 @@ public class HomeFragment extends Fragment {
         birthRangeStart = rootView.findViewById(R.id.birth_range_start);
         birthRangeEnd = rootView.findViewById(R.id.birth_range_end);
 
-        mNow = LocalDate.now();
-
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String date = mSharedPref.getString("my_date", null);
 
         if (isNotBlank(date)) {
-            mMyDate = LocalDate.parse(date, getDateTimeFormatter(date));
             dateTextView.setText(date);
+            refresh();
         } else {
-            mMyDate = mNow;
+            // fixme prompt to menu action
         }
 
         mTypeDate = mSharedPref.getInt("type_date", CONCEPTION);
-
-        dateTextView.setOnEditorActionListener((textView, actionId, keyEvent) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-                refresh();
-                return true;
-            }
-
-            return false;
-        });
 
         RadioGroup toggle = rootView.findViewById(R.id.toggle);
         switch (mTypeDate) {
@@ -122,86 +114,84 @@ public class HomeFragment extends Fragment {
             refresh();
         });
 
-        long today = MaterialDatePicker.todayInUtcMilliseconds();
-        Calendar calendar = getClearedUtc();
+        checkDateIsValid();
+    }
 
-        calendar.setTimeInMillis(today);
-        calendar.add(Calendar.MONTH, -9);
-        long nineMonthsAgo = calendar.getTimeInMillis();
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.home, menu);
+    }
 
-        calendar.setTimeInMillis(today);
-        calendar.add(Calendar.MONTH, 9);
-        long nineMonthsLater = calendar.getTimeInMillis();
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_calendar) {
+            long today = MaterialDatePicker.todayInUtcMilliseconds();
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(UTC));
+            calendar.clear();
 
-        MaterialButton imageButton = rootView.findViewById(R.id.date_picker_button);
-        imageButton.setOnClickListener(view -> {
+            calendar.setTimeInMillis(today);
+            calendar.add(Calendar.MONTH, -9);
+            long nineMonthsAgo = calendar.getTimeInMillis();
+
+            calendar.setTimeInMillis(today);
+            calendar.add(Calendar.MONTH, 9);
+            long nineMonthsLater = calendar.getTimeInMillis();
+
+            long openSelection = mMyDate == null ? today : mMyDate.atStartOfDay().toInstant(UTC).toEpochMilli();
 
             CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
             constraintsBuilder.setStart(nineMonthsAgo);
             constraintsBuilder.setEnd(nineMonthsLater);
-            constraintsBuilder.setOpenAt(today);
+            constraintsBuilder.setOpenAt(openSelection);
 
             MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
-                    .setSelection(today)
+                    .setSelection(openSelection)
                     .setCalendarConstraints(constraintsBuilder.build())
                     .build();
 
             datePicker.addOnPositiveButtonClickListener(selection -> {
-                mMyDate = Instant.ofEpochMilli(selection)
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate();
-                dateTextView.setText(mMyDate.format(DATE_FORMATTER));
+                dateTextView.setText(LONG_DATE_FORMATTER.format(Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault())));
                 refresh();
             });
 
-            datePicker.showNow(getParentFragmentManager(), datePicker.toString());
-        });
+            datePicker.showNow(getChildFragmentManager(), datePicker.toString());
 
-        Button calculateButton = rootView.findViewById(R.id.calculate);
-        calculateButton.setOnClickListener(view -> refresh());
-
-        checkDateIsValid();
-
-        return rootView;
-    }
-
-    private static Calendar getClearedUtc() {
-        Calendar utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        utc.clear();
-        return utc;
-    }
-
-    private static DateTimeFormatter getDateTimeFormatter(String value) {
-        if (value.contains("/")) {
-            return DATE_FORMATTER;
-        } else {
-            return BASIC_ISO_DATE;
+            return true;
         }
+
+        return false;
     }
 
     private void refresh() {
         if (checkDateIsValid()) {
-            SharedPreferences.Editor editor = mSharedPref.edit();
-            editor.putString("my_date", mMyDate.format(DATE_FORMATTER));
-            editor.putInt("type_date", mTypeDate);
-            editor.apply();
+
+            processDate();
         }
     }
 
     private boolean checkDateIsValid() {
-        String value = dateTextView.getText().toString();
+        CharSequence value = dateTextView.getText();
         if (isBlank(value)) {
+            notifyInvalidDate();
             return false;
         }
 
         try {
-            dateTextViewWrapper.setError(null);
-            mMyDate = LocalDate.parse(value, getDateTimeFormatter(value));
+            mMyDate = LocalDate.parse(value, LONG_DATE_FORMATTER);
         } catch (DateTimeException e) {
-            dateTextViewWrapper.setError(getString(R.string.date_error));
+            notifyInvalidDate();
             return false;
         }
 
+        return true;
+    }
+
+    private void notifyInvalidDate() {
+        // fixme
+        Toast.makeText(requireContext(), "Invalid date", Toast.LENGTH_SHORT).show();
+    }
+
+    private void processDate() {
         LocalDate amenorrheaDate;
         LocalDate conceptionDate;
         if (mTypeDate == AMENORRHEA) {
@@ -230,6 +220,13 @@ public class HomeFragment extends Fragment {
         birthRangeStart.setText(pregnancyUtils.getBirthRangeStart(amenorrheaDate).format(LONG_DATE_FORMATTER));
         birthRangeEnd.setText(pregnancyUtils.getBirthRangeEnd(amenorrheaDate).format(LONG_DATE_FORMATTER));
 
-        return true;
+        save();
+    }
+
+    private void save() {
+        SharedPreferences.Editor editor = mSharedPref.edit();
+        editor.putString("my_date", dateTextView.getText().toString());
+        editor.putInt("type_date", mTypeDate);
+        editor.apply();
     }
 }
