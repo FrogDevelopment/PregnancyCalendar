@@ -5,3 +5,4 @@
 .idea/
 app/libs/
 
+/app/release/*.aab
