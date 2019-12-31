@@ -2,7 +2,6 @@ package fr.frogdevelopment.pregnancycalendar.ui.home;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.datepicker.CalendarConstraints;
@@ -71,14 +71,12 @@ public class HomeFragment extends Fragment {
     private String mDateValue;
     private LocalDate mMyDate;
     private SharedPreferences mSharedPref;
-    private PregnancyUtils pregnancyUtils;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.home_fragment, container, false);
 
-        pregnancyUtils = new PregnancyUtils(getResources(), PreferenceManager.getDefaultSharedPreferences(requireActivity()));
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mSharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
         setHasOptionsMenu(true);
 
@@ -182,29 +180,29 @@ public class HomeFragment extends Fragment {
         LocalDate conceptionDate;
         if (mTypeDate == AMENORRHEA) {
             amenorrheaDate = mMyDate;
-            conceptionDate = pregnancyUtils.getConceptionDate(amenorrheaDate);
+            conceptionDate = PregnancyUtils.getConceptionDate(requireContext(), amenorrheaDate);
 
             otherDateText.setText(getString(another_date_1));
             otherDateValue.setText(conceptionDate.format(LONG_DATE_FORMATTER));
         } else {
             conceptionDate = mMyDate;
-            amenorrheaDate = pregnancyUtils.getAmenorrheaDate(conceptionDate);
+            amenorrheaDate = PregnancyUtils.getAmenorrheaDate(requireContext(), conceptionDate);
 
             otherDateText.setText(getString(another_date_0));
             otherDateValue.setText(amenorrheaDate.format(LONG_DATE_FORMATTER));
         }
 
-        int currentWeek = pregnancyUtils.getCurrentWeek(amenorrheaDate);
+        int currentWeek = PregnancyUtils.getCurrentWeek(amenorrheaDate);
         this.currentWeek.setText(fromHtml(getResources().getQuantityString(R.plurals.week_n, currentWeek, currentWeek), FROM_HTML_MODE_LEGACY));
 
-        int currentMonth = pregnancyUtils.getCurrentMonth(conceptionDate);
+        int currentMonth = PregnancyUtils.getCurrentMonth(conceptionDate);
         this.currentMonth.setText(fromHtml(getResources().getQuantityString(R.plurals.month_n, currentMonth, currentMonth), FROM_HTML_MODE_LEGACY));
 
-        int currentTrimester = pregnancyUtils.getCurrentTrimester(currentWeek);
+        int currentTrimester = PregnancyUtils.getCurrentTrimester(currentWeek);
         this.currentTrimester.setText(fromHtml(getResources().getQuantityString(R.plurals.trimester_n, currentTrimester, currentTrimester), FROM_HTML_MODE_LEGACY));
 
-        birthRangeStart.setText(pregnancyUtils.getBirthRangeStart(amenorrheaDate).format(LONG_DATE_FORMATTER));
-        birthRangeEnd.setText(pregnancyUtils.getBirthRangeEnd(amenorrheaDate).format(LONG_DATE_FORMATTER));
+        birthRangeStart.setText(PregnancyUtils.getBirthRangeStart(requireContext(), amenorrheaDate).format(LONG_DATE_FORMATTER));
+        birthRangeEnd.setText(PregnancyUtils.getBirthRangeEnd(requireContext(), amenorrheaDate).format(LONG_DATE_FORMATTER));
     }
 
     private void save() {

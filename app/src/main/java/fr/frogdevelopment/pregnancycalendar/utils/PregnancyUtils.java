@@ -1,14 +1,16 @@
 package fr.frogdevelopment.pregnancycalendar.utils;
 
-import android.content.SharedPreferences;
-import android.content.res.Resources;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import fr.frogdevelopment.pregnancycalendar.R;
+import static fr.frogdevelopment.pregnancycalendar.R.integer.default_days_to_fecundation;
+import static fr.frogdevelopment.pregnancycalendar.R.integer.default_gestation_max;
+import static fr.frogdevelopment.pregnancycalendar.R.integer.default_gestation_min;
 
 public class PregnancyUtils {
 
@@ -19,74 +21,51 @@ public class PregnancyUtils {
     public static final String KEY_GESTATION_MIN = "pref_key_gestation_min";
     public static final String KEY_GESTATION_MAX = "pref_key_gestation_max";
 
-    private final Resources mResources;
-    private final SharedPreferences mSharedPref;
-
-    public PregnancyUtils(Resources resources, SharedPreferences sharedPref) {
-        this.mResources = resources;
-        this.mSharedPref = sharedPref;
+    private static int getValue(Context context, String keyDaysToFecundation, int id) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt(keyDaysToFecundation, getDefaultValue(context, id));
     }
 
-    private static int parseInt(String stringValue, int defaultValue) {
-        int intValue = defaultValue;
-        if (stringValue != null) {
-            try {
-                intValue = Integer.parseInt(stringValue);
-            } catch (NumberFormatException e) {
-                return intValue;
-            }
-        }
-
-        return intValue;
+    private static int getDefaultValue(Context context, int id) {
+        return context.getResources().getInteger(id);
     }
 
     // ****************************************************************************************
     // http://aly-abbara.com/utilitaires/calendrier/calendrier_de_grossesse.html
     // http://aly-abbara.com/utilitaires/calendrier/calculatrice_age_de_grossesse.html
-
     // http://www.guidegrossesse.com/grossesse/duree-d-une-grossesse.htm
-
     // http://naitreetgrandir.com/fr/grossesse/trimestre1/fiche.aspx?doc=duree-grossesse
 
     @NonNull
-    public LocalDate getAmenorrheaDate(LocalDate conceptionDate) {
-        String value = mSharedPref.getString(KEY_DAYS_TO_FECUNDATION, null);
-        int defaultValue = mResources.getInteger(R.integer.default_days_to_fecundation);
-        return conceptionDate.minusDays(parseInt(value, defaultValue));
+    public static LocalDate getAmenorrheaDate(Context context, LocalDate conceptionDate) {
+        return conceptionDate.minusDays(getValue(context, KEY_DAYS_TO_FECUNDATION, default_days_to_fecundation));
     }
 
     @NonNull
-    public LocalDate getConceptionDate(LocalDate amenorrheaDate) {
-        String value = mSharedPref.getString(KEY_DAYS_TO_FECUNDATION, null);
-        int defaultValue = mResources.getInteger(R.integer.default_days_to_fecundation);
-        return amenorrheaDate.plusDays(parseInt(value, defaultValue));
+    public static LocalDate getConceptionDate(Context context, LocalDate amenorrheaDate) {
+        return amenorrheaDate.plusDays(getValue(context, KEY_DAYS_TO_FECUNDATION, default_days_to_fecundation));
     }
 
     @NonNull
-    public LocalDate getBirthRangeStart(LocalDate amenorrheaDate) {
-        String value = mSharedPref.getString(KEY_GESTATION_MIN, null);
-        int defaultValue = mResources.getInteger(R.integer.default_gestation_min);
-        return amenorrheaDate.plusDays(parseInt(value, defaultValue));
+    public static LocalDate getBirthRangeStart(Context context, LocalDate amenorrheaDate) {
+        return amenorrheaDate.plusDays(getValue(context, KEY_GESTATION_MIN, default_gestation_min));
     }
 
     @NonNull
-    public LocalDate getBirthRangeEnd(LocalDate amenorrheaDate) {
-        String value = mSharedPref.getString(KEY_GESTATION_MAX, null);
-        int defaultValue = mResources.getInteger(R.integer.default_gestation_max);
-        return amenorrheaDate.plusDays(parseInt(value, defaultValue));
+    public static LocalDate getBirthRangeEnd(Context context, LocalDate amenorrheaDate) {
+        return amenorrheaDate.plusDays(getValue(context, KEY_GESTATION_MAX, default_gestation_max));
     }
 
-    public int getCurrentMonth(LocalDate conceptionDate) {
+    public static int getCurrentMonth(LocalDate conceptionDate) {
         return (int) (ChronoUnit.MONTHS.between(conceptionDate, LocalDate.now()) + 1);
         // +1 => current month (0 unit) is as 1
     }
 
-    public int getCurrentWeek(LocalDate amenorrheaDate) {
+    public static int getCurrentWeek(LocalDate amenorrheaDate) {
         return (int) (ChronoUnit.WEEKS.between(amenorrheaDate, LocalDate.now()) + 1);
         // +1 => current week (0 unit) is as 1
     }
 
-    public int getCurrentTrimester(int currentWeek) {
+    public static int getCurrentTrimester(int currentWeek) {
         int currentTrimester;
         if (currentWeek <= 14) {
             currentTrimester = 1;
