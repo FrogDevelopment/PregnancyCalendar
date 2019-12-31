@@ -1,5 +1,6 @@
 package fr.frogdevelopment.pregnancycalendar;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
@@ -11,19 +12,21 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.threeten.bp.LocalDate;
+
+import java.time.LocalDate;
 
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils;
 
 import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.KEY_DAYS_TO_FECUNDATION;
 import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.KEY_GESTATION_MAX;
 import static fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.KEY_GESTATION_MIN;
+import static org.mockito.BDDMockito.given;
 
 @RunWith(JUnit4.class)
 public class PregnancyUtilsTest {
 
-	private PregnancyUtils pregnancyUtils;
-
+	@Mock
+	private Context context;
 	@Mock
 	private Resources mMockResources;
 
@@ -33,7 +36,8 @@ public class PregnancyUtilsTest {
 	@Before
 	public void initMocks() {
 		MockitoAnnotations.initMocks(this);
-		pregnancyUtils = new PregnancyUtils(mMockResources, mMockSharedPreferences);
+		given(context.getResources())
+				.willReturn(mMockResources);
 	}
 
 	@Test
@@ -41,10 +45,11 @@ public class PregnancyUtilsTest {
 		int nbDays = 14;
 		LocalDate now = LocalDate.now();
 
-		Mockito.doReturn(null).when(mMockSharedPreferences).getString(KEY_DAYS_TO_FECUNDATION, null);
+		Mockito.doReturn(null)
+				.when(mMockSharedPreferences).getString(KEY_DAYS_TO_FECUNDATION, null);
 		Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.default_days_to_fecundation);
 
-		LocalDate amenorrheaDate = pregnancyUtils.getAmenorrheaDate(now);
+		LocalDate amenorrheaDate = PregnancyUtils.getAmenorrheaDate(context, now);
 
 		Assert.assertEquals(now.minusDays(nbDays), amenorrheaDate);
 	}
@@ -56,7 +61,7 @@ public class PregnancyUtilsTest {
 
 		Mockito.doReturn(nbDays).when(mMockSharedPreferences).getString(KEY_DAYS_TO_FECUNDATION, null);
 
-		LocalDate amenorrheaDate = pregnancyUtils.getAmenorrheaDate(now);
+		LocalDate amenorrheaDate = PregnancyUtils.getAmenorrheaDate(context, now);
 
 		Mockito.verifyZeroInteractions(mMockResources);
 
@@ -71,7 +76,7 @@ public class PregnancyUtilsTest {
 		Mockito.doReturn(null).when(mMockSharedPreferences).getString(KEY_DAYS_TO_FECUNDATION, null);
 		Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.default_days_to_fecundation);
 
-		LocalDate conceptionDate = pregnancyUtils.getConceptionDate(now);
+		LocalDate conceptionDate = PregnancyUtils.getConceptionDate(context, now);
 
 		Assert.assertEquals(now.plusDays(nbDays), conceptionDate);
 	}
@@ -83,7 +88,7 @@ public class PregnancyUtilsTest {
 
 		Mockito.doReturn(nbDays).when(mMockSharedPreferences).getString(KEY_DAYS_TO_FECUNDATION, null);
 
-		LocalDate conceptionDate = pregnancyUtils.getConceptionDate(now);
+		LocalDate conceptionDate = PregnancyUtils.getConceptionDate(context, now);
 
 		Mockito.verifyZeroInteractions(mMockResources);
 
@@ -98,7 +103,7 @@ public class PregnancyUtilsTest {
 		Mockito.doReturn(null).when(mMockSharedPreferences).getString(KEY_GESTATION_MIN, null);
 		Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.default_gestation_min);
 
-		LocalDate birthRangeStart = pregnancyUtils.getBirthRangeStart(now);
+		LocalDate birthRangeStart = PregnancyUtils.getBirthRangeStart(context, now);
 
 		Assert.assertEquals(now.plusDays(nbDays), birthRangeStart);
 	}
@@ -110,7 +115,7 @@ public class PregnancyUtilsTest {
 
 		Mockito.doReturn(nbDays).when(mMockSharedPreferences).getString(KEY_GESTATION_MIN, null);
 
-		LocalDate birthRangeStart = pregnancyUtils.getBirthRangeStart(now);
+		LocalDate birthRangeStart = PregnancyUtils.getBirthRangeStart(context, now);
 
 		Mockito.verifyZeroInteractions(mMockResources);
 
@@ -125,7 +130,7 @@ public class PregnancyUtilsTest {
 		Mockito.doReturn(null).when(mMockSharedPreferences).getString(KEY_GESTATION_MAX, null);
 		Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.default_gestation_max);
 
-		LocalDate birthRangeEnd = pregnancyUtils.getBirthRangeEnd(now);
+		LocalDate birthRangeEnd = PregnancyUtils.getBirthRangeEnd(context, now);
 
 		Assert.assertEquals(now.plusDays(nbDays), birthRangeEnd);
 	}
@@ -137,7 +142,7 @@ public class PregnancyUtilsTest {
 
 		Mockito.doReturn(nbDays).when(mMockSharedPreferences).getString(KEY_GESTATION_MAX, null);
 
-		LocalDate birthRangeEnd = pregnancyUtils.getBirthRangeEnd(now);
+		LocalDate birthRangeEnd = PregnancyUtils.getBirthRangeEnd(context, now);
 
 		Mockito.verifyZeroInteractions(mMockResources);
 
@@ -146,14 +151,14 @@ public class PregnancyUtilsTest {
 
 	@Test
 	public void test_getCurrentMonth() {
-		long currentMonth = pregnancyUtils.getCurrentMonth(LocalDate.now().minusMonths(3));
+		long currentMonth = PregnancyUtils.getCurrentMonth(LocalDate.now().minusMonths(3));
 
 		Assert.assertEquals(currentMonth, 4);
 	}
 
 	@Test
 	public void test_getCurrentWeek() {
-		long currentWeek = pregnancyUtils.getCurrentWeek(LocalDate.now().minusWeeks(3));
+		long currentWeek = PregnancyUtils.getCurrentWeek(LocalDate.now().minusWeeks(3));
 
 		Assert.assertEquals(currentWeek, 4);
 	}

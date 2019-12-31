@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'androidx.navigation.safeargs'
 
 android {
@@ -46,7 +48,15 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
+    // kotlin
+    implementation "androidx.core:core-ktx:1.2.0-rc01"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     // Room components
     def room_version = '2.2.3'
     implementation "androidx.room:room-runtime:$room_version"
@@ -57,6 +67,7 @@ dependencies {
     // Lifecycle components
     def archLifecycleVersion = '2.2.0-rc03'
     implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"
     annotationProcessor "androidx.lifecycle:lifecycle-common-java8:$archLifecycleVersion"
 
     // Testing
