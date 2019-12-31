@@ -3,7 +3,6 @@ package fr.frogdevelopment.pregnancycalendar.ui.home;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +31,8 @@ import java.util.TimeZone;
 import fr.frogdevelopment.pregnancycalendar.R;
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils;
 
+import static android.text.Html.FROM_HTML_MODE_LEGACY;
+import static android.text.Html.fromHtml;
 import static fr.frogdevelopment.pregnancycalendar.R.id.action_calendar;
 import static fr.frogdevelopment.pregnancycalendar.R.id.birth_range_end;
 import static fr.frogdevelopment.pregnancycalendar.R.id.birth_range_start;
@@ -194,13 +195,13 @@ public class HomeFragment extends Fragment {
         }
 
         int currentWeek = pregnancyUtils.getCurrentWeek(amenorrheaDate);
-        this.currentWeek.setText(Html.fromHtml(getResources().getQuantityString(R.plurals.week_n, currentWeek, currentWeek)));
+        this.currentWeek.setText(fromHtml(getResources().getQuantityString(R.plurals.week_n, currentWeek, currentWeek), FROM_HTML_MODE_LEGACY));
 
         int currentMonth = pregnancyUtils.getCurrentMonth(conceptionDate);
-        this.currentMonth.setText(Html.fromHtml(getResources().getQuantityString(R.plurals.month_n, currentMonth, currentMonth)));
+        this.currentMonth.setText(fromHtml(getResources().getQuantityString(R.plurals.month_n, currentMonth, currentMonth), FROM_HTML_MODE_LEGACY));
 
         int currentTrimester = pregnancyUtils.getCurrentTrimester(currentWeek);
-        this.currentTrimester.setText(Html.fromHtml(getResources().getQuantityString(R.plurals.trimester_n, currentTrimester, currentTrimester)));
+        this.currentTrimester.setText(fromHtml(getResources().getQuantityString(R.plurals.trimester_n, currentTrimester, currentTrimester), FROM_HTML_MODE_LEGACY));
 
         birthRangeStart.setText(pregnancyUtils.getBirthRangeStart(amenorrheaDate).format(LONG_DATE_FORMATTER));
         birthRangeEnd.setText(pregnancyUtils.getBirthRangeEnd(amenorrheaDate).format(LONG_DATE_FORMATTER));
