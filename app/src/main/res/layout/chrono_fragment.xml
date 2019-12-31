@@ -17,7 +17,7 @@
 
     <Button
         android:id="@+id/chrono_button"
-        android:layout_width="200dp"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/chronometer"
         android:layout_centerHorizontal="true"

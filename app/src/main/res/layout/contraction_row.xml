@@ -1,51 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="50dp"
-              android:background="?android:attr/activatedBackgroundIndicator"
-              android:gravity="bottom"
-              android:orientation="horizontal"
-              android:paddingEnd="10dp"
-              android:paddingStart="10dp">
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/row_contraction_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12/16/2016"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/row_contraction_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="16:18:23"
+                android:textSize="25sp" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/row_contraction_date"
-            android:layout_width="wrap_content"
+            android:id="@+id/row_contraction_last"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="12/16/2016"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"/>
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="18:23"
+            android:textSize="25sp" />
 
         <TextView
-            android:id="@+id/row_contraction_time"
-            android:layout_width="wrap_content"
+            android:id="@+id/row_contraction_duration"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="16:18:23"
-            android:textSize="25sp"/>
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="05:11"
+            android:textSize="25sp" />
+
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/row_contraction_last"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:text="18:23"
-        android:textSize="25sp"/>
-
-    <TextView
-        android:id="@+id/row_contraction_duration"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:text="05:11"
-        android:textSize="25sp"/>
-
-</LinearLayout>
+</androidx.cardview.widget.CardView>

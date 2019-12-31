@@ -1,16 +1,11 @@
 package fr.frogdevelopment.pregnancycalendar.ui.chrono;
 
+import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
@@ -22,7 +17,7 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -81,14 +76,13 @@ public class ContractionFragment extends Fragment {
         mAverageDuration = mRootView.findViewById(R.id.average_duration);
 
         mRecyclerView = mRootView.findViewById(R.id.chrono_list);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(itemDecoration);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
 
-        mAdapter = new ContractionAdapter();
+        mAdapter = new ContractionAdapter(requireActivity());
         mRecyclerView.setAdapter(mAdapter);
 
-        mItemTouchHelper = new ItemTouchHelper(new SwipeToDelete(ItemTouchHelper.ACTION_STATE_IDLE, ItemTouchHelper.LEFT, getActivity()));
+        mItemTouchHelper = new ItemTouchHelper(new SwipeToDelete(requireContext(), viewHolder -> mAdapter.remove(viewHolder)));
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
 //        getLoaderManager().initLoader(666, null, this);
@@ -173,7 +167,7 @@ public class ContractionFragment extends Fragment {
 
             cursor.close();
         }
-        getLoaderManager().destroyLoader(loader.getId());
+//        getLoaderManager().destroyLoader(loader.getId());
     }
 
     private void computeStats() {
@@ -284,84 +278,6 @@ public class ContractionFragment extends Fragment {
 ////        }
 //    }
 
-    private class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
-
-        // we want to cache these and not allocate anything repeatedly in the onChildDraw method
-        private Drawable background;
-        private Drawable xMark;
-
-        private int xMarkMargin;
-
-        private boolean initiated;
-        private Context context;
-
-        SwipeToDelete(int dragDirs, int swipeDirs, Context context) {
-            super(dragDirs, swipeDirs);
-            this.context = context;
-        }
-
-        private void init() {
-            background = new ColorDrawable(Color.RED);
-            xMark = ContextCompat.getDrawable(context, R.drawable.ic_baseline_delete_24);
-            xMark.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-            xMarkMargin = (int) context.getResources().getDimension(R.dimen.ic_clear_margin);
-            initiated = true;
-        }
-
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            // not important, we don't want drag & drop
-            return false;
-        }
-
-        @Override
-        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-                View itemView = viewHolder.itemView;
-
-                // not sure why, but this method get's called for viewholder that are already swiped away
-                if (viewHolder.getAdapterPosition() == -1) {
-                    // not interested in those
-                    System.out.println();
-                    return;
-                }
-
-                if (!initiated) {
-                    init();
-                }
-
-                // draw red background
-                background.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-                background.draw(c);
-
-                if (dX <= -70) {
-                    // draw x mark
-                    int itemHeight = itemView.getBottom() - itemView.getTop();
-                    int intrinsicWidth = xMark.getIntrinsicWidth();
-                    int intrinsicHeight = xMark.getIntrinsicWidth();
-
-                    int xMarkLeft = itemView.getRight() - xMarkMargin - intrinsicWidth;
-                    int xMarkRight = itemView.getRight() - xMarkMargin;
-                    int xMarkTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
-                    int xMarkBottom = xMarkTop + intrinsicHeight;
-                    xMark.setBounds(xMarkLeft, xMarkTop, xMarkRight, xMarkBottom);
-
-                    xMark.draw(c);
-
-                }
-            } else {
-                System.out.println();
-            }
-
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-        }
-
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            mAdapter.remove(viewHolder);
-        }
-    }
-
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
 
@@ -372,8 +288,8 @@ public class ContractionFragment extends Fragment {
         private final Locale locale = Locale.getDefault();
         private final List<Contraction> mRows = new ArrayList<>();
 
-        ContractionAdapter() {
-            mInflater = getActivity().getLayoutInflater();
+        ContractionAdapter(@NonNull Activity activity) {
+            mInflater = activity.getLayoutInflater();
 
             registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
                 @Override
@@ -440,6 +356,11 @@ public class ContractionFragment extends Fragment {
 
             if (item == null) {
                 return;
+            }
+
+            if (viewHolder.itemView instanceof CardView) {
+                CardView cardView = (CardView) viewHolder.itemView;
+                cardView.setRadius(0);
             }
 
             viewHolder.date.setText(item.dateTime.format(dateFormatter));
@@ -512,8 +433,8 @@ public class ContractionFragment extends Fragment {
                             public void onDismissed(Snackbar transientBottomBar, int event) {
                                 if (event == DISMISS_EVENT_TIMEOUT) {
                                     // remove from data base if Undo action not clicked
-                                    Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
-                                    getActivity().getContentResolver().delete(uri, null, null);
+//                                    Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
+//                                    getActivity().getContentResolver().delete(uri, null, null);
                                 }
                             }
                         })
