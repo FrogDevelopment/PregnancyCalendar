@@ -24,7 +24,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -41,8 +40,6 @@ import static java.time.temporal.ChronoUnit.MILLIS;
 public class ContractionFragment extends Fragment {
 
     private ChronoViewModel chronoViewModel;
-
-    private ZoneId zoneId = ZoneId.systemDefault();
 
     private View mRootView;
     private Chronometer mChronometer;
@@ -84,7 +81,7 @@ public class ContractionFragment extends Fragment {
         mItemTouchHelper = new ItemTouchHelper(new SwipeToDelete(requireContext(), viewHolder -> mAdapter.remove(viewHolder)));
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
-        chronoViewModel.getAllContractions().observe(getViewLifecycleOwner(), contractions -> mAdapter.addAll(contractions));
+        chronoViewModel.getAllContractions().observe(getViewLifecycleOwner(), contractions -> mAdapter.setContractions(contractions));
 
         setHasOptionsMenu(true);
 
@@ -111,25 +108,22 @@ public class ContractionFragment extends Fragment {
 
         mAdapter.add(currentContraction);
 
-        mRootView.setBackgroundResource(R.drawable.background_chrono_started);
+//        mRootView.setBackgroundResource(R.drawable.background_chrono_started);
 
         mItemTouchHelper.attachToRecyclerView(null);
     }
 
     private void stop() {
         mChronometer.stop();
-        LocalDateTime stopDateTime = LocalDateTime.now();
+
         mButton.setText(R.string.start);
         mButton.setIcon(getResources().getDrawable(R.drawable.ic_baseline_play_arrow_24, null));
 
-        currentContraction.duration = MILLIS.between(currentContraction.dateTime, stopDateTime);
+        currentContraction.duration = MILLIS.between(currentContraction.dateTime, LocalDateTime.now());
 
         chronoViewModel.insert(currentContraction);
-//        currentContraction.id = String.valueOf(newId);
 
-        mAdapter.notifyItemChanged(0);
-
-        mRootView.setBackgroundResource(R.drawable.background_chrono_stoped);
+//        mRootView.setBackgroundResource(R.drawable.background_chrono_stoped);
         mChronometer.setBase(SystemClock.elapsedRealtime());
         currentContraction = null;
 
@@ -281,7 +275,8 @@ public class ContractionFragment extends Fragment {
             mLayoutManager.scrollToPosition(0);
         }
 
-        void addAll(List<Contraction> contractions) {
+        void setContractions(List<Contraction> contractions) {
+            mRows.clear();
             mRows.addAll(contractions);
             notifyDataSetChanged();
         }

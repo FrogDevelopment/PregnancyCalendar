@@ -8,8 +8,6 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import io.reactivex.Single;
-
 @Dao
 public interface ContractionDao {
 
@@ -17,7 +15,7 @@ public interface ContractionDao {
     LiveData<List<Contraction>> getAll();
 
     @Insert
-    Single<Long> insert(Contraction contraction);
+    void insert(Contraction contraction);
 
     @Delete
     void delete(Contraction contraction);
