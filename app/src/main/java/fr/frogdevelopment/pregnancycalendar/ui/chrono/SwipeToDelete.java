@@ -59,6 +59,10 @@ class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
         int cornerRadius = 30;
         View itemView = viewHolder.itemView;
 
+        int iconMargin = (itemView.getHeight() - mTrashIcon.getIntrinsicHeight()) / 2;
+        int iconTop = itemView.getTop() + iconMargin;
+        int iconBottom = iconTop + mTrashIcon.getIntrinsicHeight();
+
         if (dX > 0) { // Swiping to the right
             // Draw background
             mBackground.setBounds(
@@ -69,10 +73,10 @@ class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
             );
             // Draw the delete icon
             mTrashIcon.setBounds(
-                    itemView.getLeft() + mIconMargin,
-                    viewHolder.itemView.getTop() + mIconMargin,
-                    itemView.getLeft() + mIconMargin + mTrashIcon.getIntrinsicWidth(),
-                    viewHolder.itemView.getTop() + mTrashIcon.getIntrinsicHeight() + mIconMargin
+                    itemView.getLeft() + iconMargin,
+                    iconTop,
+                    itemView.getLeft() + iconMargin + mTrashIcon.getIntrinsicWidth(),
+                    iconBottom
             );
         } else if (dX < 0) { // Swiping to the left
             // Draw background
@@ -84,10 +88,10 @@ class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
             );
             // Draw the delete icon
             mTrashIcon.setBounds(
-                    itemView.getRight() - mIconMargin - mTrashIcon.getIntrinsicWidth(),
-                    viewHolder.itemView.getTop() + mIconMargin,
-                    itemView.getRight() - mIconMargin,
-                    viewHolder.itemView.getTop() + mTrashIcon.getIntrinsicHeight() + mIconMargin
+                    itemView.getRight() - iconMargin - mTrashIcon.getIntrinsicWidth(),
+                    iconTop,
+                    itemView.getRight() - iconMargin,
+                    iconBottom
             );
         } else { // view is unSwiped
             cornerRadius = 0;
