@@ -1,10 +1,6 @@
 package fr.frogdevelopment.pregnancycalendar.ui.chrono;
 
 import android.app.Activity;
-import android.content.ContentValues;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -12,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
@@ -25,21 +20,23 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import fr.frogdevelopment.pregnancycalendar.R;
-import fr.frogdevelopment.pregnancycalendar.ui.chrono.ContractionContract.Contraction;
+import fr.frogdevelopment.pregnancycalendar.data.Contraction;
+
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MILLIS;
 
 public class ContractionFragment extends Fragment {
 
@@ -49,7 +46,7 @@ public class ContractionFragment extends Fragment {
 
     private View mRootView;
     private Chronometer mChronometer;
-    private Button mButton;
+    private MaterialButton mButton;
 
     private TextView mAverageInterval;
     private TextView mAverageDuration;
@@ -58,6 +55,7 @@ public class ContractionFragment extends Fragment {
     private Contraction currentContraction;
     private ItemTouchHelper mItemTouchHelper;
     private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,7 +74,8 @@ public class ContractionFragment extends Fragment {
         mAverageDuration = mRootView.findViewById(R.id.average_duration);
 
         mRecyclerView = mRootView.findViewById(R.id.chrono_list);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        mLayoutManager = new LinearLayoutManager(requireContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
 
         mAdapter = new ContractionAdapter(requireActivity());
@@ -85,7 +84,7 @@ public class ContractionFragment extends Fragment {
         mItemTouchHelper = new ItemTouchHelper(new SwipeToDelete(requireContext(), viewHolder -> mAdapter.remove(viewHolder)));
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
-//        getLoaderManager().initLoader(666, null, this);
+        chronoViewModel.getAllContractions().observe(getViewLifecycleOwner(), contractions -> mAdapter.addAll(contractions));
 
         setHasOptionsMenu(true);
 
@@ -105,7 +104,7 @@ public class ContractionFragment extends Fragment {
         currentContraction.dateTime = LocalDateTime.now();
 
         mButton.setText(R.string.stop);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_stop_24, 0, 0, 0);
+        mButton.setIcon(getResources().getDrawable(R.drawable.ic_baseline_stop_24, null));
 
         mChronometer.setBase(SystemClock.elapsedRealtime());
         mChronometer.start();
@@ -119,19 +118,13 @@ public class ContractionFragment extends Fragment {
 
     private void stop() {
         mChronometer.stop();
-        LocalDateTime mStopDateTime = LocalDateTime.now();
+        LocalDateTime stopDateTime = LocalDateTime.now();
         mButton.setText(R.string.start);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_play_arrow_24, 0, 0, 0);
+        mButton.setIcon(getResources().getDrawable(R.drawable.ic_baseline_play_arrow_24, null));
 
-        currentContraction.duration = ChronoUnit.MILLIS.between(currentContraction.dateTime, mStopDateTime);
+        currentContraction.duration = MILLIS.between(currentContraction.dateTime, stopDateTime);
 
-        final ContentValues values = new ContentValues();
-        values.put(ContractionContract.DATETIME, currentContraction.dateTime.atZone(zoneId).toEpochSecond());
-        values.put(ContractionContract.DURATION, currentContraction.duration);
-
-//        Uri insertUri = getActivity().getContentResolver().insert(ContractionContentProvider.URI_CONTRACTION, values);
-
-//        long newId = ContentUris.parseId(insertUri);
+        chronoViewModel.insert(currentContraction);
 //        currentContraction.id = String.valueOf(newId);
 
         mAdapter.notifyItemChanged(0);
@@ -141,33 +134,6 @@ public class ContractionFragment extends Fragment {
         currentContraction = null;
 
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
-    }
-
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(getActivity(), ContractionContentProvider.URI_CONTRACTION, ContractionContract.COLUMNS, null, null, null);
-    }
-
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        mAdapter.clear();
-
-        if (cursor != null) {
-            List<Contraction> items = new ArrayList<>();
-            Contraction item;
-            while (cursor.moveToNext()) {
-                item = new Contraction();
-                item.id = cursor.getString(ContractionContract.INDEX_ID);
-                item.dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(cursor.getLong(ContractionContract.INDEX_DATETIME)), zoneId);
-                item.duration = cursor.getLong(ContractionContract.INDEX_DURATION);
-
-                // Add the definition to the list
-                items.add(item);
-            }
-
-            mAdapter.addAll(items);
-
-            cursor.close();
-        }
-//        getLoaderManager().destroyLoader(loader.getId());
     }
 
     private void computeStats() {
@@ -193,10 +159,10 @@ public class ContractionFragment extends Fragment {
                     continue;
                 }
 
-                long durationSinceLast = ChronoUnit.HOURS.between(contraction.dateTime, last.dateTime);
+                long durationSinceLast = HOURS.between(contraction.dateTime, last.dateTime);
 
                 if (durationSinceLast < 2) {
-                    intervals.add(ChronoUnit.MILLIS.between(contraction.dateTime.plus(contraction.duration, ChronoUnit.MILLIS), previous.dateTime));
+                    intervals.add(MILLIS.between(contraction.dateTime.plus(contraction.duration, MILLIS), previous.dateTime));
                     durations.add(contraction.duration);
                 } else {
                     // no need to loop any more
@@ -214,7 +180,7 @@ public class ContractionFragment extends Fragment {
                     totalInterval += interval;
                 }
 
-                Long averageInterval = totalInterval / intervals.size();
+                long averageInterval = totalInterval / intervals.size();
                 String labelInterval = mAdapter.millisecondsToLabel(averageInterval);
                 mAverageInterval.setText(labelInterval);
 
@@ -225,7 +191,7 @@ public class ContractionFragment extends Fragment {
                     totalDuration += duration;
                 }
 
-                Long averageDuration = totalDuration / durations.size();
+                long averageDuration = totalDuration / durations.size();
                 String labelDuration = mAdapter.millisecondsToLabel(averageDuration);
                 mAverageDuration.setText(labelDuration);
             }
@@ -312,7 +278,7 @@ public class ContractionFragment extends Fragment {
         void add(Contraction contraction) {
             mRows.add(contraction);
             notifyItemInserted(0);
-            mRecyclerView.getLayoutManager().scrollToPosition(0);
+            mLayoutManager.scrollToPosition(0);
         }
 
         void addAll(List<Contraction> contractions) {
@@ -374,7 +340,7 @@ public class ContractionFragment extends Fragment {
 
             Contraction previous = getItem(position + 1); // +1 as reverse order ...
             if (previous != null) {
-                long durationSincePrevious = ChronoUnit.MILLIS.between(previous.dateTime.plus(previous.duration, ChronoUnit.MILLIS), item.dateTime);
+                long durationSincePrevious = MILLIS.between(previous.dateTime.plus(previous.duration, MILLIS), item.dateTime);
                 viewHolder.last.setText(millisecondsToLabel(durationSincePrevious));
             } else {
                 viewHolder.last.setText("--:--");
@@ -433,8 +399,7 @@ public class ContractionFragment extends Fragment {
                             public void onDismissed(Snackbar transientBottomBar, int event) {
                                 if (event == DISMISS_EVENT_TIMEOUT) {
                                     // remove from data base if Undo action not clicked
-//                                    Uri uri = Uri.parse(ContractionContentProvider.URI_CONTRACTION + "/" + item.id);
-//                                    getActivity().getContentResolver().delete(uri, null, null);
+                                    chronoViewModel.delete(item);
                                 }
                             }
                         })
@@ -443,7 +408,7 @@ public class ContractionFragment extends Fragment {
         }
     }
 
-    class ContractionViewHolder extends RecyclerView.ViewHolder {
+    static class ContractionViewHolder extends RecyclerView.ViewHolder {
 
         final TextView date;
         final TextView time;
