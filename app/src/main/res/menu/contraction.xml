@@ -3,8 +3,8 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_delete"
-        android:icon="@drawable/ic_baseline_delete_24"
+        android:icon="@drawable/ic_baseline_delete_forever_24"
         android:orderInCategory="100"
-        android:title="Delete"
+        android:title="@string/delete_positive_button"
         app:showAsAction="always"/>
 </menu>

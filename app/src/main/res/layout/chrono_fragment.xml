@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chrono_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,21 +15,11 @@
         android:textColor="@android:color/darker_gray"
         android:textSize="60sp" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/chrono_button"
-        android:layout_width="220dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/chronometer"
-        android:layout_centerHorizontal="true"
-        app:icon="@drawable/ic_baseline_play_arrow_24"
-        android:text="@string/start"
-        android:textSize="40sp" />
-
     <LinearLayout
         android:id="@+id/average_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/chrono_button"
+        android:layout_below="@id/chronometer"
         android:orientation="horizontal"
         android:paddingStart="10dp"
         android:paddingEnd="10dp">
@@ -98,7 +88,18 @@
         android:id="@+id/chrono_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/chrono_header"
-        android:layout_alignParentBottom="true" />
+        android:layout_above="@id/chrono_button"
+        android:layout_below="@id/chrono_header" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/chrono_button"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:icon="@drawable/ic_baseline_play_arrow_24"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="40dp" />
 
 </RelativeLayout>

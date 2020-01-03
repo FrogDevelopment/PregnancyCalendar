@@ -116,7 +116,6 @@ public class ContractionFragment extends Fragment {
         mCurrentContraction = new Contraction();
         mCurrentContraction.dateTime = LocalDateTime.now();
 
-        mButton.setText(R.string.stop);
         mButton.setIcon(getResources().getDrawable(R.drawable.ic_baseline_stop_24, null));
 
         mChronometer.setBase(SystemClock.elapsedRealtime());
@@ -131,7 +130,6 @@ public class ContractionFragment extends Fragment {
     private void stop() {
         mChronometer.stop();
 
-        mButton.setText(R.string.start);
         mButton.setIcon(getResources().getDrawable(R.drawable.ic_baseline_play_arrow_24, null));
 
         mCurrentContraction.duration = MILLIS.between(mCurrentContraction.dateTime, LocalDateTime.now());

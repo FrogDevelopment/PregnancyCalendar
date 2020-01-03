@@ -19,10 +19,7 @@
 
 
     <string name="frog_development" translatable="false">FROG DEVELOPMENT</string>
-    <string name="start" translatable="false">START</string>
-
     <!---->
-    <string name="stop" translatable="false">STOP</string>
     <string name="app_name">Pregnancy Calendar</string>
     <string name="action_settings">Settings</string>
     <string name="tab_1">INFORMATION</string>
@@ -53,7 +50,7 @@
     <string name="birth_range_and">and</string>
 
     <!---->
-    <string name="delete_title">Deleting</string>
+    <string name="delete_title">Attention</string>
     <string name="delete_confirmation">You\'re going to delete all records</string>
     <string name="delete_positive_button">Delete</string>
     <string name="delete_deleted">Deleted</string>

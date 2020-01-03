@@ -44,7 +44,7 @@
     </plurals>
 
     <!---->
-    <string name="delete_title">Suppression</string>
+    <string name="delete_title">Attention</string>
     <string name="delete_confirmation">Vous êtes sur le point d\'effacer tous les enregistrements</string>
     <string name="delete_positive_button">Supprimer</string>
     <string name="delete_deleted">Supprimé</string>
