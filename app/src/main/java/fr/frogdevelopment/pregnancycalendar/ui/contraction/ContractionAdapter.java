@@ -1,4 +1,4 @@
-package fr.frogdevelopment.pregnancycalendar.ui.chrono;
+package fr.frogdevelopment.pregnancycalendar.ui.contraction;
 
 import android.app.Activity;
 import android.view.LayoutInflater;

@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_chrono"
-        android:name="fr.frogdevelopment.pregnancycalendar.ui.chrono.ContractionFragment"
+        android:name="fr.frogdevelopment.pregnancycalendar.ui.contraction.ContractionFragment"
         android:label="@string/title_chrono"
-        tools:layout="@layout/chrono_fragment" />
+        tools:layout="@layout/contraction_fragment" />
 
     <fragment
         android:id="@+id/navigation_settings"

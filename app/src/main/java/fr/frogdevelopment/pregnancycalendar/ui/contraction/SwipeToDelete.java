@@ -1,4 +1,4 @@
-package fr.frogdevelopment.pregnancycalendar.ui.chrono;
+package fr.frogdevelopment.pregnancycalendar.ui.contraction;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -1,4 +1,4 @@
-package fr.frogdevelopment.pregnancycalendar.ui.chrono
+package fr.frogdevelopment.pregnancycalendar.ui.contraction
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -8,7 +8,7 @@ import fr.frogdevelopment.pregnancycalendar.data.Contraction
 import fr.frogdevelopment.pregnancycalendar.data.ContractionRepository
 import kotlinx.coroutines.launch
 
-class ChronoViewModel(application: Application) : AndroidViewModel(application) {
+class ContractionViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: ContractionRepository = ContractionRepository(application)
 

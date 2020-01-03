@@ -1,4 +1,4 @@
-package fr.frogdevelopment.pregnancycalendar.ui.chrono;
+package fr.frogdevelopment.pregnancycalendar.ui.contraction;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -39,7 +39,7 @@ import static java.time.temporal.ChronoUnit.MILLIS;
 
 public class ContractionFragment extends Fragment {
 
-    private ChronoViewModel mChronoViewModel;
+    private ContractionViewModel mContractionViewModel;
 
     private Chronometer mChronometer;
     private MaterialButton mButton;
@@ -55,11 +55,11 @@ public class ContractionFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mChronoViewModel = new ViewModelProvider(this).get(ChronoViewModel.class);
+        mContractionViewModel = new ViewModelProvider(this).get(ContractionViewModel.class);
 
         setHasOptionsMenu(true);
 
-        return inflater.inflate(R.layout.chrono_fragment, container, false);
+        return inflater.inflate(R.layout.contraction_fragment, container, false);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ContractionFragment extends Fragment {
         mItemTouchHelper = new ItemTouchHelper(new SwipeToDelete(requireContext(), this::remove));
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
-        mChronoViewModel.getAllContractions().observe(getViewLifecycleOwner(), contractions -> mAdapter.setContractions(contractions));
+        mContractionViewModel.getAllContractions().observe(getViewLifecycleOwner(), contractions -> mAdapter.setContractions(contractions));
     }
 
     private void startOrStop() {
@@ -134,7 +134,7 @@ public class ContractionFragment extends Fragment {
 
         mCurrentContraction.duration = MILLIS.between(mCurrentContraction.dateTime, LocalDateTime.now());
 
-        mChronoViewModel.insert(mCurrentContraction);
+        mContractionViewModel.insert(mCurrentContraction);
 
         mChronometer.setBase(SystemClock.elapsedRealtime());
         mCurrentContraction = null;
@@ -199,7 +199,7 @@ public class ContractionFragment extends Fragment {
             new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.delete_title)
                     .setMessage(R.string.delete_confirmation)
-                    .setPositiveButton(R.string.delete_positive_button, (dialog, which) -> mChronoViewModel.deleteAll())
+                    .setPositiveButton(R.string.delete_positive_button, (dialog, which) -> mContractionViewModel.deleteAll())
                     .setNegativeButton(android.R.string.cancel, null)
                     .show();
 
@@ -230,7 +230,7 @@ public class ContractionFragment extends Fragment {
                         public void onDismissed(Snackbar transientBottomBar, int event) {
                             if (event == DISMISS_EVENT_TIMEOUT) {
                                 // remove from data base if Undo action not clicked
-                                mChronoViewModel.delete(item);
+                                mContractionViewModel.delete(item);
                             }
                         }
                     })
