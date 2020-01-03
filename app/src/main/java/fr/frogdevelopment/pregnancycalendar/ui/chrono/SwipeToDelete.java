@@ -16,6 +16,7 @@ import fr.frogdevelopment.pregnancycalendar.R;
 
 import static androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_IDLE;
 import static androidx.recyclerview.widget.ItemTouchHelper.LEFT;
+import static androidx.recyclerview.widget.ItemTouchHelper.RIGHT;
 
 class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
 
@@ -32,7 +33,7 @@ class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
     private final int mIconMargin;
 
     SwipeToDelete(Context context, DeleteListener deleteListener) {
-        super(ACTION_STATE_IDLE, LEFT);
+        super(ACTION_STATE_IDLE, LEFT | RIGHT);
         this.mDeleteListener = deleteListener;
 
         mBackground = new ColorDrawable(Color.RED);
@@ -54,16 +55,29 @@ class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
             return;
         }
 
-        if (dX < 0) { // Swiping to the left
-            View itemView = viewHolder.itemView;
-            if (viewHolder.itemView instanceof CardView) {
-                CardView cardView = (CardView) viewHolder.itemView;
-                cardView.setRadius(30);
-            }
+        int backgroundCornerOffset = 20;
+        int cornerRadius = 30;
+        View itemView = viewHolder.itemView;
 
+        if (dX > 0) { // Swiping to the right
             // Draw background
             mBackground.setBounds(
-                    itemView.getRight() + (int) dX,
+                    itemView.getLeft(),
+                    itemView.getTop(),
+                    itemView.getLeft() + (int) dX + backgroundCornerOffset,
+                    itemView.getBottom()
+            );
+            // Draw the delete icon
+            mTrashIcon.setBounds(
+                    itemView.getLeft() + mIconMargin,
+                    viewHolder.itemView.getTop() + mIconMargin,
+                    itemView.getLeft() + mIconMargin + mTrashIcon.getIntrinsicWidth(),
+                    viewHolder.itemView.getTop() + mTrashIcon.getIntrinsicHeight() + mIconMargin
+            );
+        } else if (dX < 0) { // Swiping to the left
+            // Draw background
+            mBackground.setBounds(
+                    itemView.getRight() + (int) dX - backgroundCornerOffset,
                     itemView.getTop(),
                     itemView.getRight(),
                     itemView.getBottom()
@@ -76,17 +90,18 @@ class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
                     viewHolder.itemView.getTop() + mTrashIcon.getIntrinsicHeight() + mIconMargin
             );
         } else { // view is unSwiped
+            cornerRadius = 0;
             mBackground.setBounds(0, 0, 0, 0);
             mTrashIcon.setBounds(0, 0, 0, 0);
-
-            if (viewHolder.itemView instanceof CardView) {
-                CardView cardView = (CardView) viewHolder.itemView;
-                cardView.setRadius(0);
-            }
         }
 
         mBackground.draw(c);
         mTrashIcon.draw(c);
+
+        if (viewHolder.itemView instanceof CardView) {
+            CardView cardView = (CardView) viewHolder.itemView;
+            cardView.setRadius(cornerRadius);
+        }
     }
 
     @Override
