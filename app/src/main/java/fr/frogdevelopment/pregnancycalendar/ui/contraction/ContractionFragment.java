@@ -1,37 +1,36 @@
 package fr.frogdevelopment.pregnancycalendar.ui.contraction;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.ActivityNavigator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.frogdevelopment.pregnancycalendar.R;
 import fr.frogdevelopment.pregnancycalendar.data.Contraction;
+import fr.frogdevelopment.pregnancycalendar.ui.chrono.ChronoActivity;
 
 import static fr.frogdevelopment.pregnancycalendar.utils.DateLabelUtils.millisecondsToLabel;
 import static java.time.temporal.ChronoUnit.HOURS;
@@ -41,17 +40,10 @@ public class ContractionFragment extends Fragment {
 
     private ContractionViewModel mContractionViewModel;
 
-    private Chronometer mChronometer;
-    private MaterialButton mButton;
-
     private TextView mAverageInterval;
     private TextView mAverageDuration;
 
     private ContractionAdapter mAdapter;
-    private Contraction mCurrentContraction;
-    private ItemTouchHelper mItemTouchHelper;
-    private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,20 +56,14 @@ public class ContractionFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View rootView, @Nullable Bundle savedInstanceState) {
-        mChronometer = rootView.findViewById(R.id.chronometer);
-        mChronometer.setBase(SystemClock.elapsedRealtime());
-
-        mButton = rootView.findViewById(R.id.chrono_button);
-        mButton.setOnClickListener(view -> startOrStop());
+        rootView.findViewById(R.id.chrono_button).setOnClickListener(view -> start());
 
         mAverageInterval = rootView.findViewById(R.id.average_interval);
         mAverageDuration = rootView.findViewById(R.id.average_duration);
 
-        mRecyclerView = rootView.findViewById(R.id.chrono_list);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
-
-        mLayoutManager = new LinearLayoutManager(requireContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        RecyclerView recyclerView = rootView.findViewById(R.id.chrono_list);
+        recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         mAdapter = new ContractionAdapter(requireActivity());
         mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -96,50 +82,22 @@ public class ContractionFragment extends Fragment {
                 computeStats();
             }
         });
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
 
-        mItemTouchHelper = new ItemTouchHelper(new SwipeToDelete(requireContext(), this::remove));
-        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDelete(requireContext(), this::remove));
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         mContractionViewModel.getAllContractions().observe(getViewLifecycleOwner(), contractions -> mAdapter.setContractions(contractions));
     }
 
-    private void startOrStop() {
-        if (mCurrentContraction == null) {
-            start();
-        } else {
-            stop();
-        }
-    }
-
     private void start() {
-        mCurrentContraction = new Contraction();
-        mCurrentContraction.dateTime = LocalDateTime.now();
+        Intent intent = new Intent(requireContext(), ChronoActivity.class);
+        ActivityNavigator activityNavigator = new ActivityNavigator(requireContext());
+        ActivityNavigator.Destination destination = activityNavigator
+                .createDestination()
+                .setIntent(intent);
 
-        mButton.setIcon(getResources().getDrawable(R.drawable.ic_baseline_stop_24, null));
-
-        mChronometer.setBase(SystemClock.elapsedRealtime());
-        mChronometer.start();
-
-        mAdapter.add(mCurrentContraction);
-        mLayoutManager.scrollToPosition(0);
-
-        mItemTouchHelper.attachToRecyclerView(null);
-    }
-
-    private void stop() {
-        mChronometer.stop();
-
-        mButton.setIcon(getResources().getDrawable(R.drawable.ic_baseline_play_arrow_24, null));
-
-        mCurrentContraction.duration = MILLIS.between(mCurrentContraction.dateTime, LocalDateTime.now());
-
-        mContractionViewModel.insert(mCurrentContraction);
-
-        mChronometer.setBase(SystemClock.elapsedRealtime());
-        mCurrentContraction = null;
-
-        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+        activityNavigator.navigate(destination, null, null, null);
     }
 
     private void computeStats() {
@@ -148,15 +106,16 @@ public class ContractionFragment extends Fragment {
         mAverageDuration.setText(null);
 
         // compute stats on the last 2 hours
-        if (mAdapter.getItemCount() > 0) {
+        int itemCount = mAdapter.getItemCount();
+        if (itemCount > 0) {
             List<Long> intervals = new ArrayList<>();
             List<Long> durations = new ArrayList<>();
 
             Contraction last = null;
             Contraction previous = null;
             Contraction contraction;
-            for (int i = mAdapter.getItemCount() - 1; i >= 0; i--) {
-                contraction = mAdapter.get(i);
+            for (int i = itemCount - 1; i >= 0; i--) {
+                contraction = mAdapter.getAtIndex(i);
 
                 if (last == null) {
                     last = contraction;
@@ -212,30 +171,16 @@ public class ContractionFragment extends Fragment {
     void remove(final RecyclerView.ViewHolder viewHolder) {
         final int adapterPosition = viewHolder.getAdapterPosition();
 
-        final Contraction item = mAdapter.getItem(adapterPosition);
+        final Contraction item = mAdapter.getAtPosition(adapterPosition);
+        mContractionViewModel.delete(item);
 
-        if (item != null) {
-            final int previousIndex = mAdapter.indexOf(item);
-            Snackbar.make(requireView(), R.string.delete_deleted, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.undo, v -> mAdapter.reInsert(adapterPosition, previousIndex, item))
-                    .setActionTextColor(Color.RED)
-                    .addCallback(new Snackbar.Callback() {
-
-                        @Override
-                        public void onShown(Snackbar sb) {
-                            mAdapter.remove(adapterPosition, item);
-                        }
-
-                        @Override
-                        public void onDismissed(Snackbar transientBottomBar, int event) {
-                            if (event == DISMISS_EVENT_TIMEOUT) {
-                                // remove from data base if Undo action not clicked
-                                mContractionViewModel.delete(item);
-                            }
-                        }
-                    })
-                    .show();
-        }
+        Snackbar.make(requireView(), R.string.delete_deleted, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.undo, v -> {
+                    item.id = null;
+                    mContractionViewModel.insert(item);
+                })
+                .setActionTextColor(Color.RED)
+                .show();
     }
 
 }

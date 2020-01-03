@@ -15,11 +15,22 @@
         android:id="@+id/navigation_chrono"
         android:name="fr.frogdevelopment.pregnancycalendar.ui.contraction.ContractionFragment"
         android:label="@string/title_chrono"
-        tools:layout="@layout/contraction_fragment" />
+        tools:layout="@layout/contraction_fragment" >
+        <action
+            android:id="@+id/action_navigation_chrono_to_chronoActivity"
+            app:destination="@id/chronoActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_settings"
         android:name="fr.frogdevelopment.pregnancycalendar.ui.settings.SettingsFragment"
-        android:label="@string/title_settings" />
+        android:label="@string/title_settings"
+        tools:layout="@layout/settings_fragment" />
+
+    <activity
+        android:id="@+id/chronoActivity"
+        android:name="fr.frogdevelopment.pregnancycalendar.ui.chrono.ChronoActivity"
+        android:label="@string/title_chrono"
+        tools:layout="@layout/chrono_activity" />
 
 </navigation>

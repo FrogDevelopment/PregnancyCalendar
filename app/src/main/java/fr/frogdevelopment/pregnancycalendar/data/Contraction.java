@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 public class Contraction {
@@ -14,7 +14,7 @@ public class Contraction {
     public Integer id;
 
     @ColumnInfo(name = "datetime")
-    public LocalDateTime dateTime;
+    public ZonedDateTime dateTime;
 
     @ColumnInfo
     public Long duration;

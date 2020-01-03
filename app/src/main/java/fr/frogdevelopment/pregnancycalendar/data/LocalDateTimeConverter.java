@@ -3,27 +3,26 @@ package fr.frogdevelopment.pregnancycalendar.data;
 import androidx.room.TypeConverter;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-
-import static java.time.ZoneId.systemDefault;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 public class LocalDateTimeConverter {
 
     @TypeConverter
-    public static LocalDateTime toDate(Long date) {
+    public static ZonedDateTime toDate(Long date) {
         if (date == null) {
             return null;
         } else {
-            return LocalDateTime.ofInstant(Instant.ofEpochSecond(date), systemDefault());
+            return Instant.ofEpochSecond(date).atZone(ZoneId.systemDefault());
         }
     }
 
     @TypeConverter
-    public static Long toSqlDate(LocalDateTime date) {
+    public static Long toSqlDate(ZonedDateTime date) {
         if (date == null) {
             return null;
         } else {
-            return date.atZone(systemDefault()).toEpochSecond();
+            return date.toEpochSecond();
         }
     }
 }

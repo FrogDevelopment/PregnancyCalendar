@@ -11,7 +11,7 @@ import java.util.List;
 @Dao
 public interface ContractionDao {
 
-    @Query("SELECT * FROM contraction")
+    @Query("SELECT * FROM contraction ORDER BY datetime ASC")
     LiveData<List<Contraction>> getAll();
 
     @Insert
