@@ -46,7 +46,7 @@
     <!---->
     <string name="delete_title">Suppression</string>
     <string name="delete_confirmation">Vous êtes sur le point d\'effacer tous les enregistrements</string>
-    <string name="delete_positive_button_continue">Continuer ?</string>
+    <string name="delete_positive_button">Supprimer</string>
     <string name="delete_deleted">Supprimé</string>
     <string name="undo">Annuler</string>
 

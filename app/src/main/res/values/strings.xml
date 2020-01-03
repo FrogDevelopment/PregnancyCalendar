@@ -55,7 +55,7 @@
     <!---->
     <string name="delete_title">Deleting</string>
     <string name="delete_confirmation">You\'re going to delete all records</string>
-    <string name="delete_positive_button_continue">Continue ?</string>
+    <string name="delete_positive_button">Delete</string>
     <string name="delete_deleted">Deleted</string>
     <string name="undo">Undo</string>
 
