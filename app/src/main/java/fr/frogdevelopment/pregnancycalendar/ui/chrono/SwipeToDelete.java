@@ -27,10 +27,8 @@ class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
 
     private final DeleteListener mDeleteListener;
 
-    // we want to cache these and not allocate anything repeatedly in the onChildDraw method
     private final Drawable mBackground;
     private final Drawable mTrashIcon;
-    private final int mIconMargin;
 
     SwipeToDelete(Context context, DeleteListener deleteListener) {
         super(ACTION_STATE_IDLE, LEFT | RIGHT);
@@ -38,7 +36,6 @@ class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
 
         mBackground = new ColorDrawable(Color.RED);
         mTrashIcon = context.getResources().getDrawable(R.drawable.ic_baseline_delete_sweep_24, null);
-        mIconMargin = (int) context.getResources().getDimension(R.dimen.ic_clear_margin);
     }
 
     @Override
