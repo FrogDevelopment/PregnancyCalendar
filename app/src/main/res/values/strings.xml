@@ -51,6 +51,8 @@
     <string name="contraction_chrono_header_duration">Duration</string>
 
     <!-- SETTINGS -->
+    <string name="settings_process_title">Evaluation mode</string>
+    <string name="settings_type_title">Selected date type</string>
     <string name="settings_type_conception_label">Conception</string>
     <string name="settings_type_amenorrhea_value" translatable="false">amenorrhea</string>
     <string name="settings_type_conception_value" translatable="false">conception</string>
@@ -63,7 +65,6 @@
         <item>@string/settings_type_conception_label</item>
     </array>
 
-    <string name="settings_type_title">Selected date type</string>
     <string name="settings_gestation_title">Gestation duration</string>
     <string name="settings_gestation_min_title">Minimum</string>
     <string name="settings_gestation_max_title">Maximum</string>

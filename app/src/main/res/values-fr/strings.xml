@@ -48,6 +48,7 @@
     <string name="contraction_chrono_header_duration">Durée</string>
 
     <!-- SETTINGS -->
+    <string name="settings_process_title">Mode de calcul</string>
     <string name="settings_type_title">Type de la date sélectionnée</string>
     <string name="settings_type_amenorrhea_label">Aménorrhée</string>
     <string name="settings_type_conception_label">Conception</string>
