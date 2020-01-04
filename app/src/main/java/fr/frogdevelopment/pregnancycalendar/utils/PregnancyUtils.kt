@@ -8,8 +8,6 @@ import java.time.temporal.ChronoUnit
 
 object PregnancyUtils {
 
-    const val AMENORRHEA = 0
-    const val CONCEPTION = 1
     const val KEY_DAYS_TO_FECUNDATION = "pref_key_days_to_fecundation"
     const val KEY_GESTATION_MIN = "pref_key_gestation_min"
     const val KEY_GESTATION_MAX = "pref_key_gestation_max"
@@ -30,22 +28,22 @@ object PregnancyUtils {
 
     @JvmStatic
     fun getAmenorrheaDate(context: Context, conceptionDate: LocalDate): LocalDate {
-        return conceptionDate.minusDays(getValue(context, KEY_DAYS_TO_FECUNDATION, integer.default_days_to_fecundation).toLong())
+        return conceptionDate.minusDays(getValue(context, KEY_DAYS_TO_FECUNDATION, integer.settings_days_to_fecundation_default).toLong())
     }
 
     @JvmStatic
     fun getConceptionDate(context: Context, amenorrheaDate: LocalDate): LocalDate {
-        return amenorrheaDate.plusDays(getValue(context, KEY_DAYS_TO_FECUNDATION, integer.default_days_to_fecundation).toLong())
+        return amenorrheaDate.plusDays(getValue(context, KEY_DAYS_TO_FECUNDATION, integer.settings_days_to_fecundation_default).toLong())
     }
 
     @JvmStatic
     fun getBirthRangeStart(context: Context, amenorrheaDate: LocalDate): LocalDate {
-        return amenorrheaDate.plusDays(getValue(context, KEY_GESTATION_MIN, integer.default_gestation_min).toLong())
+        return amenorrheaDate.plusDays(getValue(context, KEY_GESTATION_MIN, integer.settings_gestation_min_default).toLong())
     }
 
     @JvmStatic
     fun getBirthRangeEnd(context: Context, amenorrheaDate: LocalDate): LocalDate {
-        return amenorrheaDate.plusDays(getValue(context, KEY_GESTATION_MAX, integer.default_gestation_max).toLong())
+        return amenorrheaDate.plusDays(getValue(context, KEY_GESTATION_MAX, integer.settings_gestation_max_default).toLong())
     }
 
     @JvmStatic

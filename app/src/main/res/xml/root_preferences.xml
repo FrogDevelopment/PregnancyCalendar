@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <ListPreference
+        app:defaultValue="@string/settings_type_conception_value"
+        app:entries="@array/settings_types_label"
+        app:entryValues="@array/settings_types"
+        app:icon="@drawable/ic_baseline_calendar_today_24"
+        app:key="pref_key_type"
+        app:title="@string/settings_type_title"
+        app:useSimpleSummaryProvider="true" />
+
     <PreferenceCategory
         app:icon="@drawable/ic_baseline_pregnant_woman_24"
         app:title="@string/settings_gestation_title">
 
         <EditTextPreference
-            app:defaultValue="@integer/default_gestation_min"
+            app:defaultValue="@integer/settings_gestation_min_default"
             app:key="pref_key_gestation_min"
             app:title="@string/settings_gestation_min_title"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            app:defaultValue="@integer/default_gestation_max"
+            app:defaultValue="@integer/settings_gestation_max_default"
             app:key="pref_key_gestation_max"
             app:title="@string/settings_gestation_max_title"
             app:useSimpleSummaryProvider="true" />
@@ -24,7 +33,7 @@
         app:title="@string/settings_days_title">
 
         <EditTextPreference
-            app:defaultValue="@integer/default_days_to_fecundation"
+            app:defaultValue="@integer/settings_days_to_fecundation_default"
             app:key="pref_key_days_to_fecundation"
             app:title="@string/settings_days_to_fecundation_title"
             app:useSimpleSummaryProvider="true" />
@@ -37,12 +46,10 @@
 
         <Preference
             app:key="settings_version"
-            app:selectable="false"
             app:title="@string/settings_about_version_title" />
 
         <Preference
             app:key="settings_build"
-            app:selectable="false"
             app:title="@string/settings_about_build_title" />
     </PreferenceCategory>
 

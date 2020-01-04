@@ -156,9 +156,9 @@ public class ContractionFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_delete) {
             new MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(R.string.delete_title)
-                    .setMessage(R.string.delete_confirmation)
-                    .setPositiveButton(R.string.delete_positive_button, (dialog, which) -> mContractionViewModel.deleteAll())
+                    .setTitle(R.string.contraction_delete_all_title)
+                    .setMessage(R.string.contraction_delete_all_confirmation)
+                    .setPositiveButton(R.string.contraction_delete_all_positive_button, (dialog, which) -> mContractionViewModel.deleteAll())
                     .setNegativeButton(android.R.string.cancel, null)
                     .show();
 
@@ -174,8 +174,8 @@ public class ContractionFragment extends Fragment {
         final Contraction item = mAdapter.getAtPosition(adapterPosition);
         mContractionViewModel.delete(item);
 
-        Snackbar.make(requireView(), R.string.delete_deleted, Snackbar.LENGTH_SHORT)
-                .setAction(R.string.undo, v -> {
+        Snackbar.make(requireView(), R.string.contraction_delete_all_deleted, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.contraction_delete_all_undo, v -> {
                     item.id = null;
                     mContractionViewModel.insert(item);
                 })

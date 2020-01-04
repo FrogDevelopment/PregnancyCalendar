@@ -5,6 +5,6 @@
         android:id="@+id/action_delete"
         android:icon="@drawable/ic_baseline_delete_forever_24"
         android:orderInCategory="100"
-        android:title="@string/delete_positive_button"
+        android:title="@string/contraction_delete_all_positive_button"
         app:showAsAction="always"/>
 </menu>

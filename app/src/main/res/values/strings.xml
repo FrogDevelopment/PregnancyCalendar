@@ -1,71 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="default_gestation_min" translatable="false">280</integer>
-    <integer name="default_gestation_max" translatable="false">290</integer>
-    <integer name="default_days_to_fecundation" translatable="false">14</integer>
-
-    <plurals name="week_n">
-        <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> week</item>
-        <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> week</item>
-    </plurals>
-    <plurals name="month_n">
-        <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> month</item>
-        <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> month</item>
-    </plurals>
-    <plurals name="trimester_n">
-        <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> trimester</item>
-        <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> trimester</item>
-    </plurals>
-
-
     <string name="frog_development" translatable="false">FROG DEVELOPMENT</string>
+
     <!---->
     <string name="app_name">Pregnancy Calendar</string>
-    <string name="action_settings">Settings</string>
-    <string name="tab_1">INFORMATION</string>
-    <string name="tab_2">CONTRACTIONS</string>
 
     <!---->
     <string name="title_home">Home</string>
     <string name="title_chrono">Chrono</string>
     <string name="title_settings">Settings</string>
-    <string name="menu_calendar">Calendar</string>
-    <string name="date_value">With selected date %1$s as</string>
-    <string name="date">Date</string>
-    <string name="date_hint">jj/mm/aaaa</string>
-    <string name="date_helper">date, month, year</string>
-    <string name="date_amenorrhea">Amenorrhea</string>
 
-    <!---->
-    <string name="date_conception">Conception</string>
-    <string name="date_calculate">Calculate</string>
-    <string name="date_error">Date incorrect</string>
-    <string name="another_date_0">Last menstruation date :</string>
-    <string name="another_date_1">Conception date :</string>
-    <string name="current_week">Current week :</string>
-    <string name="current_month">Current month :</string>
-    <string name="current_trimester">Current trimester :</string>
-    <string name="month_month">month %1$d</string>
-    <string name="birth_range">Birth expected between</string>
-    <string name="birth_range_and">and</string>
+    <!-- HOME   -->
+    <string name="home_menu_calendar">Calendar</string>
+    <string name="home_date_value">With selected date %1$s as</string>
 
-    <!---->
-    <string name="delete_title">Attention</string>
-    <string name="delete_confirmation">You\'re going to delete all records</string>
-    <string name="delete_positive_button">Delete</string>
-    <string name="delete_deleted">Deleted</string>
-    <string name="undo">Undo</string>
+    <string name="home_another_date_0">Last menstruation date :</string>
+    <string name="home_another_date_1">Conception date :</string>
 
-    <string name="chrono_header_date">Date</string>
-    <string name="chrono_header_interval">Interval</string>
-    <string name="chrono_header_duration">Duration</string>
+    <string name="home_current_week">Current week :</string>
+    <plurals name="home_week_n">
+        <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> week</item>
+        <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> week</item>
+    </plurals>
+
+    <string name="home_current_month">Current month :</string>
+    <string name="home_month_month">month %1$d</string>
+    <plurals name="home_month_n">
+        <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> month</item>
+        <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> month</item>
+    </plurals>
+
+    <string name="home_current_trimester">Current trimester :</string>
+    <plurals name="home_trimester_n">
+        <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> trimester</item>
+        <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> trimester</item>
+    </plurals>
+
+    <string name="home_birth_range">Birth expected between</string>
+    <string name="home_birth_range_and">and</string>
+
+    <!-- CONTRACTION -->
+    <string name="contraction_delete_all_title">Attention</string>
+    <string name="contraction_delete_all_confirmation">You\'re going to delete all records</string>
+    <string name="contraction_delete_all_positive_button">Delete</string>
+    <string name="contraction_delete_all_deleted">Deleted</string>
+    <string name="contraction_delete_all_undo">Undo</string>
+
+    <string name="contraction_chrono_header_date">Date</string>
+    <string name="contraction_chrono_header_interval">Interval</string>
+    <string name="contraction_chrono_header_duration">Duration</string>
 
     <!-- SETTINGS -->
+    <string name="settings_type_conception_label">Conception</string>
+    <string name="settings_type_amenorrhea_value" translatable="false">amenorrhea</string>
+    <string name="settings_type_conception_value" translatable="false">conception</string>
+    <array name="settings_types">
+        <item>@string/settings_type_amenorrhea_value</item>
+        <item>@string/settings_type_conception_value</item>
+    </array>
+    <array name="settings_types_label">
+        <item>@string/settings_type_amenorrhea_label</item>
+        <item>@string/settings_type_conception_label</item>
+    </array>
+
+    <string name="settings_type_title">Selected date type</string>
     <string name="settings_gestation_title">Gestation duration</string>
     <string name="settings_gestation_min_title">Minimum</string>
     <string name="settings_gestation_max_title">Maximum</string>
+    <integer name="settings_gestation_min_default">280</integer>
+    <integer name="settings_gestation_max_default">290</integer>
+
     <string name="settings_days_title">Days between fecundation and conception</string>
     <string name="settings_days_to_fecundation_title">Nb Days</string>
+    <integer name="settings_days_to_fecundation_default">14</integer>
+    <string name="settings_type_amenorrhea_label">Amenorrhea</string>
+
     <string name="settings_about_application">Application</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_build_title">Build</string>
