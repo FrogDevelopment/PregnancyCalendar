@@ -29,18 +29,20 @@ import java.util.*
 
 class HomeFragment : Fragment() {
 
-    private var dateTextView: TextView? = null
-    private var birthRangeStart: TextView? = null
-    private var birthRangeEnd: TextView? = null
-    private var otherDateText: TextView? = null
-    private var otherDateValue: TextView? = null
-    private var currentWeek: TextView? = null
-    private var currentMonth: TextView? = null
-    private var currentTrimester: TextView? = null
+    private lateinit var amenorrheaDateValue: TextView
+    private lateinit var conceptionDateValue: TextView
+    private lateinit var currentWeek: TextView
+    private lateinit var currentMonth: TextView
+    private lateinit var currentTrimester: TextView
+    private lateinit var birthRangeStart: TextView
+    private lateinit var birthRangeEnd: TextView
+
+    private lateinit var mSharedPref: SharedPreferences
+    private lateinit var typeDate: String
+
     private var mSelectedDate: Long = 0
     private var mDateValue: String? = null
     private var mMyDate: LocalDate? = null
-    private var mSharedPref: SharedPreferences? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.home_fragment, container, false)
@@ -50,9 +52,8 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(rootView: View, savedInstanceState: Bundle?) {
-        dateTextView = rootView.findViewById(R.id.date_value)
-        otherDateText = rootView.findViewById(R.id.other_date_text)
-        otherDateValue = rootView.findViewById(R.id.other_date_value)
+        amenorrheaDateValue = rootView.findViewById(R.id.amenorrhea_date_value)
+        conceptionDateValue = rootView.findViewById(R.id.conception_date_value)
         currentWeek = rootView.findViewById(R.id.current_week_value)
         currentMonth = rootView.findViewById(R.id.current_month_value)
         currentTrimester = rootView.findViewById(R.id.current_trimester_value)
@@ -60,17 +61,30 @@ class HomeFragment : Fragment() {
         birthRangeEnd = rootView.findViewById(R.id.birth_range_end)
 
         // todo retro-compatibility, to be remove later
-        if (mSharedPref!!.contains(OLD_SELECTED_DATE)) {
-            mDateValue = mSharedPref!!.getString(OLD_SELECTED_DATE, null)
+        if (mSharedPref.contains(OLD_TYPE_DATE)) {
+            val oldTypeDate = mSharedPref.getInt(OLD_TYPE_DATE, 1)
+            typeDate = getString(if (oldTypeDate == 0) string.settings_type_amenorrhea_value else string.settings_type_conception_value)
+
+            mSharedPref.edit()
+                    .remove(OLD_TYPE_DATE)
+                    .putString(TYPE_DATE, typeDate)
+                    .apply()
+        } else {
+            typeDate = mSharedPref.getString(TYPE_DATE, getString(string.settings_type_conception_value))!!
+        }
+
+        // todo retro-compatibility, to be remove later
+        if (mSharedPref.contains(OLD_SELECTED_DATE)) {
+            mDateValue = mSharedPref.getString(OLD_SELECTED_DATE, null)
             if (StringUtils.isNotBlank(mDateValue)) {
                 setSelectedDate(LocalDate.parse(mDateValue, LONG_DATE_FORMATTER).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli())
             }
-            mSharedPref!!.edit()
+            mSharedPref.edit()
                     .remove(OLD_SELECTED_DATE)
                     .putLong(SELECTED_DATE, mSelectedDate)
                     .apply()
         } else {
-            setSelectedDate(mSharedPref!!.getLong(SELECTED_DATE, MaterialDatePicker.todayInUtcMilliseconds()))
+            setSelectedDate(mSharedPref.getLong(SELECTED_DATE, MaterialDatePicker.todayInUtcMilliseconds()))
         }
 
 //        if (mMyDate == null) { // fixme prompt to menu action
@@ -97,6 +111,7 @@ class HomeFragment : Fragment() {
             constraintsBuilder.setOpenAt(openSelection)
 
             val datePicker = MaterialDatePicker.Builder.datePicker()
+                    .setTitleText(if (typeDate == getString(string.settings_type_amenorrhea_value)) string.home_calendar_title_amenorrhea else string.home_calendar_title_conception)
                     .setSelection(openSelection)
                     .setCalendarConstraints(constraintsBuilder.build())
                     .build()
@@ -108,7 +123,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun save(selection: Long) {
-        mSharedPref!!
+        mSharedPref
                 .edit()
                 .putLong(SELECTED_DATE, selection)
                 .apply()
@@ -121,51 +136,35 @@ class HomeFragment : Fragment() {
         mDateValue = LONG_DATE_FORMATTER.format(zonedDateTime)
         mMyDate = zonedDateTime.toLocalDate()
 
-        dateTextView!!.text = getString(string.home_date_value, mDateValue)
         processDate()
     }
 
     private fun processDate() {
-        val amenorrheaDate: LocalDate?
-        val conceptionDate: LocalDate?
-        val typeDate: String?
-
-        // todo retro-compatibility, to be remove later
-        if (mSharedPref!!.contains(OLD_TYPE_DATE)) {
-            val oldTypeDate = mSharedPref!!.getInt(OLD_TYPE_DATE, 1)
-            typeDate = getString(if (oldTypeDate == 0) string.settings_type_amenorrhea_value else string.settings_type_conception_value)
-
-            mSharedPref!!.edit()
-                    .remove(OLD_TYPE_DATE)
-                    .putString(TYPE_DATE, typeDate)
-                    .apply()
-        } else {
-            typeDate = mSharedPref!!.getString(TYPE_DATE, getString(string.settings_type_conception_value))
-        }
+        val amenorrheaDate: LocalDate
+        val conceptionDate: LocalDate
 
         if (typeDate == getString(string.settings_type_amenorrhea_value)) {
-            amenorrheaDate = mMyDate
-            conceptionDate = getConceptionDate(requireContext(), amenorrheaDate!!)
-            otherDateText!!.text = getString(string.home_another_date_1)
-            otherDateValue!!.text = conceptionDate.format(LONG_DATE_FORMATTER)
+            amenorrheaDate = mMyDate!!
+            conceptionDate = getConceptionDate(requireContext(), mMyDate!!)
         } else {
-            conceptionDate = mMyDate
-            amenorrheaDate = getAmenorrheaDate(requireContext(), conceptionDate!!)
-            otherDateText!!.text = getString(string.home_another_date_0)
-            otherDateValue!!.text = amenorrheaDate.format(LONG_DATE_FORMATTER)
+            amenorrheaDate = getAmenorrheaDate(requireContext(), mMyDate!!)
+            conceptionDate = mMyDate!!
         }
 
+        amenorrheaDateValue.text = LONG_DATE_FORMATTER.format(amenorrheaDate)
+        conceptionDateValue.text = LONG_DATE_FORMATTER.format(conceptionDate)
+
         val currentWeek = getCurrentWeek(amenorrheaDate)
-        this.currentWeek!!.text = Html.fromHtml(resources.getQuantityString(R.plurals.home_week_n, currentWeek, currentWeek), Html.FROM_HTML_MODE_LEGACY)
+        this.currentWeek.text = Html.fromHtml(resources.getQuantityString(R.plurals.home_week_n, currentWeek, currentWeek), Html.FROM_HTML_MODE_LEGACY)
         val currentMonth = getCurrentMonth(conceptionDate)
 
-        this.currentMonth!!.text = Html.fromHtml(resources.getQuantityString(R.plurals.home_month_n, currentMonth, currentMonth), Html.FROM_HTML_MODE_LEGACY)
+        this.currentMonth.text = Html.fromHtml(resources.getQuantityString(R.plurals.home_month_n, currentMonth, currentMonth), Html.FROM_HTML_MODE_LEGACY)
         val currentTrimester = getCurrentTrimester(currentWeek)
 
-        this.currentTrimester!!.text = Html.fromHtml(resources.getQuantityString(R.plurals.home_trimester_n, currentTrimester, currentTrimester), Html.FROM_HTML_MODE_LEGACY)
+        this.currentTrimester.text = Html.fromHtml(resources.getQuantityString(R.plurals.home_trimester_n, currentTrimester, currentTrimester), Html.FROM_HTML_MODE_LEGACY)
 
-        birthRangeStart!!.text = getBirthRangeStart(requireContext(), amenorrheaDate).format(LONG_DATE_FORMATTER)
-        birthRangeEnd!!.text = getBirthRangeEnd(requireContext(), amenorrheaDate).format(LONG_DATE_FORMATTER)
+        birthRangeStart.text = getBirthRangeStart(requireContext(), amenorrheaDate).format(LONG_DATE_FORMATTER)
+        birthRangeEnd.text = getBirthRangeEnd(requireContext(), amenorrheaDate).format(LONG_DATE_FORMATTER)
     }
 
     companion object {

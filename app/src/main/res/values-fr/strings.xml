@@ -9,10 +9,11 @@
 
     <!-- HOME -->
     <string name="home_menu_calendar">Calendrier</string>
-    <string name="home_date_value">Avec la date sélectionnée %1$s comme</string>
+    <string name="home_calendar_title_amenorrhea">Sélectionner la date de dernière règles</string>
+    <string name="home_calendar_title_conception">Sélectionner la date de conception</string>
 
-    <string name="home_another_date_0">Date dernière règles :</string>
-    <string name="home_another_date_1">Date de conception :</string>
+    <string name="home_amenorrhea_date">Date de dernière règles :</string>
+    <string name="home_conception_date">Date de conception :</string>
 
     <string name="home_current_week">Semaine actuelle :</string>
     <plurals name="home_week_n">
