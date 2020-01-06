@@ -8,7 +8,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.datepicker.MaterialDatePicker.Builder
+import com.google.android.material.datepicker.MaterialDatePicker.todayInUtcMilliseconds
 import fr.frogdevelopment.pregnancycalendar.R
 import fr.frogdevelopment.pregnancycalendar.R.string
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.getAmenorrheaDate
@@ -84,11 +85,12 @@ class HomeFragment : Fragment() {
                     .putLong(SELECTED_DATE, mSelectedDate)
                     .apply()
         } else {
-            setSelectedDate(mSharedPref.getLong(SELECTED_DATE, MaterialDatePicker.todayInUtcMilliseconds()))
+            if (mSharedPref.contains(SELECTED_DATE)) {
+                setSelectedDate(mSharedPref.getLong(SELECTED_DATE, todayInUtcMilliseconds()))
+            } else {
+                showSelectDateDialog()
+            }
         }
-
-//        if (mMyDate == null) { // fixme prompt to menu action
-//        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -97,29 +99,33 @@ class HomeFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_calendar) {
-            val today = MaterialDatePicker.todayInUtcMilliseconds()
-            val calendar = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC))
-            calendar.clear()
-            calendar.timeInMillis = today
-            calendar.add(Calendar.MONTH, -9)
-            val nineMonthsAgo = calendar.timeInMillis
-            val openSelection = if (mSelectedDate > 0) mSelectedDate else today
-
-            val constraintsBuilder = CalendarConstraints.Builder()
-            constraintsBuilder.setStart(nineMonthsAgo)
-            constraintsBuilder.setEnd(today)
-            constraintsBuilder.setOpenAt(openSelection)
-
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                    .setTitleText(if (typeDate == getString(string.settings_type_amenorrhea_value)) string.home_calendar_title_amenorrhea else string.home_calendar_title_conception)
-                    .setSelection(openSelection)
-                    .setCalendarConstraints(constraintsBuilder.build())
-                    .build()
-            datePicker.addOnPositiveButtonClickListener { selection: Long -> save(selection) }
-            datePicker.showNow(childFragmentManager, datePicker.toString())
+            showSelectDateDialog()
             return true
         }
         return false
+    }
+
+    private fun showSelectDateDialog() {
+        val today = todayInUtcMilliseconds()
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC))
+        calendar.clear()
+        calendar.timeInMillis = today
+        calendar.add(Calendar.MONTH, -9)
+        val nineMonthsAgo = calendar.timeInMillis
+        val openSelection = if (mSelectedDate > 0) mSelectedDate else today
+
+        val constraintsBuilder = CalendarConstraints.Builder()
+        constraintsBuilder.setStart(nineMonthsAgo)
+        constraintsBuilder.setEnd(today)
+        constraintsBuilder.setOpenAt(openSelection)
+
+        val datePicker = Builder.datePicker()
+                .setTitleText(if (typeDate == getString(string.settings_type_amenorrhea_value)) string.home_calendar_title_amenorrhea else string.home_calendar_title_conception)
+                .setSelection(openSelection)
+                .setCalendarConstraints(constraintsBuilder.build())
+                .build()
+        datePicker.addOnPositiveButtonClickListener { selection: Long -> save(selection) }
+        datePicker.showNow(childFragmentManager, datePicker.toString())
     }
 
     private fun save(selection: Long) {
