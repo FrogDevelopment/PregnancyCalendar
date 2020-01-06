@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/activity_vertical_margin">
+    android:padding="@dimen/default_padding">
 
     <TextView
         android:id="@+id/amenorrhea_date_text"
@@ -30,7 +30,7 @@
         android:id="@+id/conception_date_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/default_padding"
         android:text="@string/home_conception_date"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +52,7 @@
         android:id="@+id/current_week_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/default_padding"
         android:text="@string/home_current_week"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +74,7 @@
         android:id="@+id/current_month_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/default_padding"
         android:text="@string/home_current_month"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,7 +96,7 @@
         android:id="@+id/current_trimester_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/default_padding"
         android:text="@string/home_current_trimester"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -118,7 +118,7 @@
         android:id="@+id/birth_range"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/default_padding"
         android:text="@string/home_birth_range"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"

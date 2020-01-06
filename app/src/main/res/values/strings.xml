@@ -7,7 +7,7 @@
 
     <!---->
     <string name="title_home">Home</string>
-    <string name="title_chrono">Chrono</string>
+    <string name="title_chrono">Chronometer</string>
     <string name="title_settings">Settings</string>
 
     <!-- HOME   -->
@@ -43,17 +43,20 @@
     <!-- CONTRACTION -->
     <string name="contraction_delete_all_title">Attention</string>
     <string name="contraction_delete_all_confirmation">You\'re going to delete all records</string>
-    <string name="contraction_delete_all_positive_button">Delete</string>
+    <string name="contraction_delete_all_positive_button">Delete all</string>
     <string name="contraction_delete_all_deleted">Deleted</string>
     <string name="contraction_delete_all_undo">Undo</string>
+
+    <string name="contraction_chrono_average_interval">Average interval:</string>
+    <string name="contraction_chrono_average_duration">Average duration:</string>
 
     <string name="contraction_chrono_header_date">Date</string>
     <string name="contraction_chrono_header_interval">Interval</string>
     <string name="contraction_chrono_header_duration">Duration</string>
 
-    <string name="contraction_duration_seconds">%1$02dsec</string>
-    <string name="contraction_duration_minutes">%1$02dmin %2$02dsec</string>
-    <string name="contraction_duration_hours">%1$02dh %2$02dmin</string>
+    <string name="contraction_duration_seconds">%1$02ds</string>
+    <string name="contraction_duration_minutes">%1$02dm %2$02ds</string>
+    <string name="contraction_duration_hours">%1$02dh %2$02dm</string>
     <string name="contraction_duration_days">%1$02dd %2$02dh</string>
 
     <!-- SETTINGS -->

@@ -1,4 +1,5 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chrono_layout"
@@ -6,50 +7,62 @@
     android:layout_height="match_parent"
     tools:context=".ui.contraction.ContractionFragment">
 
-    <LinearLayout
-        android:id="@+id/average_data"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/average_interval_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:layout_marginStart="@dimen/default_padding"
+        android:layout_marginTop="@dimen/default_padding"
+        android:layout_weight="1"
+        android:text="@string/contraction_chrono_average_interval"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Interval moy :" />
+    <TextView
+        android:id="@+id/average_interval_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="2m 07s"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/average_interval_title"
+        app:layout_constraintTop_toTopOf="@+id/average_interval_title" />
 
-        <TextView
-            android:id="@+id/average_interval"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="07s" />
+    <TextView
+        android:id="@+id/average_duration_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_padding"
+        android:layout_weight="1"
+        android:text="@string/contraction_chrono_average_duration"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/average_interval_title" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Durée moy :" />
-
-        <TextView
-            android:id="@+id/average_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="07s" />
-    </LinearLayout>
-
+    <TextView
+        android:id="@+id/average_duration_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="57s"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/average_duration_title"
+        app:layout_constraintStart_toStartOf="@+id/average_interval_value"
+        app:layout_constraintTop_toBottomOf="@+id/average_interval_value" />
 
     <LinearLayout
         android:id="@+id/chrono_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/average_data"
+        android:layout_marginTop="@dimen/default_padding"
         android:orientation="horizontal"
         android:paddingStart="10dp"
-        android:paddingEnd="10dp">
+        android:paddingEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/average_duration_title">
 
         <TextView
             android:layout_width="0dp"
@@ -77,9 +90,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chrono_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/chrono_button"
-        android:layout_below="@id/chrono_header" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/chrono_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chrono_header" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/chrono_button"
@@ -90,6 +105,9 @@
         app:icon="@drawable/ic_baseline_play_arrow_24"
         app:iconGravity="textStart"
         app:iconPadding="0dp"
-        app:iconSize="40dp" />
+        app:iconSize="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

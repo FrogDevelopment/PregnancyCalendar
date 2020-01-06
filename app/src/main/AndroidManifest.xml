@@ -25,6 +25,7 @@
             android:launchMode="singleTop"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:label="@string/title_chrono"
             android:name=".ui.chrono.ChronoActivity"
             android:parentActivityName=".MainActivity" />
     </application>
