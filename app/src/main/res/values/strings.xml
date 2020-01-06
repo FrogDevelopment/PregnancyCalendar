@@ -15,23 +15,23 @@
     <string name="home_calendar_title_amenorrhea">Select the amenorrhea date</string>
     <string name="home_calendar_title_conception">Select the conception date</string>
 
-    <string name="home_amenorrhea_date">Last menstruation date :</string>
-    <string name="home_conception_date">Conception date :</string>
+    <string name="home_amenorrhea_date">Last menstruation date</string>
+    <string name="home_conception_date">Conception date</string>
 
-    <string name="home_current_week">Current week :</string>
+    <string name="home_current_week">Current week</string>
     <plurals name="home_week_n">
         <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> week</item>
         <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> week</item>
     </plurals>
 
-    <string name="home_current_month">Current month :</string>
+    <string name="home_current_month">Current month</string>
     <string name="home_month_month">month %1$d</string>
     <plurals name="home_month_n">
         <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> month</item>
         <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> month</item>
     </plurals>
 
-    <string name="home_current_trimester">Current trimester :</string>
+    <string name="home_current_trimester">Current trimester</string>
     <plurals name="home_trimester_n">
         <item quantity="one">%1$d&lt;sup>&lt;small>st&lt;/small>&lt;/sup> trimester</item>
         <item quantity="other">%1$d&lt;sup>&lt;small>th&lt;/small>&lt;/sup> trimester</item>

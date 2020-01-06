@@ -12,30 +12,30 @@
     <string name="home_calendar_title_amenorrhea">Sélectionner la date de dernière règles</string>
     <string name="home_calendar_title_conception">Sélectionner la date de conception</string>
 
-    <string name="home_amenorrhea_date">Date de dernière règles :</string>
-    <string name="home_conception_date">Date de conception :</string>
+    <string name="home_amenorrhea_date">Date de dernière règles</string>
+    <string name="home_conception_date">Date de conception</string>
 
-    <string name="home_current_week">Semaine actuelle :</string>
+    <string name="home_current_week">Semaine actuelle</string>
     <plurals name="home_week_n">
         <item quantity="one">%1$d&lt;sup>&lt;small>er&lt;/small>&lt;/sup> semaine</item>
         <item quantity="other">%1$d&lt;sup>&lt;small>e&lt;/small>&lt;/sup> semaine</item>
     </plurals>
 
-    <string name="home_current_month">Mois actuel :</string>
+    <string name="home_current_month">Mois actuel</string>
     <string name="home_month_month">mois %1$d</string>
     <plurals name="home_month_n">
         <item quantity="one">%1$d&lt;sup>&lt;small>er&lt;/small>&lt;/sup> mois</item>
         <item quantity="other">%1$d&lt;sup>&lt;small>e&lt;/small>&lt;/sup> mois</item>
     </plurals>
 
-    <string name="home_current_trimester">Trimestre actuel :</string>
+    <string name="home_current_trimester">Trimestre actuel</string>
     <plurals name="home_trimester_n">
         <item quantity="one">%1$d&lt;sup>&lt;small>er&lt;/small>&lt;/sup>trimestre</item>
         <item quantity="other">%1$d&lt;sup>&lt;small>e&lt;/small>&lt;/sup> trimestre</item>
     </plurals>
 
-    <string name="home_birth_range">Naissance prévue entre</string>
-    <string name="home_birth_range_and">et</string>
+    <string name="home_birth_range">Naissance prévue entre le</string>
+    <string name="home_birth_range_and">et le</string>
 
     <!-- CONTRACTION -->
     <string name="contraction_delete_all_title">Attention</string>
