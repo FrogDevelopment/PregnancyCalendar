@@ -51,8 +51,8 @@ public class ChronoFragment extends Fragment {
     private void stop() {
         mChronometer.stop();
         Contraction contraction = new Contraction();
-        contraction.dateTime = mNow;
-        contraction.duration = SystemClock.elapsedRealtime() - mChronometer.getBase();
+        contraction.setDateTime(mNow);
+        contraction.setDuration(SystemClock.elapsedRealtime() - mChronometer.getBase());
 
         mContractionViewModel.insert(contraction);
 

@@ -26,7 +26,7 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.stream.Collectors
 
-class ContractionFragment : Fragment() {
+class ContractionFragment : Fragment(), DeleteListener {
 
     private lateinit var mContractionViewModel: ContractionViewModel
     private lateinit var mAverageInterval: TextView
@@ -48,7 +48,7 @@ class ContractionFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         mAdapter = ContractionAdapter(requireActivity())
         recyclerView.adapter = mAdapter
-        val itemTouchHelper = ItemTouchHelper(SwipeToDelete(requireContext(), DeleteListener { viewHolder: ViewHolder -> remove(viewHolder) }))
+        val itemTouchHelper = ItemTouchHelper(SwipeToDelete(requireContext(), this))
         itemTouchHelper.attachToRecyclerView(recyclerView)
         mContractionViewModel.allContractions.observe(viewLifecycleOwner, Observer { contractions: List<Contraction> ->
             mAdapter.setContractions(contractions)
@@ -75,6 +75,20 @@ class ContractionFragment : Fragment() {
         return false
     }
 
+    override fun onDelete(viewHolder: ViewHolder) {
+        val item = mAdapter.getAtPosition(viewHolder.adapterPosition)
+        if (item != null) {
+            mContractionViewModel.delete(item)
+            Snackbar.make(requireView(), R.string.contraction_delete_all_deleted, Snackbar.LENGTH_SHORT)
+                    .setAction(R.string.contraction_delete_all_undo) {
+                        item.id = null
+                        mContractionViewModel.insert(item)
+                    }
+                    .setActionTextColor(Color.RED)
+                    .show()
+        }
+    }
+
     private fun computeStats(contractions: List<Contraction>) {
         var averageInterval: String? = null
         var averageDuration: String? = null
@@ -92,12 +106,12 @@ class ContractionFragment : Fragment() {
                 if (last == null) {
                     last = contraction
                     previous = contraction
-                    durations.add(contraction.duration)
+                    durations.add(contraction.duration!!)
                     continue
                 }
 
-                intervals.add(ChronoUnit.MILLIS.between(contraction.dateTime.plus(contraction.duration, ChronoUnit.MILLIS), previous!!.dateTime))
-                durations.add(contraction.duration)
+                intervals.add(ChronoUnit.MILLIS.between(contraction.dateTime!!.plus(contraction.duration!!, ChronoUnit.MILLIS), previous!!.dateTime))
+                durations.add(contraction.duration!!)
                 previous = contraction
             }
             averageInterval = DateLabelUtils.millisecondsToLabel(requireContext(), intervals.stream().collect(Collectors.averagingLong { d: Long? -> d!! }).toLong())
@@ -105,20 +119,6 @@ class ContractionFragment : Fragment() {
         }
         mAverageInterval.text = averageInterval
         mAverageDuration.text = averageDuration
-    }
-
-    private fun remove(viewHolder: ViewHolder) {
-        val item = mAdapter.getAtPosition(viewHolder.adapterPosition)
-        if (item != null) {
-            mContractionViewModel.delete(item)
-            Snackbar.make(requireView(), R.string.contraction_delete_all_deleted, Snackbar.LENGTH_SHORT)
-                    .setAction(R.string.contraction_delete_all_undo) {
-                        item.id = null
-                        mContractionViewModel.insert(item)
-                    }
-                    .setActionTextColor(Color.RED)
-                    .show()
-        }
     }
 
     private fun start() {

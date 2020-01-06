@@ -10,7 +10,7 @@ import fr.frogdevelopment.pregnancycalendar.data.Contraction
 import fr.frogdevelopment.pregnancycalendar.utils.DateLabelUtils.millisecondsToLabel
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.time.temporal.ChronoUnit
+import java.time.temporal.ChronoUnit.MILLIS
 import java.util.*
 
 internal class ContractionAdapter(activity: Activity) : RecyclerView.Adapter<ContractionViewHolder>() {
@@ -58,14 +58,14 @@ internal class ContractionAdapter(activity: Activity) : RecyclerView.Adapter<Con
         viewHolder.time.text = TIME_FORMATTER.format(item.dateTime)
 
         if (item.duration != null) {
-            viewHolder.duration.text = millisecondsToLabel(mInflater.context, item.duration)
+            viewHolder.duration.text = millisecondsToLabel(mInflater.context, item.duration!!)
         } else {
             viewHolder.duration.text = "--:--"
         }
 
         val previous = getAtPosition(position + 1) // +1 as reverse order ...
         if (previous != null) {
-            val durationSincePrevious = ChronoUnit.MILLIS.between(previous.dateTime.plus(previous.duration, ChronoUnit.MILLIS), item.dateTime)
+            val durationSincePrevious = MILLIS.between(previous.dateTime!!.plus(previous.duration!!, MILLIS), item.dateTime)
             viewHolder.last.text = millisecondsToLabel(mInflater.context, durationSincePrevious)
         } else {
             viewHolder.last.text = "--:--"
