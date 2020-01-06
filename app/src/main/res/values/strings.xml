@@ -51,6 +51,11 @@
     <string name="contraction_chrono_header_interval">Interval</string>
     <string name="contraction_chrono_header_duration">Duration</string>
 
+    <string name="contraction_duration_seconds">%1$02dsec</string>
+    <string name="contraction_duration_minutes">%1$02dmin %2$02dsec</string>
+    <string name="contraction_duration_hours">%1$02dh %2$02dmin</string>
+    <string name="contraction_duration_days">%1$02dd %2$02dh</string>
+
     <!-- SETTINGS -->
     <string name="settings_process_title">Evaluation mode</string>
     <string name="settings_type_title">Selected date type</string>

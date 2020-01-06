@@ -52,10 +52,6 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
         }
     }
 
-    Contraction getAtIndex(int index) {
-        return mRows.get(index);
-    }
-
     @NonNull
     @Override
     public ContractionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -81,7 +77,7 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
         viewHolder.time.setText(TIME_FORMATTER.format(item.dateTime));
 
         if (item.duration != null) {
-            viewHolder.duration.setText(millisecondsToLabel(item.duration));
+            viewHolder.duration.setText(millisecondsToLabel(mInflater.getContext(), item.duration));
         } else {
             viewHolder.duration.setText("--:--");
         }
@@ -89,7 +85,7 @@ class ContractionAdapter extends RecyclerView.Adapter<ContractionViewHolder> {
         Contraction previous = getAtPosition(position + 1); // +1 as reverse order ...
         if (previous != null) {
             long durationSincePrevious = MILLIS.between(previous.dateTime.plus(previous.duration, MILLIS), item.dateTime);
-            viewHolder.last.setText(millisecondsToLabel(durationSincePrevious));
+            viewHolder.last.setText(millisecondsToLabel(mInflater.getContext(), durationSincePrevious));
         } else {
             viewHolder.last.setText("--:--");
         }

@@ -32,6 +32,7 @@ import fr.frogdevelopment.pregnancycalendar.R;
 import fr.frogdevelopment.pregnancycalendar.data.Contraction;
 import fr.frogdevelopment.pregnancycalendar.ui.chrono.ChronoActivity;
 
+import static androidx.recyclerview.widget.DividerItemDecoration.VERTICAL;
 import static fr.frogdevelopment.pregnancycalendar.utils.DateLabelUtils.millisecondsToLabel;
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -56,95 +57,25 @@ public class ContractionFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View rootView, @Nullable Bundle savedInstanceState) {
-        rootView.findViewById(R.id.chrono_button).setOnClickListener(view -> start());
-
         mAverageInterval = rootView.findViewById(R.id.average_interval);
         mAverageDuration = rootView.findViewById(R.id.average_duration);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.chrono_list);
-        recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         mAdapter = new ContractionAdapter(requireActivity());
-        mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                computeStats();
-            }
-
-            @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
-                computeStats();
-            }
-
-            @Override
-            public void onItemRangeChanged(int positionStart, int itemCount) {
-                computeStats();
-            }
-        });
         recyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDelete(requireContext(), this::remove));
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
-        mContractionViewModel.getAllContractions().observe(getViewLifecycleOwner(), contractions -> mAdapter.setContractions(contractions));
-    }
+        mContractionViewModel.getAllContractions().observe(getViewLifecycleOwner(), contractions -> {
+            mAdapter.setContractions(contractions);
+            computeStats(contractions);
+        });
 
-    private void start() {
-        Intent intent = new Intent(requireContext(), ChronoActivity.class);
-        ActivityNavigator activityNavigator = new ActivityNavigator(requireContext());
-        ActivityNavigator.Destination destination = activityNavigator
-                .createDestination()
-                .setIntent(intent);
-
-        activityNavigator.navigate(destination, null, null, null);
-    }
-
-    private void computeStats() {
-        // reset label
-        mAverageInterval.setText(null);
-        mAverageDuration.setText(null);
-
-        // compute stats on the last 2 hours
-        int itemCount = mAdapter.getItemCount();
-        if (itemCount > 0) {
-            List<Long> intervals = new ArrayList<>();
-            List<Long> durations = new ArrayList<>();
-
-            Contraction last = null;
-            Contraction previous = null;
-            Contraction contraction;
-            for (int i = itemCount - 1; i >= 0; i--) {
-                contraction = mAdapter.getAtIndex(i);
-
-                if (last == null) {
-                    last = contraction;
-                    previous = contraction;
-                    durations.add(contraction.duration);
-                    continue;
-                }
-
-                long durationSinceLast = HOURS.between(contraction.dateTime, last.dateTime);
-
-                if (durationSinceLast < 2) {
-                    intervals.add(MILLIS.between(contraction.dateTime.plus(contraction.duration, MILLIS), previous.dateTime));
-                    durations.add(contraction.duration);
-                } else {
-                    // no need to loop any more
-                    break;
-                }
-
-                previous = contraction;
-            }
-
-            if (!intervals.isEmpty()) {
-                long averageInterval = intervals.stream().collect(Collectors.averagingLong(d -> d)).longValue();
-                mAverageInterval.setText(millisecondsToLabel(averageInterval));
-
-                long averageDuration = durations.stream().collect(Collectors.averagingLong(d -> d)).longValue();
-                mAverageDuration.setText(millisecondsToLabel(averageDuration));
-            }
-        }
+        rootView.findViewById(R.id.chrono_button).setOnClickListener(view -> start());
     }
 
     @Override
@@ -168,6 +99,48 @@ public class ContractionFragment extends Fragment {
         return false;
     }
 
+    private void computeStats(List<Contraction> contractions) {
+        String averageInterval = null;
+        String averageDuration = null;
+
+        int itemCount = contractions.size();
+        if (itemCount > 0) {
+            List<Long> intervals = new ArrayList<>();
+            List<Long> durations = new ArrayList<>();
+
+            Contraction last = null;
+            Contraction previous = null;
+            Contraction contraction;
+            for (int i = itemCount - 1; i >= 0; i--) {
+                contraction = contractions.get(i);
+
+                if (last == null) {
+                    last = contraction;
+                    previous = contraction;
+                    durations.add(contraction.duration);
+                    continue;
+                }
+
+                // compute stats on the last 2 hours only
+                if (HOURS.between(contraction.dateTime, last.dateTime) < 2) {
+                    intervals.add(MILLIS.between(contraction.dateTime.plus(contraction.duration, MILLIS), previous.dateTime));
+                    durations.add(contraction.duration);
+                } else {
+                    // no need to loop any more
+                    break;
+                }
+
+                previous = contraction;
+            }
+
+            averageInterval = millisecondsToLabel(requireContext(), intervals.stream().collect(Collectors.averagingLong(d -> d)).longValue());
+            averageDuration = millisecondsToLabel(requireContext(), durations.stream().collect(Collectors.averagingLong(d -> d)).longValue());
+        }
+
+        mAverageInterval.setText(averageInterval);
+        mAverageDuration.setText(averageDuration);
+    }
+
     void remove(final RecyclerView.ViewHolder viewHolder) {
         final int adapterPosition = viewHolder.getAdapterPosition();
 
@@ -181,6 +154,16 @@ public class ContractionFragment extends Fragment {
                 })
                 .setActionTextColor(Color.RED)
                 .show();
+    }
+
+    private void start() {
+        Intent intent = new Intent(requireContext(), ChronoActivity.class);
+        ActivityNavigator activityNavigator = new ActivityNavigator(requireContext());
+        ActivityNavigator.Destination destination = activityNavigator
+                .createDestination()
+                .setIntent(intent);
+
+        activityNavigator.navigate(destination, null, null, null);
     }
 
 }
