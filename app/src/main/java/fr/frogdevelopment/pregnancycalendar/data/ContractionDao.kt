@@ -9,15 +9,15 @@ import androidx.room.Query
 @Dao
 interface ContractionDao {
 
-    @get:Query("SELECT * FROM contraction ORDER BY datetime ASC")
-    val all: LiveData<List<Contraction>>
+    @Query("SELECT * FROM contraction ORDER BY datetime ASC")
+    fun all(): LiveData<List<Contraction>>
 
     @Insert
-    fun insert(contraction: Contraction?)
+    suspend fun insert(contraction: Contraction?)
 
     @Delete
-    fun delete(contraction: Contraction?)
+    suspend fun delete(contraction: Contraction?)
 
     @Query("DELETE FROM contraction")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

@@ -3,7 +3,7 @@ package fr.frogdevelopment.pregnancycalendar.data
 import android.app.Application
 import androidx.lifecycle.LiveData
 
-class ContractionRepository(application: Application?) {
+class ContractionRepository(application: Application) {
 
     private val contractionDao: ContractionDao
     val allContractions: LiveData<List<Contraction>>
@@ -11,18 +11,18 @@ class ContractionRepository(application: Application?) {
     init {
         val db = AppDatabase.getDatabase(application)
         contractionDao = db.contractionDao()
-        allContractions = contractionDao.all
+        allContractions = contractionDao.all()
     }
 
-    fun insert(contraction: Contraction?) {
-        AppDatabase.databaseWriteExecutor.execute { contractionDao.insert(contraction) }
+    suspend fun insert(contraction: Contraction?) {
+        contractionDao.insert(contraction)
     }
 
-    fun delete(contraction: Contraction?) {
-        AppDatabase.databaseWriteExecutor.execute { contractionDao.delete(contraction) }
+    suspend fun delete(contraction: Contraction?) {
+        contractionDao.delete(contraction)
     }
 
-    fun deleteAll() {
-        AppDatabase.databaseWriteExecutor.execute { contractionDao.deleteAll() }
+    suspend fun deleteAll() {
+        contractionDao.deleteAll()
     }
 }
