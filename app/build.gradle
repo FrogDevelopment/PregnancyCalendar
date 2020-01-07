@@ -94,8 +94,4 @@ dependencies {
     implementation "com.google.android.material:material:$material_version"
     implementation "androidx.navigation:navigation-fragment:$navigation_version"
     implementation "androidx.navigation:navigation-ui:$navigation_version"
-
-    // 3th lib
-    def commons_lang_version = '3.9'
-    implementation "org.apache.commons:commons-lang3:$commons_lang_version"
 }

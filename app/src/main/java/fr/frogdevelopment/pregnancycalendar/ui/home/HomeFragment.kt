@@ -3,6 +3,7 @@ package fr.frogdevelopment.pregnancycalendar.ui.home
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Html
+import android.text.TextUtils
 import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -19,7 +20,6 @@ import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.getConceptionDa
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.getCurrentMonth
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.getCurrentTrimester
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.getCurrentWeek
-import org.apache.commons.lang3.StringUtils
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -77,7 +77,7 @@ class HomeFragment : Fragment() {
         // todo retro-compatibility, to be remove later
         if (mSharedPref.contains(OLD_SELECTED_DATE)) {
             mDateValue = mSharedPref.getString(OLD_SELECTED_DATE, null)
-            if (StringUtils.isNotBlank(mDateValue)) {
+            if (!TextUtils.isEmpty(mDateValue)) {
                 setSelectedDate(LocalDate.parse(mDateValue, LONG_DATE_FORMATTER).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli())
             }
             mSharedPref.edit()
