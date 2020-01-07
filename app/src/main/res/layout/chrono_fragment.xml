@@ -14,7 +14,7 @@
         android:format="%s"
         android:gravity="center"
         android:textColor="@android:color/darker_gray"
-        android:textSize="60sp"
+        android:textSize="80sp"
         app:layout_constraintBottom_toTopOf="@+id/chrono_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,11 +24,11 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/chrono_button"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         app:icon="@drawable/ic_baseline_stop_24"
         app:iconGravity="textStart"
         app:iconPadding="0dp"
-        app:iconSize="40dp"
+        app:iconSize="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
