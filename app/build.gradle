@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId "fr.frogdevelopment.pregnancycalendar"
 
-        minSdkVersion 26
+        minSdkVersion 21
         targetSdkVersion 29
 
         versionCode 6
@@ -94,4 +94,8 @@ dependencies {
     implementation "com.google.android.material:material:$material_version"
     implementation "androidx.navigation:navigation-fragment:$navigation_version"
     implementation "androidx.navigation:navigation-ui:$navigation_version"
+
+    // date
+    def threetenAbpVersion = '1.2.1'
+    implementation "com.jakewharton.threetenabp:threetenabp:$threetenAbpVersion"
 }

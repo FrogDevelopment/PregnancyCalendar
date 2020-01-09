@@ -3,6 +3,7 @@ package fr.frogdevelopment.pregnancycalendar.ui.contraction
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -22,7 +23,7 @@ import fr.frogdevelopment.pregnancycalendar.data.Contraction
 import fr.frogdevelopment.pregnancycalendar.ui.chrono.ChronoActivity
 import fr.frogdevelopment.pregnancycalendar.ui.contraction.SwipeToDelete.DeleteListener
 import fr.frogdevelopment.pregnancycalendar.utils.DateLabelUtils
-import java.time.temporal.ChronoUnit
+import org.threeten.bp.temporal.ChronoUnit.MILLIS
 import java.util.*
 import java.util.stream.Collectors
 
@@ -90,8 +91,8 @@ class ContractionFragment : Fragment(), DeleteListener {
     }
 
     private fun computeStats(contractions: List<Contraction>) {
-        var averageInterval: String? = null
-        var averageDuration: String? = null
+        var averageInterval: Long? = null
+        var averageDuration: Long? = null
 
         val itemCount = contractions.size
         if (itemCount > 0) {
@@ -110,15 +111,31 @@ class ContractionFragment : Fragment(), DeleteListener {
                     continue
                 }
 
-                intervals.add(ChronoUnit.MILLIS.between(contraction.dateTime!!.plus(contraction.duration!!, ChronoUnit.MILLIS), previous!!.dateTime))
+                intervals.add(MILLIS.between(contraction.dateTime!!.plus(contraction.duration!!, MILLIS), previous!!.dateTime))
                 durations.add(contraction.duration!!)
                 previous = contraction
             }
-            averageInterval = DateLabelUtils.millisecondsToLabel(requireContext(), intervals.stream().collect(Collectors.averagingLong { d: Long? -> d!! }).toLong())
-            averageDuration = DateLabelUtils.millisecondsToLabel(requireContext(), durations.stream().collect(Collectors.averagingLong { d: Long? -> d!! }).toLong())
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                averageInterval = intervals.stream().collect(Collectors.averagingLong { d: Long? -> d!! }).toLong()
+                averageDuration = durations.stream().collect(Collectors.averagingLong { d: Long? -> d!! }).toLong()
+            } else if (intervals.isNotEmpty()) {
+                var totalInterval = 0L
+                for (interval in intervals) {
+                    totalInterval += interval
+                }
+                averageInterval = totalInterval / intervals.size
+
+                var totalDuration = 0L
+                for (duration in durations) {
+                    totalDuration += duration
+                }
+
+                averageDuration = totalDuration / durations.size
+            }
         }
-        mAverageInterval.text = averageInterval
-        mAverageDuration.text = averageDuration
+        mAverageInterval.text = DateLabelUtils.millisecondsToLabel(requireContext(), averageInterval)
+        mAverageDuration.text = DateLabelUtils.millisecondsToLabel(requireContext(), averageDuration)
     }
 
     private fun start() {

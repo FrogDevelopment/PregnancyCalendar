@@ -3,7 +3,7 @@ package fr.frogdevelopment.pregnancycalendar.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.ZonedDateTime
+import org.threeten.bp.ZonedDateTime
 
 @Entity
 class Contraction {

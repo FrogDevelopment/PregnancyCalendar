@@ -1,9 +1,9 @@
 package fr.frogdevelopment.pregnancycalendar.data
 
 import androidx.room.TypeConverter
-import java.time.Instant
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 
 object LocalDateTimeConverter {
     @JvmStatic

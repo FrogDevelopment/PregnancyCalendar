@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.frogdevelopment.pregnancycalendar.R
 import fr.frogdevelopment.pregnancycalendar.data.Contraction
 import fr.frogdevelopment.pregnancycalendar.utils.DateLabelUtils.millisecondsToLabel
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.time.temporal.ChronoUnit.MILLIS
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
+import org.threeten.bp.temporal.ChronoUnit.MILLIS
 import java.util.*
 
 internal class ContractionAdapter(activity: Activity) : RecyclerView.Adapter<ContractionViewHolder>() {

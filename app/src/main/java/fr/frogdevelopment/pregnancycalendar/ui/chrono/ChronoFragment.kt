@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import fr.frogdevelopment.pregnancycalendar.R
 import fr.frogdevelopment.pregnancycalendar.data.Contraction
 import fr.frogdevelopment.pregnancycalendar.ui.contraction.ContractionViewModel
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 
 class ChronoFragment : Fragment() {
 

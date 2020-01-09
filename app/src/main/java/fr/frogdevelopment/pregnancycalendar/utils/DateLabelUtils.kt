@@ -10,7 +10,10 @@ object DateLabelUtils {
     private const val ONE_HOUR = 60 /*minutes*/
     private const val ONE_DAY = 24 /*hours*/
 
-    fun millisecondsToLabel(context: Context, duration: Long): String {
+    fun millisecondsToLabel(context: Context, duration: Long?): String? {
+        if (duration == null) {
+            return null
+        }
         val label: String
         val seconds = TimeUnit.MILLISECONDS.toSeconds(duration)
         label = if (seconds < ONE_MINUTE) { // less than 1 minute

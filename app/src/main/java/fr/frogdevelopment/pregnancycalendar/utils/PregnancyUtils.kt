@@ -3,8 +3,8 @@ package fr.frogdevelopment.pregnancycalendar.utils
 import android.content.Context
 import androidx.preference.PreferenceManager
 import fr.frogdevelopment.pregnancycalendar.R.integer
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
+import org.threeten.bp.LocalDate
+import org.threeten.bp.temporal.ChronoUnit
 
 object PregnancyUtils {
 

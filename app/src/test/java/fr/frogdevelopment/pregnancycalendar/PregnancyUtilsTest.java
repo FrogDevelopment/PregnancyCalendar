@@ -12,8 +12,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import java.time.LocalDate;
+import org.threeten.bp.LocalDate;
 
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils;
 
@@ -42,17 +41,17 @@ public class PregnancyUtilsTest {
 
 	@Test
 	public void test_getAmenorrheaDate_use_default() {
-		int nbDays = 14;
-		LocalDate now = LocalDate.now();
+        int nbDays = 14;
+        LocalDate now = LocalDate.now();
 
-		Mockito.doReturn(null)
-				.when(mMockSharedPreferences).getString(KEY_DAYS_TO_FECUNDATION, null);
-		Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.default_days_to_fecundation);
+        Mockito.doReturn(null)
+                .when(mMockSharedPreferences).getString(KEY_DAYS_TO_FECUNDATION, null);
+        Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.settings_days_to_fecundation_default);
 
-		LocalDate amenorrheaDate = PregnancyUtils.getAmenorrheaDate(context, now);
+        LocalDate amenorrheaDate = PregnancyUtils.getAmenorrheaDate(context, now);
 
-		Assert.assertEquals(now.minusDays(nbDays), amenorrheaDate);
-	}
+        Assert.assertEquals(now.minusDays(nbDays), amenorrheaDate);
+    }
 
 	@Test
 	public void test_getAmenorrheaDate() {
@@ -70,16 +69,16 @@ public class PregnancyUtilsTest {
 
 	@Test
 	public void test_getConceptionDate_use_default() {
-		int nbDays = 14;
-		LocalDate now = LocalDate.now();
+        int nbDays = 14;
+        LocalDate now = LocalDate.now();
 
-		Mockito.doReturn(null).when(mMockSharedPreferences).getString(KEY_DAYS_TO_FECUNDATION, null);
-		Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.default_days_to_fecundation);
+        Mockito.doReturn(null).when(mMockSharedPreferences).getString(KEY_DAYS_TO_FECUNDATION, null);
+        Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.settings_days_to_fecundation_default);
 
-		LocalDate conceptionDate = PregnancyUtils.getConceptionDate(context, now);
+        LocalDate conceptionDate = PregnancyUtils.getConceptionDate(context, now);
 
-		Assert.assertEquals(now.plusDays(nbDays), conceptionDate);
-	}
+        Assert.assertEquals(now.plusDays(nbDays), conceptionDate);
+    }
 
 	@Test
 	public void test_getConceptionDate() {
@@ -97,16 +96,16 @@ public class PregnancyUtilsTest {
 
 	@Test
 	public void test_getBirthRangeStart_use_default() {
-		int nbDays = 280;
-		LocalDate now = LocalDate.now();
+        int nbDays = 280;
+        LocalDate now = LocalDate.now();
 
-		Mockito.doReturn(null).when(mMockSharedPreferences).getString(KEY_GESTATION_MIN, null);
-		Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.default_gestation_min);
+        Mockito.doReturn(null).when(mMockSharedPreferences).getString(KEY_GESTATION_MIN, null);
+        Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.settings_gestation_min_default);
 
-		LocalDate birthRangeStart = PregnancyUtils.getBirthRangeStart(context, now);
+        LocalDate birthRangeStart = PregnancyUtils.getBirthRangeStart(context, now);
 
-		Assert.assertEquals(now.plusDays(nbDays), birthRangeStart);
-	}
+        Assert.assertEquals(now.plusDays(nbDays), birthRangeStart);
+    }
 
 	@Test
 	public void test_getBirthRangeStart() {
@@ -124,16 +123,16 @@ public class PregnancyUtilsTest {
 
 	@Test
 	public void test_getBirthRangeEnd_use_default() {
-		int nbDays = 290;
-		LocalDate now = LocalDate.now();
+        int nbDays = 290;
+        LocalDate now = LocalDate.now();
 
-		Mockito.doReturn(null).when(mMockSharedPreferences).getString(KEY_GESTATION_MAX, null);
-		Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.default_gestation_max);
+        Mockito.doReturn(null).when(mMockSharedPreferences).getString(KEY_GESTATION_MAX, null);
+        Mockito.doReturn(nbDays).when(mMockResources).getInteger(R.integer.settings_gestation_max_default);
 
-		LocalDate birthRangeEnd = PregnancyUtils.getBirthRangeEnd(context, now);
+        LocalDate birthRangeEnd = PregnancyUtils.getBirthRangeEnd(context, now);
 
-		Assert.assertEquals(now.plusDays(nbDays), birthRangeEnd);
-	}
+        Assert.assertEquals(now.plusDays(nbDays), birthRangeEnd);
+    }
 
 	@Test
 	public void test_getBirthRangeEnd() {

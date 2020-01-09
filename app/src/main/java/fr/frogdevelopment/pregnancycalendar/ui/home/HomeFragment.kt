@@ -1,8 +1,10 @@
 package fr.frogdevelopment.pregnancycalendar.ui.home
 
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
-import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
+import android.text.Html.fromHtml
 import android.text.TextUtils
 import android.view.*
 import android.widget.TextView
@@ -20,12 +22,12 @@ import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.getConceptionDa
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.getCurrentMonth
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.getCurrentTrimester
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.getCurrentWeek
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -107,7 +109,12 @@ class HomeFragment : Fragment() {
 
     private fun showSelectDateDialog() {
         val today = todayInUtcMilliseconds()
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC))
+        val calendar: Calendar
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            calendar = Calendar.getInstance(TimeZone.getTimeZone(java.time.ZoneOffset.UTC))
+        } else {
+            calendar = Calendar.getInstance()
+        }
         calendar.clear()
         calendar.timeInMillis = today
         calendar.add(Calendar.MONTH, -9)
@@ -161,13 +168,23 @@ class HomeFragment : Fragment() {
         conceptionDateValue.text = LONG_DATE_FORMATTER.format(conceptionDate)
 
         val currentWeek = getCurrentWeek(amenorrheaDate)
-        this.currentWeek.text = Html.fromHtml(resources.getQuantityString(R.plurals.home_week_n, currentWeek, currentWeek), Html.FROM_HTML_MODE_LEGACY)
-        val currentMonth = getCurrentMonth(conceptionDate)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            this.currentWeek.text = fromHtml(resources.getQuantityString(R.plurals.home_week_n, currentWeek, currentWeek), FROM_HTML_MODE_LEGACY)
+            val currentMonth = getCurrentMonth(conceptionDate)
 
-        this.currentMonth.text = Html.fromHtml(resources.getQuantityString(R.plurals.home_month_n, currentMonth, currentMonth), Html.FROM_HTML_MODE_LEGACY)
-        val currentTrimester = getCurrentTrimester(currentWeek)
+            this.currentMonth.text = fromHtml(resources.getQuantityString(R.plurals.home_month_n, currentMonth, currentMonth), FROM_HTML_MODE_LEGACY)
+            val currentTrimester = getCurrentTrimester(currentWeek)
 
-        this.currentTrimester.text = Html.fromHtml(resources.getQuantityString(R.plurals.home_trimester_n, currentTrimester, currentTrimester), Html.FROM_HTML_MODE_LEGACY)
+            this.currentTrimester.text = fromHtml(resources.getQuantityString(R.plurals.home_trimester_n, currentTrimester, currentTrimester), FROM_HTML_MODE_LEGACY)
+        } else {
+            this.currentWeek.text = fromHtml(resources.getQuantityString(R.plurals.home_week_n, currentWeek, currentWeek))
+            val currentMonth = getCurrentMonth(conceptionDate)
+
+            this.currentMonth.text = fromHtml(resources.getQuantityString(R.plurals.home_month_n, currentMonth, currentMonth))
+            val currentTrimester = getCurrentTrimester(currentWeek)
+
+            this.currentTrimester.text = fromHtml(resources.getQuantityString(R.plurals.home_trimester_n, currentTrimester, currentTrimester))
+        }
 
         birthRangeStart.text = getBirthRangeStart(requireContext(), amenorrheaDate).format(LONG_DATE_FORMATTER)
         birthRangeEnd.text = getBirthRangeEnd(requireContext(), amenorrheaDate).format(LONG_DATE_FORMATTER)
