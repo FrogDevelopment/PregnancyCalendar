@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="fr.frogdevelopment.pregnancycalendar.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/home_fragment" />
+
+    <fragment
+        android:id="@+id/navigation_chrono"
+        android:name="fr.frogdevelopment.pregnancycalendar.ui.contraction.ContractionFragment"
+        android:label="@string/title_chrono"
+        tools:layout="@layout/contraction_fragment" >
+        <action
+            android:id="@+id/action_navigation_chrono_to_chronoActivity"
+            app:destination="@id/chronoActivity" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="fr.frogdevelopment.pregnancycalendar.ui.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/settings_fragment" />
+
+    <activity
+        android:id="@+id/chronoActivity"
+        android:name="fr.frogdevelopment.pregnancycalendar.ui.chrono.ChronoActivity"
+        android:label="@string/title_chrono"
+        tools:layout="@layout/chrono_activity" />
+
+</navigation>

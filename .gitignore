@@ -4,5 +4,5 @@
 /build
 .idea/
 app/libs/
-gradle.properties
 
+/app/release/*.aab
