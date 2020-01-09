@@ -29,7 +29,7 @@ class ChronoFragment : Fragment() {
         mNow = ZonedDateTime.now(ZoneId.systemDefault())
         mChronometer = rootView.findViewById(R.id.chronometer)
         mChronometer.start()
-        rootView.findViewById<View>(R.id.chrono_button).setOnClickListener { view: View? -> stop() }
+        rootView.findViewById<View>(R.id.chrono_button).setOnClickListener { stop() }
     }
 
     private fun stop() {
