@@ -6,7 +6,6 @@ import android.widget.EditText
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import fr.frogdevelopment.pregnancycalendar.BuildConfig.VERSION_CODE
 import fr.frogdevelopment.pregnancycalendar.BuildConfig.VERSION_NAME
 import fr.frogdevelopment.pregnancycalendar.R
 import fr.frogdevelopment.pregnancycalendar.utils.PregnancyUtils.KEY_DAYS_TO_FECUNDATION
@@ -23,7 +22,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setAsNumberType(KEY_DAYS_TO_FECUNDATION)
 
         setSummary("settings_version", VERSION_NAME)
-        setSummary("settings_build", VERSION_CODE.toString())
     }
 
     private fun setAsNumberType(key: String) {

@@ -87,6 +87,5 @@
 
     <string name="settings_about_application">Application</string>
     <string name="settings_about_version_title">Version</string>
-    <string name="settings_about_build_title">Build</string>
 
 </resources>
