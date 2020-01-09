@@ -30,7 +30,7 @@
 
     <string name="home_current_trimester">Trimestre actuel</string>
     <plurals name="home_trimester_n">
-        <item quantity="one">%1$d&lt;sup>&lt;small>er&lt;/small>&lt;/sup>trimestre</item>
+        <item quantity="one">%1$d&lt;sup>&lt;small>er&lt;/small>&lt;/sup> trimestre</item>
         <item quantity="other">%1$d&lt;sup>&lt;small>e&lt;/small>&lt;/sup> trimestre</item>
     </plurals>
 
