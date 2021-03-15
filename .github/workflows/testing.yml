@@ -33,7 +33,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Setup Java 15
+      - name: Setup Java 8
         uses: joschi/setup-jdk@v2
         with:
           java-version: '8'
