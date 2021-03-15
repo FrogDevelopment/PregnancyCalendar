@@ -1,10 +1,10 @@
 
 name: Deploy Workflow
 
-#on:
-#  push:
-#    branches:
-#      - develop
+on:
+  push:
+    branches:
+      - develop
 
 jobs:
   deploy:
