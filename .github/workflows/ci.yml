@@ -38,22 +38,17 @@ jobs:
         with:
           java-version: '8'
 
-      # Step 3: Check the code with ktlint, you can remove this job if you don't use ktlint
       - name: Run Kotlin Linter
         run: ./gradlew ktlintStagingDebugCheck
 
-      # Step 3: Check the code with Android linter
       - name: Run Android Linter
         run: ./gradlew lintStagingDebug
 
-      # Step 4: Yun your unit tests
       - name: Run Unit Tests
         run: ./gradlew testStagingDebugUnitTest
 
-      # Step 4: Assemble debug apk to send to firebase test lab
       - name: Assemble Debug APK
         run: ./gradlew assembleStagingDebug
 
-      # Step 4: Assemble debug test apk to send to firebase test lab
       - name: Assemble Debug Test APK
         run: ./gradlew assembleStagingDebugAndroidTest
