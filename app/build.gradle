@@ -67,7 +67,7 @@ dependencies {
     androidTestImplementation "androidx.room:room-testing:$room_version"
 
     // Lifecycle components
-    def archLifecycleVersion = '2.2.0-rc03'
+    def archLifecycleVersion = '2.2.0'
     implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"
     kapt "androidx.lifecycle:lifecycle-common-java8:$archLifecycleVersion"
