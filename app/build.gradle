@@ -9,12 +9,12 @@ android {
     buildToolsVersion '30.0.3'
 
     defaultConfig {
-        applicationId "fr.frogdevelopment.pregnancycalendar"
+        applicationId 'fr.frogdevelopment.pregnancycalendar'
 
         minSdkVersion 21
         targetSdkVersion 30
 
-        versionCode 8
+        versionCode 9
         versionName '2.1.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
