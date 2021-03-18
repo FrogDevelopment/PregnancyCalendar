@@ -14,10 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout with all branches and tags
+      - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Setup Java 8
         uses: joschi/setup-jdk@v2
