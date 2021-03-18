@@ -1,4 +1,4 @@
-name: Testing Workflow
+name: CI Workflow
 
 on:
   push:
