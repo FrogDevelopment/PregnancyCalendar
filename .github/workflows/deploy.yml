@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Generate Release Bundle
-        run: ./gradlew bundkeRelease
+        run: ./gradlew bundleRelease
 
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
