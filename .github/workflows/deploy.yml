@@ -39,10 +39,10 @@ jobs:
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
         run: echo $SERVICE_ACCOUNT > app/service-account-key.json
 
-      # Step 4: Publish the APK to the Play Store using the release keystore
-      - name: Publish APK
-        env:
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrests.RELEASE_KEYSTORE_PASSWORD }}
-          RELEASE_KEY_ALIAS: ${{ secrests.RELEASE_KEY_ALIAS }}
-          RELEASE_KEY_PASSWORD: ${{ secrests.RELEASE_KEY_PASSWORD }}
-        run: ./gradlew publishStagingRelease
+#      # Step 4: Publish the APK to the Play Store using the release keystore
+#      - name: Publish APK
+#        env:
+#          RELEASE_KEYSTORE_PASSWORD: ${{ secrests.RELEASE_KEYSTORE_PASSWORD }}
+#          RELEASE_KEY_ALIAS: ${{ secrests.RELEASE_KEY_ALIAS }}
+#          RELEASE_KEY_PASSWORD: ${{ secrests.RELEASE_KEY_PASSWORD }}
+#        run: ./gradlew publishStagingRelease
