@@ -1,15 +1,11 @@
-name: Testing Workflow
+name: CI Workflow
 
-# Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the develop branch
   push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
 
 jobs:
   testing:
@@ -18,37 +14,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout with all branches and tags
+      - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
-      - name: Cache gradle
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Setup Java 15
+      - name: Setup Java 8
         uses: joschi/setup-jdk@v2
         with:
           java-version: '8'
 
-      - name: Run Kotlin Linter
-        run: ./gradlew ktlintStagingDebugCheck
-
-      - name: Run Android Linter
-        run: ./gradlew lintStagingDebug
+      - name: Run Linter
+        run: ./gradlew lintDebug
 
       - name: Run Unit Tests
-        run: ./gradlew testStagingDebugUnitTest
+        run: ./gradlew testDebugUnitTest
 
-      - name: Assemble Debug APK
-        run: ./gradlew assembleStagingDebug
-
-      - name: Assemble Debug Test APK
-        run: ./gradlew assembleStagingDebugAndroidTest
+      - name: Assemble Debug Bundle
+        run: ./gradlew bundleDebug
