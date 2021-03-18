@@ -18,26 +18,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate Release APK
-        run: ./gradlew assembleRelease
+      - name: Generate Release Bundle
+        run: ./gradlew bundkeRelease
 
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         # ID used to access action output
         id: sign_app
         with:
-          releaseDirectory: app/build/outputs/apk/release
+          releaseDirectory: app/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      - uses: actions/upload-artifact@master
+      - name: Upload Bundle
+        uses: actions/upload-artifact@v2
         with:
           name: release.apk
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
 
-      - uses: actions/upload-artifact@master
-        with:
-          name: mapping.txt
-          path: app/build/outputs/mapping/release/mapping.txt
