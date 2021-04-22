@@ -97,6 +97,6 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
     // date
-    def threetenAbpVersion = '1.3.0'
+    def threetenAbpVersion = '1.3.1'
     implementation "com.jakewharton.threetenabp:threetenabp:$threetenAbpVersion"
 }
