@@ -1,0 +1,45 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: org.jetbrains.kotlin:kotlin-stdlib-jdk7
+    versions:
+    - 1.4.32
+  - dependency-name: org.jetbrains.kotlin:kotlin-gradle-plugin
+    versions:
+    - 1.4.32
+  - dependency-name: androidx.room:room-testing
+    versions:
+    - 2.2.6
+  - dependency-name: androidx.room:room-compiler
+    versions:
+    - 2.2.6
+  - dependency-name: androidx.room:room-ktx
+    versions:
+    - 2.2.6
+  - dependency-name: androidx.room:room-runtime
+    versions:
+    - 2.2.6
+  - dependency-name: androidx.appcompat:appcompat
+    versions:
+    - 1.2.0
+  - dependency-name: androidx.constraintlayout:constraintlayout
+    versions:
+    - 2.0.4
+  - dependency-name: androidx.lifecycle:lifecycle-common-java8
+    versions:
+    - 2.2.0
+  - dependency-name: androidx.lifecycle:lifecycle-viewmodel-ktx
+    versions:
+    - 2.2.0
+  - dependency-name: androidx.lifecycle:lifecycle-extensions
+    versions:
+    - 2.2.0
+  - dependency-name: com.android.tools.build:gradle
+    versions:
+    - 7.0.0-alpha10
